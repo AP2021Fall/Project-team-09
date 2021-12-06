@@ -1,5 +1,7 @@
 package terminal_view;
 
+import exceptions.IllegalCommandException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -47,7 +49,11 @@ public class ArgumentManager {
     }
 
     public String get(String input){
-        return arguments.get(input);
+        if(contains(input))
+            return arguments.get(input);
+        else{
+            throw new IllegalCommandException(input);
+        }
     }
 
     public boolean contains(String input){
