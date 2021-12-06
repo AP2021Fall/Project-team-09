@@ -22,13 +22,11 @@ public class ArgumentManager {
     }
 
     private void initialize() {
-        command = input.split("--")[0].trim();
-        String [] args = input.split("\\s+");
-        for(int i = 1;i < args.length;i++){
-            if(args[i].startsWith("--")){
-                contains.add(args[i].substring(2));
-            }
-        }
+        readContains();
+        readArguments();
+    }
+
+    private void readArguments() {
         Pattern pattern = Pattern.compile("--[a-zA-Z]+ (\".+\"|[^-\\s]+)");
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()){
@@ -39,9 +37,25 @@ public class ArgumentManager {
         }
     }
 
-    public static ArgumentManager readInput(){
-        return new ArgumentManager(sc.nextLine());
+    private void readContains() {
+        String [] args = input.split("\\s+");
+        for(int i = 1;i < args.length;i++){
+            if(args[i].startsWith("--")){
+                contains.add(args[i].substring(2));
+            }
+        }
+    }
+
+    public String get(String input){
+        return arguments.get(input);
+    }
+
+    public boolean contains(String input){
+        return arguments.containsKey(input);
     }
 
 
+    public static ArgumentManager readInput(){
+        return new ArgumentManager(sc.nextLine());
+    }
 }
