@@ -58,4 +58,8 @@ public class ArgumentManager {
     public static ArgumentManager readInput(){
         return new ArgumentManager(sc.nextLine());
     }
+
+    public String getCommand() {
+        return command;
+    }
 }

@@ -12,7 +12,7 @@ public class EnvironmentVariables {
     private EnvironmentVariables(){
         FileReader reader = null;
         try {
-            reader = new FileReader("db.properties");
+            reader = new FileReader("app.properties");
             p = new Properties();
             p.load(reader);
         } catch (IOException e) {
