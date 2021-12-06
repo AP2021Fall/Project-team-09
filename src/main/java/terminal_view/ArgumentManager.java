@@ -24,18 +24,20 @@ public class ArgumentManager {
     }
 
     private void initialize() {
+        this.command = input.split("--")[0].trim();
         readContains();
         readArguments();
     }
 
     private void readArguments() {
-        Pattern pattern = Pattern.compile("--[a-zA-Z]+ (\".+\"|[^-\\s]+)");
+        Pattern pattern;
+        pattern = Pattern.compile("--[a-zA-Z0-9]+ (\".+\"|[^-\\s]+)");
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()){
             String arg = matcher.group(0); // --key value
             String key = arg.split(" ",2)[0].substring(2);
             String value = arg.split(" ",2)[1].replace("\"","");
-            System.out.println(key + " = " + value);
+            arguments.put(key,value);
         }
     }
 

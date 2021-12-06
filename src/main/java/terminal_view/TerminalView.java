@@ -1,6 +1,5 @@
 package terminal_view;
 
-import com.sun.org.apache.xpath.internal.Arg;
 
 public interface TerminalView {
     String text();
@@ -9,7 +8,7 @@ public interface TerminalView {
         System.out.println(text());
         while(true){
             ArgumentManager argumentManager = ArgumentManager.readInput();
-
+            parse(argumentManager);
         }
     }
 
