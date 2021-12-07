@@ -25,4 +25,16 @@ public class User {
     public static User getUser(String username, String password) {
         return null;
     }
+
+    public String getPassword() {
+        return null;
+    }
+
+    public boolean passwordInHistory(String newPassword) {
+        return false;
+    }
+
+    public void setPassword(String newPassword) {
+
+    }
 }
