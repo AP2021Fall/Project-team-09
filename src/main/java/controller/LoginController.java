@@ -1,6 +1,5 @@
 package controller;
 
-import model.Response;
 import model.User;
 
 public class LoginController {
@@ -29,5 +28,22 @@ public class LoginController {
         User user = User.createUser(username,password1,email);
 
         return new Response("user created successfully!",true,user);
+    }
+
+    public Response userLogin(String username, String password){
+        if(!User.usernameExists(username)){
+            return new Response("There is not any user with username: " + username + "!",false);
+        }
+        User user = User.getUser(username,password);
+        if(user == null){
+            return new Response("Username and password didn’t match!",false);
+        }
+        UserController.getInstance().setLogonUser(user);
+        return new Response("user logged in successfully!",true,user);
+    }
+
+    public Response logout(){
+        UserController.getInstance().setLogonUser(null);
+        return new Response("user logged out successfully!",true);
     }
 }

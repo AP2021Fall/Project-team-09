@@ -2,7 +2,7 @@ package terminal_view;
 
 import controller.EnvironmentVariables;
 import controller.LoginController;
-import model.Response;
+import controller.Response;
 import exceptions.IllegalCommandException;
 
 public class LoginMenu implements TerminalView{
