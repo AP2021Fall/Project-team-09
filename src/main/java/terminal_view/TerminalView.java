@@ -1,7 +1,9 @@
 package terminal_view;
 
 
+import controller.LoginController;
 import controller.UserController;
+import model.User;
 
 public interface TerminalView {
     String text();
@@ -9,11 +11,16 @@ public interface TerminalView {
     default void show(){
         System.out.println(text());
         while(true){
+            if(forceExit())
+                return;
             ArgumentManager argumentManager = ArgumentManager.readInput();
             if(argumentManager.getCommand().equalsIgnoreCase("back"))
                 return;
             else if(argumentManager.getCommand().equals("help")){
                 showHelp();
+            }
+            else if(argumentManager.getCommand().equals("logout")){
+                LoginController.getInstance().logout();
             }
             else if(UserController.getInstance().getLogonUser() != null){
                 if(argumentManager.getCommand().toLowerCase().startsWith("enter menu profile")){
@@ -28,6 +35,10 @@ public interface TerminalView {
                 parse(argumentManager);
             }
         }
+    }
+
+    default boolean forceExit(){
+        return UserController.getInstance().getLogonUser() == null;
     }
 
     void showHelp();

@@ -4,7 +4,6 @@ import controller.EnvironmentVariables;
 import controller.LoginController;
 import controller.Response;
 import exceptions.IllegalCommandException;
-
 public class LoginMenu implements TerminalView{
 
     @Override
@@ -43,5 +42,10 @@ public class LoginMenu implements TerminalView{
         catch (IllegalCommandException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean forceExit() {
+        return false;
     }
 }
