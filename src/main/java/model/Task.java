@@ -2,7 +2,7 @@
 package model;
         import java.util.ArrayList;
 
-public class Task {
+public class Task  {
     private static ArrayList<Task> allTask = new ArrayList<>();
     private int id;
     private String title;
