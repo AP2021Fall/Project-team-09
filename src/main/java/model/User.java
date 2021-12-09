@@ -14,14 +14,8 @@ public class User {
     private String email;
     private ArrayList<Task> taskOfUser;
 
-    private class teamMember {
-
-    }
-    private class teamLeader{
-
-    }
-    private class systemAdministrator{
-
+    enum WhoLogin {
+        teamMember,teamLeader,systemAdministrator
     }
 
     public User(String username,String password1,String password2, String email ) {
@@ -53,7 +47,12 @@ public class User {
         return email;
     }
 
+    public void setPassword1(String password1) {
+        this.password1 = password1;
+    }
+
     public static boolean usernameExists(String username) {
+
         return false;
     }
 
