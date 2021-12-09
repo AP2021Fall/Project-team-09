@@ -13,6 +13,7 @@ public class Task  {
     private String assignedusers;
     private String comments;
     private ArrayList<User> chekassignedusers;
+    private ArrayList<Task> taskOfUser;
 
     public Task(int id, String description, String priority,
                 String timeOfCreation, String timeOfDeadline,
@@ -26,7 +27,8 @@ public class Task  {
         this.assignedusers = assignedusers;
         this.comments = comments;
         this.chekassignedusers = new ArrayList<>();
-        allTask.add(this);
+        this.taskOfUser = new ArrayList<>();
+
     }
     private void generateId(){
         if(allTask.isEmpty()){
