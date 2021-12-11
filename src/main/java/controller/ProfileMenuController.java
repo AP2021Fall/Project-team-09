@@ -27,7 +27,24 @@ public class ProfileMenuController {
         }
 
         user.setPassword(newPassword);
-        return new Response("Passowrd changed succesfully!" , true);
+        return new Response("Password changed successfully!" , true);
+    }
+    
+    public Response changeUsername(String newUsername){
+        if(newUsername.length() < 4){
+            return new Response("Your new username must include at least 4 characters!",false,null);
+        }
+        if(User.usernameExists(newUsername)){
+            return new Response("Username already taken",false,null);
+        }
+        if(!newUsername.matches("[a-zA-Z0-9_]")){
+            return new Response("New username contains Special Characters! Please remove them and try again!",false,null);
+        }
+        if(newUsername.equalsIgnoreCase(UserController.getInstance().getLogonUser().getUsername())){
+            return new Response("you already have this username!",false);
+        }
+        UserController.getInstance().getLogonUser().setUsername(newUsername);
+        return new Response("Username changed successfully!",true);
     }
 
     private boolean isHard(String newPassword) {

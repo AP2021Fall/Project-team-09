@@ -37,4 +37,13 @@ public class User {
     public void setPassword(String newPassword) {
 
     }
+
+    public void setUsername(String newUsername) {
+
+    }
+
+    public String getUsername() {
+
+
+    }
 }
