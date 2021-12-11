@@ -38,12 +38,12 @@ public class LoginController {
         if(user == null){
             return new Response("Username and password didn’t match!",false);
         }
-        UserController.getInstance().setLogonUser(user);
+        UserController.logonUser = user;
         return new Response("user logged in successfully!",true,user);
     }
 
     public Response logout(){
-        UserController.getInstance().setLogonUser(null);
+        UserController.logout();
         return new Response("user logged out successfully!",true);
     }
 }

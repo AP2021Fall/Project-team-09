@@ -3,6 +3,8 @@ package controller;
 import model.Team;
 import model.User;
 
+import java.util.Arrays;
+
 public class ProfileMenuController {
     private static ProfileMenuController controller = null;
 
@@ -60,6 +62,25 @@ public class ProfileMenuController {
         if(response.length() > 0)
             response = new StringBuilder(response.substring(0, response.length() - 1));
         return new Response(response.toString(),true,teams);
+    }
+
+    public Response showTeam(String teamName){
+        Team team = Team.getTeamByName(teamName);
+        if(team == null){
+            return new Response("Team not found!",false);
+        }
+        String response = "";
+        response += team.getName()+ "\n";
+        response += team.getLeader().getUsername()+ "\n";
+        if(team.getLeader() != UserController.logonUser){
+            response += team.getLeader()+ "\n";
+        }
+        User [] members = team.getMembers();
+        Arrays.sort(members);
+        for(User user : members){
+            response += user.getUsername() + "\n";
+        }
+        return new Response(response,true,team);
     }
 
     private boolean isHard(String newPassword) {

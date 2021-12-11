@@ -8,4 +8,8 @@ public class UserController {
     public static User getLogonUser() {
         return logonUser;
     }
+
+    public static void logout() {
+        logonUser = null;
+    }
 }
