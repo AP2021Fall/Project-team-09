@@ -1,5 +1,6 @@
 package controller;
 
+import model.Team;
 import model.User;
 
 public class ProfileMenuController {
@@ -12,7 +13,7 @@ public class ProfileMenuController {
     }
 
     public Response changePassword(String oldPassword,String newPassword){
-        User user = UserController.getInstance().getLogonUser();
+        User user = UserController.logonUser;
         if(user.getPassword().equals(oldPassword)){
             if(user.passwordInHistory(newPassword)){
                 return new Response("Please type a New Password !",false);
@@ -40,11 +41,25 @@ public class ProfileMenuController {
         if(!newUsername.matches("[a-zA-Z0-9_]")){
             return new Response("New username contains Special Characters! Please remove them and try again!",false,null);
         }
-        if(newUsername.equalsIgnoreCase(UserController.getInstance().getLogonUser().getUsername())){
+        if(newUsername.equalsIgnoreCase(UserController.logonUser.getUsername())){
             return new Response("you already have this username!",false);
         }
-        UserController.getInstance().getLogonUser().setUsername(newUsername);
+        UserController.logonUser.setUsername(newUsername);
         return new Response("Username changed successfully!",true);
+    }
+
+    public Response showTeams(){
+        Team[] teams = UserController.logonUser.getTeams();
+        StringBuilder response = new StringBuilder();
+        String [] teamNames = new String[teams.length];
+        for (int i = 0; i < teams.length; i++) {
+            Team team = teams[i];
+            response.append(team.getName()).append(",");
+            teamNames[i] = team.getName();
+        }
+        if(response.length() > 0)
+            response = new StringBuilder(response.substring(0, response.length() - 1));
+        return new Response(response.toString(),true,teams);
     }
 
     private boolean isHard(String newPassword) {

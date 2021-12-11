@@ -43,7 +43,10 @@ public class User {
     }
 
     public String getUsername() {
+        return null;
+    }
 
-
+    public Team[] getTeams() {
+        return new Team[0];
     }
 }

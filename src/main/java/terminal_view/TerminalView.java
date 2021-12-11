@@ -22,7 +22,7 @@ public interface TerminalView {
             else if(argumentManager.getCommand().equals("logout")){
                 LoginController.getInstance().logout();
             }
-            else if(UserController.getInstance().getLogonUser() != null){
+            else if(UserController.getLogonUser() != null){
                 if(argumentManager.getCommand().toLowerCase().startsWith("enter menu profile")){
                     enterProfileMenu();
                 }
@@ -38,7 +38,7 @@ public interface TerminalView {
     }
 
     default boolean forceExit(){
-        return UserController.getInstance().getLogonUser() == null;
+        return UserController.getLogonUser() == null;
     }
 
     void showHelp();
