@@ -1,5 +1,6 @@
 package model;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,11 +11,13 @@ public class User {
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<String> allEmail = new ArrayList<>();
     private String lastName;
+    private String firstname;
     private String birthday;
     private String username;
     private String password1;
     private String password2;
     private String email;
+    Type WhoLogin;
 
     enum WhoLogin {
         teamMember,teamLeader,systemAdministrator
@@ -53,6 +56,30 @@ public class User {
         return allEmail;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public void setPassword1(String password1) {
         this.password1 = password1;
     }
@@ -67,10 +94,10 @@ public class User {
     }
 
      public static boolean emailExists(String email) {
-     //   for(String email : .getAllEmail()){
-      //      if(email.getEmail().equals(email))
-      //          return false;
-     //   }
+        for(User user : User.getAllUsers() ){
+            if(email.equals(user.getEmail()))
+               return false;
+        }
         return true;
     }
 
@@ -103,10 +130,7 @@ public class User {
         }
         return false;
     }
-
-
-    public static User createUser(String username, String password, String email) {
-
-        return null;
+    public Team[] getTeams() {
+        return new Team[0];
     }
 }

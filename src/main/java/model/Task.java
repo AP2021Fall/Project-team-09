@@ -38,8 +38,6 @@ public class Task  {
             int lastId = allTask.get(lastIndex).getId();
             this.id = lastId +1 ;
         }
-
-
     }
 
     public ArrayList<User> getChekassignedusers() {
