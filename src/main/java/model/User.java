@@ -18,6 +18,23 @@ public class User {
     private String password2;
     private String email;
     Type WhoLogin;
+    private static final String USERNAME_PATTERN =
+            "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$";
+
+    private static final Pattern pattern = Pattern.compile(USERNAME_PATTERN);
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+
+    private static final Pattern patternn = Pattern.compile(PASSWORD_PATTERN);
+
+    public User(String username, String password, String email) {
+        this.username=username;
+        allUsers.add(this);
+        this.password1=password;
+        this.email=email;
+        allEmail.add(email);
+    }
+
 
     enum WhoLogin {
         teamMember,teamLeader,systemAdministrator
@@ -100,8 +117,12 @@ public class User {
         }
         return true;
     }
+    public static boolean checkUserNameFormat(final String username) {
+        Matcher matcher = pattern.matcher(username);
+        return matcher.matches();
+    }
 
-    public boolean isEmailValid (String email){
+    public static boolean isEmailValid (String email){
         Pattern pattern = Pattern.compile("([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$");
         Matcher matcher = pattern.matcher(email);
         if(matcher.matches())
@@ -109,6 +130,10 @@ public class User {
 
         return false;
 
+    }
+    public static boolean checkPasswordFormat(final String password) {
+        Matcher matcher = patternn.matcher(password);
+        return matcher.matches();
     }
      public boolean isBirthdayvalid (String birthday){
         Pattern pattern = Pattern.compile("([12]\\\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]))");
@@ -130,7 +155,27 @@ public class User {
         }
         return false;
     }
+    public static User  createUser(String username, String password, String email) {
+        if (usernameExists(username)) {
+                if (emailExists(email)) {
+                    if (checkUserNameFormat(username)) {
+                        if (isEmailValid(email)) {
+                            if (checkPasswordFormat(password)) {
+                                User user = new User(username, password, email);
+                                return new User(username,password,email);
+                            } else
+                                return null;
+                        } else
+                            return null;
+                    } else
+                        return null;
+                } else
+                    return null;
+        } else
+            return null;
+    }
     public Team[] getTeams() {
         return new Team[0];
     }
+
 }
