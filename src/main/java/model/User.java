@@ -1,12 +1,14 @@
 package model;
 
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class User {
+    private ArrayList<User> users = new ArrayList<>();
+
 
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<String> allEmail = new ArrayList<>();
@@ -131,6 +133,7 @@ public class User {
         return false;
 
     }
+
     public static boolean checkPasswordFormat(final String password) {
         Matcher matcher = patternn.matcher(password);
         return matcher.matches();
@@ -178,4 +181,36 @@ public class User {
         return new Team[0];
     }
 
+
+
+    /**
+     * @return found user or null if not found
+     */
+    public static User getUser(String username, String password) {
+        return null;
+    }
+
+    public String getPassword() {
+        return null;
+    }
+
+    public boolean passwordInHistory(String newPassword) {
+        return false;
+    }
+
+    public void setPassword(String newPassword) {
+
+    }
+
+    public void setUsername(String newUsername) {
+
+    }
+
+    public String getUsername() {
+        return null;
+    }
+
+    public Team[] getTeams() {
+        return new Team[0];
+    }
 }

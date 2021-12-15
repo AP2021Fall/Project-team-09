@@ -2,9 +2,8 @@ package terminal_view;
 
 import controller.EnvironmentVariables;
 import controller.LoginController;
-import model.Response;
+import controller.Response;
 import exceptions.IllegalCommandException;
-
 public class LoginMenu implements TerminalView{
 
     @Override
@@ -15,17 +14,19 @@ public class LoginMenu implements TerminalView{
 
     @Override
     public void parse(ArgumentManager input) {
-        if(input.getCommand().equals("help")){
-            showHelp();
-        }
-        else if(input.getCommand().equals("user create")){
+        if(input.getCommand().equals("user create")){
             createUser(input);
+        }
+        else if(input.getCommand().equals("user login")){
+            //todo
         }
     }
 
-    private void showHelp() {
-        System.out.println("Commands:");
+    public void showHelp() {
+        System.out.println("Commands in LoginMenu:");
         System.out.println("user create --username <username> --password1 <pass1> --password2 <pass2> --email <email>");
+        System.out.println("user login --username <username> --password <password>");
+
     }
 
     private void createUser(ArgumentManager input) {
@@ -41,5 +42,10 @@ public class LoginMenu implements TerminalView{
         catch (IllegalCommandException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean forceExit() {
+        return false;
     }
 }

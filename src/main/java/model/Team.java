@@ -9,6 +9,7 @@ public class Team {
         this.leader=leader;
     }
 
+
     public static Team getTeamByName(String teamName) {
         return null;
     }
@@ -21,8 +22,11 @@ public class Team {
         return leader;
     }
 
+    public User getLeader() {
+        return null;
+    }
+
     public User[] getMembers() {
         return new User[0];
     }
-
 }

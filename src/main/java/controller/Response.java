@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 public class Response {
     private String message;

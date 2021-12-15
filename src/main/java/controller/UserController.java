@@ -1,11 +1,15 @@
 package controller;
 
-public class UserController {
-    private static UserController userController = null;
+import model.User;
 
-    public static UserController getInstance() {
-        if(userController == null)
-            userController = new UserController();
-        return userController;
+public class UserController {
+    static User logonUser = null;
+
+    public static User getLogonUser() {
+        return logonUser;
+    }
+
+    public static void logout() {
+        logonUser = null;
     }
 }
