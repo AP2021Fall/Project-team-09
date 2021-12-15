@@ -3,6 +3,9 @@ package controller;
 import model.Team;
 import model.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ProfileMenuController {
@@ -17,7 +20,7 @@ public class ProfileMenuController {
     public Response changePassword(String oldPassword,String newPassword){
         User user = UserController.logonUser;
         if(user.getPassword().equals(oldPassword)){
-            if(user.passwordInHistory(newPassword)){
+            if(user.passwordIntHistory(newPassword)){
                 return new Response("Please type a New Password !",false);
             }
             else if (!isHard(newPassword)){
@@ -86,5 +89,21 @@ public class ProfileMenuController {
     private boolean isHard(String newPassword) {
         return newPassword.length() >= 8 && newPassword.matches(".*[A-Z].*")
                 && newPassword.matches(".*[a-z].*")&&newPassword.matches(".*[0-9].*");
+    }
+
+    public Response getMyProfile() {
+        String answer = UserController.logonUser.toString();
+
+        return new Response(answer,true,UserController.logonUser);
+    }
+
+    public Response getLogs() {
+        ArrayList<LocalDate> dates = UserController.logonUser.getLogs();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String answer = "";
+        for(LocalDate date : dates){
+            answer +=  date.format(formatter) + "\n";
+        }
+        return new Response(answer,true,dates);
     }
 }

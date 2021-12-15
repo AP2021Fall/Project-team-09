@@ -2,6 +2,7 @@ package terminal_view;
 
 
 import controller.LoginController;
+import controller.SaveAndLoadController;
 import controller.UserController;
 import model.User;
 
@@ -34,6 +35,7 @@ public interface TerminalView {
             else{
                 parse(argumentManager);
             }
+            SaveAndLoadController.save();
         }
     }
 
@@ -51,7 +53,6 @@ public interface TerminalView {
         new ProfileMenu().show();
     }
 
-    //todo other menus
 
     void parse(ArgumentManager input);
 }

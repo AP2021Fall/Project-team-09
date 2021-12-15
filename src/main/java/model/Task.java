@@ -1,98 +1,102 @@
 
 package model;
-        import java.util.ArrayList;
+    import java.io.Serializable;
+    import java.time.LocalDate;
+    import java.util.ArrayList;
 
-public class Task  {
+public class Task  implements Serializable {
     private static ArrayList<Task> allTask = new ArrayList<>();
+    private static int idCounter = 100;
     private int id;
     private String title;
     private String description;
     private String priority;
-    private String timeOfCreation;
+    private LocalDate timeOfCreation;
     private String timeOfDeadline;
-    private String assignedusers;
-    private String comments;
-    private ArrayList<User> chekassignedusers;
-    private ArrayList<Task> taskOfUser;
+    private ArrayList<User> assignedUsers;
+    private ArrayList<String> comments;
 
-    public Task(int id, String description, String priority,
-                String timeOfCreation, String timeOfDeadline,
-                String assignedusers, String comments) {
-        generateId();
-        this.id = id;
+    public Task(String description, String priority) {
+        this.id = idCounter++;
         this.description = description;
         this.priority = priority;
-        this.timeOfCreation = timeOfCreation;
+        this.timeOfCreation = LocalDate.now();
         this.timeOfDeadline = timeOfDeadline;
-        this.assignedusers = assignedusers;
-        this.comments = comments;
-        this.chekassignedusers = new ArrayList<>();
-        this.taskOfUser = new ArrayList<>();
+        assignedUsers = new ArrayList<>();
+        comments = new ArrayList<>();
 
     }
-    private void generateId(){
-        if(allTask.isEmpty()){
-            this.id=0;
-        }else{
-            int lastIndex = allTask.size()-1;
-            int lastId = allTask.get(lastIndex).getId();
-            this.id = lastId +1 ;
-        }
+
+
+    public static ArrayList<Task> getAllTask() {
+        return allTask;
     }
 
-    public ArrayList<User> getChekassignedusers() {
-        return chekassignedusers;
+    public static void setAllTask(ArrayList<Task> allTask) {
+        Task.allTask = allTask;
     }
 
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public String getTimeOfCreation() {
-        return timeOfCreation;
-    }
-
-    public String getTimeOfDeadline() {
-        return timeOfDeadline;
-    }
-
-    public String getAssignedusers() {
-        return assignedusers;
-    }
-
-    public String getComments() {
-        return comments;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPriority() {
+        return priority;
     }
 
     public void setPriority(String priority) {
         this.priority = priority;
     }
 
+    public LocalDate getTimeOfCreation() {
+        return timeOfCreation;
+    }
+
+    public void setTimeOfCreation(LocalDate timeOfCreation) {
+        this.timeOfCreation = timeOfCreation;
+    }
+
+    public String getTimeOfDeadline() {
+        return timeOfDeadline;
+    }
+
     public void setTimeOfDeadline(String timeOfDeadline) {
         this.timeOfDeadline = timeOfDeadline;
     }
 
-    public void setAssignedusers(String assignedusers) {
-        this.assignedusers = assignedusers;
+    public ArrayList<User> getAssignedUsers() {
+        return assignedUsers;
+    }
+
+    public void setAssignedUsers(ArrayList<User> assignedUsers) {
+        this.assignedUsers = assignedUsers;
+    }
+
+    public ArrayList<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<String> comments) {
+        this.comments = comments;
     }
 }

@@ -1,8 +1,12 @@
 package model;
 
-public class Team {
-   String name;
-   User leader;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class Team implements Serializable {
+    private static ArrayList<Team> teams = new ArrayList<>();
+    String name;
+    User leader;
 
     public Team(String name , User leader) {
         this.name=name;
@@ -12,6 +16,14 @@ public class Team {
 
     public static Team getTeamByName(String teamName) {
         return null;
+    }
+
+    public static ArrayList<Team> getTeams() {
+        return teams;
+    }
+
+    public static void setTeams(ArrayList<Team> teams) {
+        Team.teams = teams;
     }
 
     public String getName() {

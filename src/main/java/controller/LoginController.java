@@ -39,6 +39,7 @@ public class LoginController {
             return new Response("Username and password didn’t match!",false);
         }
         UserController.logonUser = user;
+        user.logLogin();
         return new Response("user logged in successfully!",true,user);
     }
 

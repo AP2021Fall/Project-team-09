@@ -1,21 +1,24 @@
 package model;
 
 
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class User {
-    private ArrayList<User> users = new ArrayList<>();
+public class User implements Serializable {
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<Team> teams = new ArrayList<>();
     private String lastName;
     private String firstname;
-    private String birthday;
+    private String birthday = "Not Entered Yet";
     private String username;
     private String password;
     private String email;
+    private int score = 0;
+    private ArrayList<LocalDate> logs = new ArrayList<>();
     private Type type;
 
 
@@ -33,6 +36,10 @@ public class User {
             }
         }
         return null;
+    }
+
+    public static void setUsers(ArrayList<User> loadingUsers) {
+        User.allUsers = loadingUsers;
     }
 
     public void setPassword(String newPassword) {
@@ -93,9 +100,9 @@ public class User {
      public static boolean emailExists(String email) {
         for(User user : User.getAllUsers() ){
             if(email.equals(user.getEmail()))
-               return false;
+               return true;
         }
-        return true;
+        return false;
     }
 
 
@@ -128,7 +135,27 @@ public class User {
         this.username = newUsername;
     }
 
+    public void logLogin(){
+        logs.add(LocalDate.now());
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + firstname + " " + lastName + "\n" +
+                "Username: " + username + "\n" +
+                "Email: " + email + "\n" +
+                "Birthday: " + birthday + "\n" +
+                "Role: " + type.toString() + "\n" +
+                "Score: " + score;
+    }
+
+    public ArrayList<LocalDate> getLogs() {
+        return logs;
+    }
+
     enum Type {
         teamMember,teamLeader,systemAdministrator
     }
+
+
 }

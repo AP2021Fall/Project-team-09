@@ -18,7 +18,23 @@ public class LoginMenu implements TerminalView{
             createUser(input);
         }
         else if(input.getCommand().equals("user login")){
-            //todo
+            userLogin(input);
+        }
+    }
+
+    private void userLogin(ArgumentManager input) {
+        try{
+            Response response = LoginController.getInstance().userLogin(
+                    input.get("username"),
+                    input.get("password")
+            );
+            System.out.println(response.getMessage());
+            if(response.isSuccess()){
+                enterProfileMenu();
+            }
+        }
+        catch (IllegalCommandException e){
+            System.out.println(e.getMessage());
         }
     }
 
