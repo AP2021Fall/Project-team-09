@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class User implements Serializable {
     private static ArrayList<User> allUsers = new ArrayList<>();
+    private static User admin;
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<Team> teams = new ArrayList<>();
     private String lastName;
@@ -20,16 +21,20 @@ public class User implements Serializable {
     private int score = 0;
     private ArrayList<LocalDate> logs = new ArrayList<>();
     private Type type;
+    private ArrayList<String> notifications;
 
 
     public User(String username, String password, String email) {
         this.username=username;
         this.email=email;
         this.password = password;
+        type = Type.teamMember;
     }
 
 
     public static User getUser(String username, String password) {
+        if(admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
+            return admin;
         for(User user : allUsers){
             if(user.username.equalsIgnoreCase(username) && user.password.equals(password)){
                 return user;
@@ -38,8 +43,30 @@ public class User implements Serializable {
         return null;
     }
 
+    public static User getUser(String username) {
+        for(User user : allUsers){
+            if(user.username.equalsIgnoreCase(username)){
+                return user;
+            }
+        }
+        return null;
+    }
+
     public static void setUsers(ArrayList<User> loadingUsers) {
         User.allUsers = loadingUsers;
+    }
+
+    public static void removeUser(String username) {
+        for(User user : allUsers){
+            if(user.username.equalsIgnoreCase(username)){
+                allUsers.remove(user);
+                return;
+            }
+        }
+    }
+
+    public static boolean checkAdmin(String username, String password) {
+        return admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equalsIgnoreCase(password);
     }
 
     public void setPassword(String newPassword) {
@@ -153,9 +180,56 @@ public class User implements Serializable {
         return logs;
     }
 
-    enum Type {
-        teamMember,teamLeader,systemAdministrator
+    public static void setAdmin(User admin) {
+        User.admin = admin;
+        admin.type = Type.systemAdministrator;
     }
 
+    public static User getAdmin() {
+        return admin;
+    }
 
+    public boolean isAdmin() {
+        return type == Type.systemAdministrator;
+    }
+
+    public boolean setType(String role) {
+        if(Type.get(role) != null){
+            type = Type.get(role);
+            return true;
+        }
+        return false;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void addNotification(String notification) {
+        notifications.add(notification);
+    }
+
+    public void clearNotifications() {
+        notifications.clear();
+    }
+
+    public ArrayList<String> getNotifications() {
+        return notifications;
+    }
+
+    enum Type {
+        teamMember,teamLeader,systemAdministrator;
+
+        public static Type get(String role) {
+            role = role.toLowerCase().replace(" ", "").replace("_","");
+            if(role.equals("teammember"))
+                return Type.teamMember;
+            else if(role.equals("teamleader"))
+                return Type.teamLeader;
+            else if(role.equals("systemadministrator"))
+                return Type.systemAdministrator;
+            else
+                return null;
+        }
+    }
 }

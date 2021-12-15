@@ -4,6 +4,8 @@ import controller.EnvironmentVariables;
 import controller.LoginController;
 import controller.Response;
 import exceptions.IllegalCommandException;
+import model.User;
+
 public class LoginMenu implements TerminalView{
 
     @Override
@@ -20,6 +22,25 @@ public class LoginMenu implements TerminalView{
         else if(input.getCommand().equals("user login")){
             userLogin(input);
         }
+        else if(input.getCommand().equals("admin login")){
+            adminLogin(input);
+        }
+    }
+
+    private void adminLogin(ArgumentManager input) {
+        try{
+            Response response = LoginController.getInstance().adminLogin(
+                    input.get("username"),
+                    input.get("password")
+            );
+            System.out.println(response.getMessage());
+            if(response.isSuccess()){
+                enterAdminMenu();
+            }
+        }
+        catch (IllegalCommandException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void userLogin(ArgumentManager input) {
@@ -30,7 +51,13 @@ public class LoginMenu implements TerminalView{
             );
             System.out.println(response.getMessage());
             if(response.isSuccess()){
-                enterProfileMenu();
+                User user = (User) response.getObject();
+                if(user.isAdmin()){
+                    enterAdminMenu();
+                }
+                else{
+                    enterProfileMenu();
+                }
             }
         }
         catch (IllegalCommandException e){
@@ -42,6 +69,7 @@ public class LoginMenu implements TerminalView{
         System.out.println("Commands in LoginMenu:");
         System.out.println("user create --username <username> --password1 <pass1> --password2 <pass2> --email <email>");
         System.out.println("user login --username <username> --password <password>");
+        System.out.println("admin login --username <username> --password <password>");
 
     }
 

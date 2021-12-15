@@ -18,6 +18,7 @@ public interface TerminalView {
             if(argumentManager.getCommand().equalsIgnoreCase("back"))
                 return;
             else if(argumentManager.getCommand().equals("help")){
+                System.out.println("help and enter menu command are available from anywhere.");
                 showHelp();
             }
             else if(argumentManager.getCommand().equals("logout")){
@@ -30,13 +31,27 @@ public interface TerminalView {
                 else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu team")){
                     enterTeamMenu();
                 }
-                //todo other Menus
+                else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu notifications")){
+                    enterNotificationsMenu();
+                }
+                else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu admin")){
+                    if(UserController.getLogonUser().isAdmin()){
+                        enterAdminMenu();
+                    }
+                }
+                else{
+                    parse(argumentManager);
+                }
             }
             else{
                 parse(argumentManager);
             }
             SaveAndLoadController.save();
         }
+    }
+
+    default void enterNotificationsMenu(){
+        new NotificationsMenu().show();
     }
 
     default boolean forceExit(){
@@ -52,6 +67,11 @@ public interface TerminalView {
     default void enterProfileMenu(){
         new ProfileMenu().show();
     }
+
+    default void enterAdminMenu(){
+        new AdminMenu().show();
+    }
+
 
 
     void parse(ArgumentManager input);

@@ -20,6 +20,7 @@ public class SaveAndLoadController {
             //ADD NEW OBJECTS FOR SAVE _____________________
             savingObjects.put("users" , User.getAllUsers());
             savingObjects.put("teams" , Team.getTeams());
+            savingObjects.put("admin" , User.getAdmin());
             //_______________________________________________
 
             oos.writeObject(savingObjects);
@@ -33,8 +34,10 @@ public class SaveAndLoadController {
     public static void load(){
         try{
             File file = new File(EnvironmentVariables.getInstance().getString("SAVE_FILE"));
-            if(!file.exists())
+            if(!file.exists()) {
+                User.setAdmin(new User("admin","admin","admin@gmail.com"));
                 return;
+            }
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             HashMap<String, Serializable> savingObjects = (HashMap<String, Serializable>) ois.readObject();
@@ -42,12 +45,14 @@ public class SaveAndLoadController {
             //ADD NEW OBJECTS FOR SAVE _____________________
             User.setUsers((ArrayList<User>) savingObjects.get("users"));
             Team.setTeams((ArrayList<Team>) savingObjects.get("teams"));
+            User.setAdmin((User) savingObjects.get("admin"));
             //_______________________________________________
 
             ois.close();
             fis.close();
         }
         catch (Exception e){
+            User.setAdmin(new User("admin","admin","admin@gmail.com"));
             e.printStackTrace();
         }
     }

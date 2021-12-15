@@ -31,7 +31,7 @@ public class LoginController {
     }
 
     public Response userLogin(String username, String password){
-        if(!User.usernameExists(username)){
+        if(!User.usernameExists(username) && !User.getAdmin().getUsername().equalsIgnoreCase(username)){
             return new Response("There is not any user with username: " + username + "!",false);
         }
         User user = User.getUser(username,password);
@@ -46,5 +46,16 @@ public class LoginController {
     public Response logout(){
         UserController.logout();
         return new Response("user logged out successfully!",true);
+    }
+
+    public Response adminLogin(String username, String password) {
+        boolean isAdmin = User.checkAdmin(username,password);
+        if(isAdmin){
+            UserController.logonUser = User.getAdmin();
+            return new Response("Admin logon successfully",true);
+        }
+        else{
+            return new Response("Username of password is incorrect", false);
+        }
     }
 }

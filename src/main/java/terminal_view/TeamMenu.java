@@ -13,6 +13,5 @@ public class TeamMenu implements TerminalView{
 
     @Override
     public void parse(ArgumentManager input) {
-
     }
 }

@@ -12,4 +12,19 @@ public class UserController {
     public static void logout() {
         logonUser = null;
     }
+
+
+
+    public static Response clearNotifications() {
+        logonUser.clearNotifications();
+        return new Response("Notifications cleared!",true);
+    }
+
+    public static Response getNotifications() {
+        String answer = "";
+        for(String notification : logonUser.getNotifications()){
+            answer += notification + "\n";
+        }
+        return new Response(answer,true,logonUser.getNotifications());
+    }
 }

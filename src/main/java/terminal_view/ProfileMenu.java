@@ -12,7 +12,13 @@ public class ProfileMenu implements TerminalView{
 
     @Override
     public void showHelp() {
-        System.out.println("Help of profile menu");
+        System.out.println("profile change --oldPassword [current_password] --newPassword [new_password]");
+        System.out.println("profile change --username [username]");
+        System.out.println("profile --showTeams");
+        System.out.println("profile --showTeam [team_name]");
+        System.out.println("profile --show --myProfile");
+        System.out.println("profile --show logs");
+        System.out.println("profile --show notifications");
     }
 
     @Override
