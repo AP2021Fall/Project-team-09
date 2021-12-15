@@ -4,6 +4,7 @@ import exceptions.IllegalCommandException;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class ArgumentManager {
             String arg = matcher.group(0); // --key value
             String key = arg.split(" ",2)[0].substring(2);
             String value = arg.split(" ",2)[1].replace("\"","");
-            arguments.put(key,value);
+            arguments.put(key.toLowerCase(),value);
         }
     }
 
@@ -45,7 +46,7 @@ public class ArgumentManager {
         String [] args = input.split("\\s+");
         for(int i = 1;i < args.length;i++){
             if(args[i].startsWith("--")){
-                contains.add(args[i].substring(2));
+                contains.add(args[i].substring(2).toLowerCase());
             }
         }
     }
@@ -68,6 +69,6 @@ public class ArgumentManager {
     }
 
     public String getCommand() {
-        return command;
+        return command.toLowerCase();
     }
 }
