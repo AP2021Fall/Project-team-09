@@ -2,9 +2,9 @@ package model;
 
 public class Team {
    String name;
-   String leader;
+   User leader;
 
-    public Team(String name , String leader) {
+    public Team(String name , User leader) {
         this.name=name;
         this.leader=leader;
     }
@@ -17,13 +17,10 @@ public class Team {
     public String getName() {
         return name ;
     }
-
-    public String  getLeader() {
-        return leader;
-    }
+    
 
     public User getLeader() {
-        return null;
+        return leader;
     }
 
     public User[] getMembers() {
