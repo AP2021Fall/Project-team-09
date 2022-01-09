@@ -72,7 +72,5 @@ public interface TerminalView {
         new AdminMenu().show();
     }
 
-
-
     void parse(ArgumentManager input);
 }
