@@ -9,7 +9,7 @@ public class EnvironmentVariables {
     private static EnvironmentVariables environmentVariables = null;
     private Properties p;
 
-    private EnvironmentVariables(){
+    private EnvironmentVariables() {
         FileReader reader = null;
         try {
             reader = new FileReader("app.properties");
@@ -20,16 +20,16 @@ public class EnvironmentVariables {
         }
     }
 
-    public String getString(String key){
+    public String getString(String key) {
         return p.getProperty(key);
     }
 
-    public Integer getInteger(String key){
+    public Integer getInteger(String key) {
         return Integer.parseInt(p.getProperty(key));
     }
 
     public static EnvironmentVariables getInstance() {
-        if(environmentVariables == null)
+        if (environmentVariables == null)
             environmentVariables = new EnvironmentVariables();
         return environmentVariables;
     }

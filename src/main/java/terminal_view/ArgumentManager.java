@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 
 public class ArgumentManager {
 
-    private static ConsoleHelper consoleHelper = new ConsoleHelper();
-
     private final String input;
     private HashMap<String, String> arguments;
     private HashSet<String> contains;
@@ -64,7 +62,7 @@ public class ArgumentManager {
     }
 
     public static ArgumentManager readInput() {
-        return new ArgumentManager(consoleHelper.read());
+        return new ArgumentManager(ConsoleHelper.getInstance().read());
     }
 
     public String getCommand() {
@@ -73,5 +71,14 @@ public class ArgumentManager {
 
     public boolean isCommand(String input) {
         return this.command.equalsIgnoreCase(input);
+    }
+
+    public boolean isCommandFollowedBy(String input1, String... input2) {
+        if (!this.command.equalsIgnoreCase(input1))
+            return false;
+        for (String s : input2)
+            if(!contains(s.toLowerCase()))
+                return false;
+        return true;
     }
 }

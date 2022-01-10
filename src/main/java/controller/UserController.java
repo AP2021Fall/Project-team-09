@@ -3,28 +3,28 @@ package controller;
 import model.User;
 
 public class UserController {
-    static User logonUser = null;
+    static User loggedUser = null;
 
-    public static User getLogonUser() {
-        return logonUser;
+    public static User getLoggedUser() {
+        return loggedUser;
     }
 
     public static void logout() {
-        logonUser = null;
+        loggedUser = null;
     }
 
 
 
     public static Response clearNotifications() {
-        logonUser.clearNotifications();
+        loggedUser.clearNotifications();
         return new Response("Notifications cleared!",true);
     }
 
     public static Response getNotifications() {
         String answer = "";
-        for(String notification : logonUser.getNotifications()){
+        for(String notification : loggedUser.getNotifications()){
             answer += notification + "\n";
         }
-        return new Response(answer,true,logonUser.getNotifications());
+        return new Response(answer,true, loggedUser.getNotifications());
     }
 }
