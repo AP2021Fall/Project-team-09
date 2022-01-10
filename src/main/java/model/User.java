@@ -25,18 +25,18 @@ public class User implements Serializable {
 
 
     public User(String username, String password, String email) {
-        this.username=username;
-        this.email=email;
+        this.username = username;
+        this.email = email;
         this.password = password;
         type = Type.teamMember;
     }
 
 
     public static User getUser(String username, String password) {
-        if(admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
+        if (admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
             return admin;
-        for(User user : allUsers){
-            if(user.username.equalsIgnoreCase(username) && user.password.equals(password)){
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username) && user.password.equals(password)) {
                 return user;
             }
         }
@@ -44,8 +44,8 @@ public class User implements Serializable {
     }
 
     public static User getUser(String username) {
-        for(User user : allUsers){
-            if(user.username.equalsIgnoreCase(username)){
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username)) {
                 return user;
             }
         }
@@ -57,8 +57,8 @@ public class User implements Serializable {
     }
 
     public static void removeUser(String username) {
-        for(User user : allUsers){
-            if(user.username.equalsIgnoreCase(username)){
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username)) {
                 allUsers.remove(user);
                 return;
             }
@@ -116,42 +116,42 @@ public class User implements Serializable {
     }
 
     public static boolean usernameExists(String username) {
-        for(User user : User.getAllUsers()){
-            if(user.getUsername().equalsIgnoreCase(username))
+        for (User user : User.getAllUsers()) {
+            if (user.getUsername().equalsIgnoreCase(username))
                 return true;
         }
 
         return false;
     }
 
-     public static boolean emailExists(String email) {
-        for(User user : User.getAllUsers() ){
-            if(email.equals(user.getEmail()))
-               return true;
+    public static boolean emailExists(String email) {
+        for (User user : User.getAllUsers()) {
+            if (email.equals(user.getEmail()))
+                return true;
         }
         return false;
     }
 
 
-    public static boolean isEmailValid (String email){
+    public static boolean isEmailValid(String email) {
         Pattern pattern = Pattern.compile("([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$");
         Matcher matcher = pattern.matcher(email);
-        if(matcher.matches())
+        if (matcher.matches())
             return true;
 
         return false;
 
     }
 
-    public boolean passwordIntHistory(String newPassword){
+    public boolean passwordIntHistory(String newPassword) {
         return oldPasswords.contains(newPassword);
     }
 
 
     public static User createUser(String username, String password, String email) {
-       User user = new User(username,password,email);
-       allUsers.add(user);
-       return user;
+        User user = new User(username, password, email);
+        allUsers.add(user);
+        return user;
     }
 
     public Team[] getTeams() {
@@ -162,7 +162,7 @@ public class User implements Serializable {
         this.username = newUsername;
     }
 
-    public void logLogin(){
+    public void logLogin() {
         logs.add(LocalDate.now());
     }
 
@@ -189,12 +189,16 @@ public class User implements Serializable {
         return admin;
     }
 
+    public static boolean isAdmin(String username) {
+        return username.equalsIgnoreCase(admin.getUsername());
+    }
+
     public boolean isAdmin() {
         return type == Type.systemAdministrator;
     }
 
     public boolean setType(String role) {
-        if(Type.get(role) != null){
+        if (Type.get(role) != null) {
             type = Type.get(role);
             return true;
         }
@@ -218,15 +222,15 @@ public class User implements Serializable {
     }
 
     enum Type {
-        teamMember,teamLeader,systemAdministrator;
+        teamMember, teamLeader, systemAdministrator;
 
         public static Type get(String role) {
-            role = role.toLowerCase().replace(" ", "").replace("_","");
-            if(role.equals("teammember"))
+            role = role.toLowerCase().replace(" ", "").replace("_", "");
+            if (role.equals("teammember"))
                 return Type.teamMember;
-            else if(role.equals("teamleader"))
+            else if (role.equals("teamleader"))
                 return Type.teamLeader;
-            else if(role.equals("systemadministrator"))
+            else if (role.equals("systemadministrator"))
                 return Type.systemAdministrator;
             else
                 return null;

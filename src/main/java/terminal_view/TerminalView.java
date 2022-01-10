@@ -4,38 +4,53 @@ package terminal_view;
 import controller.LoginController;
 import controller.SaveAndLoadController;
 import controller.UserController;
-import model.User;
+import utilities.ConsoleHelper;
 
 public interface TerminalView {
+
+    String BACK = "back";
+    String HELP = "help";
+    String LOGOUT = "logout";
+
+    String HELP_TITLE = "help and enter menu command are available from anywhere.";
+
+    String ENTER_PROFILE = "enter menu profile";
+    String ENTER_TEAM = "enter menu team";
+    String ENTER_TASKS = "enter menu tasks";
+    String ENTER_NOTIFICATIONS = "enter menu notifications";
+
     String text();
 
     default void show(){
-        System.out.println(text());
+        ConsoleHelper consoleHelper = ConsoleHelper.getInstance();
+
+        consoleHelper.println(text());
+
         while(true){
             if(forceExit())
                 return;
             ArgumentManager argumentManager = ArgumentManager.readInput();
-            if(argumentManager.getCommand().equalsIgnoreCase("back"))
+            if(argumentManager.isCommand(BACK))
                 return;
-            else if(argumentManager.getCommand().equals("help")){
-                System.out.println("help and enter menu command are available from anywhere.");
+            else if(argumentManager.isCommand(HELP)){
+                consoleHelper.println(HELP_TITLE);
                 showHelp();
             }
-            else if(argumentManager.getCommand().equals("logout")){
+            else if(argumentManager.isCommand(LOGOUT)){
                 LoginController.getInstance().logout();
             }
-            else if(UserController.getLogonUser() != null){
-                if(argumentManager.getCommand().toLowerCase().startsWith("enter menu profile")){
+            else if(UserController.getLoggedUser() != null){
+                if(argumentManager.isCommand(ENTER_PROFILE)){
                     enterProfileMenu();
                 }
-                else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu team")){
+                else if(argumentManager.isCommand(ENTER_TEAM)){
                     enterTeamMenu();
                 }
-                else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu notifications")){
+                else if(argumentManager.isCommand(ENTER_NOTIFICATIONS)){
                     enterNotificationsMenu();
                 }
-                else if(argumentManager.getCommand().toLowerCase().startsWith("enter menu admin")){
-                    if(UserController.getLogonUser().isAdmin()){
+                else if(argumentManager.isCommand("enter menu admin")){
+                    if(UserController.getLoggedUser().isAdmin()){
                         enterAdminMenu();
                     }
                 }
@@ -55,7 +70,7 @@ public interface TerminalView {
     }
 
     default boolean forceExit(){
-        return UserController.getLogonUser() == null;
+        return UserController.getLoggedUser() == null;
     }
 
     void showHelp();

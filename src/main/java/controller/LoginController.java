@@ -3,58 +3,80 @@ package controller;
 import model.User;
 
 public class LoginController {
+
+    private final String SUCCESS_USER_CREATED =
+            "user created successfully!";
+    private final String SUCCESS_LOGIN =
+            "user logged in successfully!";
+    private final String SUCCESS_LOGOUT =
+            "user logged out successfully!";
+
+    private final String WARN_USER_EXISTS =
+            "user with username %s already exists!";
+    private final String WARN_PASS_NOT_MATCH =
+            "Your passwords are not the same!";
+    private final String WARN_EMAIL_EXISTS =
+            "User with this email already exists!";
+    private final String WARN_EMAIL_INVALID =
+            "Email address is invalid";
+    private final String WARN_USER_NOT_EXIST =
+            "There is not any user with username: %s!";
+    private final String WARN_UP_NOT_MATCH =
+            "Username and password didn’t match!";
+
+    private final String EMAIL_REGEXP =
+            "[a-zA-Z0-9]+@(yahoo.com|gmail.com)";
+
     private static LoginController loginController = null;
 
     public static LoginController getInstance() {
-        if(loginController == null)
+        if (loginController == null)
             loginController = new LoginController();
         return loginController;
     }
 
     public Response userCreate(String username, String password1, String password2, String email) {
-        if (User.usernameExists(username)){
-            return new Response("user with username " + username + " already exists!",false);
-        }
-        else if(!password1.equals(password2)){
-            return new Response("Your passwords are not the same!",false);
-        }
-        else if(User.emailExists(email)){
-            return new Response("User with this email already exists!",false);
-        }
-        else if(!email.matches("[a-zA-Z0-9]+@(yahoo.com|gmail.com)")){
-            return new Response("Email address is invalid!",false);
-        }
+        if (User.usernameExists(username))
+            return new Response(String.format(WARN_USER_EXISTS, username), false);
 
-        User user = User.createUser(username,password1,email);
+        if (!password1.equals(password2))
+            return new Response(WARN_PASS_NOT_MATCH, false);
 
-        return new Response("user created successfully!",true,user);
+        if (User.emailExists(email))
+            return new Response(WARN_EMAIL_EXISTS, false);
+
+        if (!email.matches(EMAIL_REGEXP))
+            return new Response(WARN_EMAIL_INVALID, false);
+
+        User user = User.createUser(username, password1, email);
+
+        return new Response(SUCCESS_USER_CREATED, true, user);
     }
 
-    public Response userLogin(String username, String password){
-        if(!User.usernameExists(username) && !User.getAdmin().getUsername().equalsIgnoreCase(username)){
-            return new Response("There is not any user with username: " + username + "!",false);
+    public Response userLogin(String username, String password) {
+        if (!User.usernameExists(username) && !User.isAdmin(username)) {
+            return new Response(String.format(WARN_USER_NOT_EXIST, username), false);
         }
-        User user = User.getUser(username,password);
-        if(user == null){
-            return new Response("Username and password didn’t match!",false);
+        User user = User.getUser(username, password);
+        if (user == null) {
+            return new Response(WARN_UP_NOT_MATCH, false);
         }
-        UserController.logonUser = user;
+        UserController.loggedUser = user;
         user.logLogin();
-        return new Response("user logged in successfully!",true,user);
+        return new Response(SUCCESS_LOGIN, true, user);
     }
 
-    public Response logout(){
+    public Response logout() {
         UserController.logout();
-        return new Response("user logged out successfully!",true);
+        return new Response(SUCCESS_LOGOUT, true);
     }
 
     public Response adminLogin(String username, String password) {
-        boolean isAdmin = User.checkAdmin(username,password);
-        if(isAdmin){
-            UserController.logonUser = User.getAdmin();
-            return new Response("Admin logon successfully",true);
-        }
-        else{
+        boolean isAdmin = User.checkAdmin(username, password);
+        if (isAdmin) {
+            UserController.loggedUser = User.getAdmin();
+            return new Response("Admin logon successfully", true);
+        } else {
             return new Response("Username of password is incorrect", false);
         }
     }
