@@ -8,10 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class User implements Serializable {
-    private static ArrayList<User> allUsers = new ArrayList<>();
+
     private static User admin;
-    private ArrayList<String> oldPasswords = new ArrayList<>();
-    private ArrayList<Team> teams = new ArrayList<>();
     private String lastName;
     private String firstname;
     private String birthday = "Not Entered Yet";
@@ -19,8 +17,12 @@ public class User implements Serializable {
     private String password;
     private String email;
     private int score = 0;
-    private ArrayList<LocalDate> logs = new ArrayList<>();
     private Type type;
+
+    private static ArrayList<User> allUsers = new ArrayList<>();
+    private ArrayList<LocalDate> logs = new ArrayList<>();
+    private ArrayList<Team> teams = new ArrayList<>();
+    private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<String> notifications;
 
 
@@ -31,48 +33,13 @@ public class User implements Serializable {
         type = Type.teamMember;
     }
 
-
-    public static User getUser(String username, String password) {
-        if (admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
-            return admin;
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username) && user.password.equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public static User getUser(String username) {
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username)) {
-                return user;
-            }
-        }
-        return null;
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
     }
 
     public static void setUsers(ArrayList<User> loadingUsers) {
         User.allUsers = loadingUsers;
     }
-
-    public static void removeUser(String username) {
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username)) {
-                allUsers.remove(user);
-                return;
-            }
-        }
-    }
-
-    public static boolean checkAdmin(String username, String password) {
-        return admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equalsIgnoreCase(password);
-    }
-
-    public void setPassword(String newPassword) {
-        this.password = newPassword;
-    }
-
 
     public static ArrayList<User> getAllUsers() {
         return allUsers;
@@ -82,6 +49,10 @@ public class User implements Serializable {
         return username;
     }
 
+    public void setUsername(String newUsername) {
+        this.username = newUsername;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -89,7 +60,6 @@ public class User implements Serializable {
     public String getEmail() {
         return email;
     }
-
 
     public String getLastName() {
         return lastName;
@@ -113,6 +83,56 @@ public class User implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public ArrayList<String> getNotifications() {
+        return notifications;
+    }
+
+    public ArrayList<LocalDate> getLogs() {
+        return logs;
+    }
+
+    public static User getAdmin() {
+        return admin;
+    }
+
+    public static User getUser(String username, String password) {
+        if (admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
+            return admin;
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username) && user.password.equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static User getUser(String username) {
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+
+    public static void removeUser(String username) {
+        for (User user : allUsers) {
+            if (user.username.equalsIgnoreCase(username)) {
+                allUsers.remove(user);
+                return;
+            }
+        }
+    }
+
+    public static boolean checkAdmin(String username, String password) {
+        return admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equalsIgnoreCase(password);
     }
 
     public static boolean usernameExists(String username) {
@@ -140,7 +160,6 @@ public class User implements Serializable {
             return true;
 
         return false;
-
     }
 
     public boolean passwordIntHistory(String newPassword) {
@@ -158,35 +177,14 @@ public class User implements Serializable {
         return teams.toArray(new Team[0]);
     }
 
-    public void setUsername(String newUsername) {
-        this.username = newUsername;
-    }
 
     public void logLogin() {
         logs.add(LocalDate.now());
     }
 
-    @Override
-    public String toString() {
-        return "Name: " + firstname + " " + lastName + "\n" +
-                "Username: " + username + "\n" +
-                "Email: " + email + "\n" +
-                "Birthday: " + birthday + "\n" +
-                "Role: " + type.toString() + "\n" +
-                "Score: " + score;
-    }
-
-    public ArrayList<LocalDate> getLogs() {
-        return logs;
-    }
-
     public static void setAdmin(User admin) {
         User.admin = admin;
         admin.type = Type.systemAdministrator;
-    }
-
-    public static User getAdmin() {
-        return admin;
     }
 
     public static boolean isAdmin(String username) {
@@ -205,10 +203,6 @@ public class User implements Serializable {
         return false;
     }
 
-    public Type getType() {
-        return type;
-    }
-
     public void addNotification(String notification) {
         notifications.add(notification);
     }
@@ -217,8 +211,14 @@ public class User implements Serializable {
         notifications.clear();
     }
 
-    public ArrayList<String> getNotifications() {
-        return notifications;
+    @Override
+    public String toString() {
+        return "Name: " + firstname + " " + lastName + "\n" +
+                "Username: " + username + "\n" +
+                "Email: " + email + "\n" +
+                "Birthday: " + birthday + "\n" +
+                "Role: " + type.toString() + "\n" +
+                "Score: " + score;
     }
 
     enum Type {

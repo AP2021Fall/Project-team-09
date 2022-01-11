@@ -11,6 +11,9 @@ public class ProfileMenu implements TerminalView {
     private final String WELCOME_MESSAGE =
             "Welcome to profile menu";
 
+    private final String PROFILE_CHANGE_COMMAND =
+            "profile change";
+
     private final String CHANGE_PASS_COMMAND =
             "profile change --oldPassword [current_password] --newPassword [new_password]";
     private final String CHANGE_USER_COMMAND =
@@ -59,19 +62,21 @@ public class ProfileMenu implements TerminalView {
 
     @Override
     public void parse(ArgumentManager input) {
-        if (input.isCommandFollowedBy(PROFILE, CHANGE)) {
+        if (input.isCommandFollowArg(PROFILE_CHANGE_COMMAND, OLD_PASSWORD, NEW_PASSWORD)) {
             changePassword(input);
-        } else if (input.isCommandFollowedBy(PROFILE, CHANGE, USERNAME)) {
+        } else if (input.isCommandFollowArg(PROFILE_CHANGE_COMMAND, USERNAME)) {
             changeUsername(input);
-        } else if (input.isCommandFollowedBy(PROFILE, SHOW_TEAMS)) {
+        } else if (input.isCommandFollowCommand(PROFILE, SHOW_TEAMS)) {
             showTeams();
-        } else if (input.isCommand(SHOW_TEAM_COMMAND)) {
+        } else if (input.isCommandFollowArg(PROFILE, SHOW_TEAM_COMMAND)) {
             showTeam(input);
-        } else if (input.isCommandFollowedBy(PROFILE, SHOW, MY_PROFILE)) {
+        } else if (input.isCommandFollowCommand(PROFILE, SHOW, MY_PROFILE)) {
             showMyProfile();
-        } else if (input.isCommandFollowedBy(PROFILE, SHOW, LOGS)) {
+        } else if (input.isCommandFollowArg(PROFILE, SHOW)
+                && input.isCommandFollowCommand(PROFILE, LOGS)) {
             showLogs();
-        } else if (input.isCommandFollowedBy(PROFILE, SHOW, NOTIFICATIONS)) {
+        } else if (input.isCommandFollowCommand(PROFILE, SHOW)
+                && input.isCommandFollowCommand(PROFILE, NOTIFICATIONS)) {
             showNotifications();
         }
     }

@@ -49,9 +49,13 @@ public class ArgumentManager {
         }
     }
 
+    private boolean hasCommand(String input) {
+        return contains.contains(input);
+    }
+
     public String get(String input) {
         if (contains(input))
-            return arguments.get(input);
+            return arguments.get(input.toLowerCase());
         else {
             throw new IllegalCommandException(input);
         }
@@ -73,11 +77,20 @@ public class ArgumentManager {
         return this.command.equalsIgnoreCase(input);
     }
 
-    public boolean isCommandFollowedBy(String input1, String... input2) {
+    public boolean isCommandFollowCommand(String input1, String... input2) {
         if (!this.command.equalsIgnoreCase(input1))
             return false;
         for (String s : input2)
-            if(!contains(s.toLowerCase()))
+            if (!hasCommand(s.toLowerCase()))
+                return false;
+        return true;
+    }
+
+    public boolean isCommandFollowArg(String input1, String... input2) {
+        if (!this.command.equalsIgnoreCase(input1))
+            return false;
+        for (String s : input2)
+            if (!contains(s.toLowerCase()))
                 return false;
         return true;
     }
