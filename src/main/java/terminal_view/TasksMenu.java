@@ -2,7 +2,6 @@ package terminal_view;
 
 import controller.Response;
 import controller.TasksMenuController;
-import model.Task;
 import utilities.ConsoleHelper;
 
 public class TasksMenu implements TerminalView {

@@ -2,9 +2,11 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class Task implements Serializable {
     private static ArrayList<Task> allTask = new ArrayList<>();
@@ -17,6 +19,8 @@ public class Task implements Serializable {
     private LocalDateTime timeOfDeadline;
     private ArrayList<User> assignedUsers;
     private ArrayList<Comment> comments;
+    private Board board;
+    private String category;
 
     public Task(String title, Priority priority) {
         this.id = idCounter++;
@@ -25,8 +29,10 @@ public class Task implements Serializable {
         this.priority = priority;
         this.timeOfCreation = LocalDateTime.now();
         this.timeOfDeadline = null;
-        assignedUsers = new ArrayList<>();
-        comments = new ArrayList<>();
+        this.assignedUsers = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.board = null;
+        this.category = null;
     }
 
     public static ArrayList<Task> getAllTask() {
@@ -61,6 +67,22 @@ public class Task implements Serializable {
         this.description = description;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public boolean isAddedToBoard(Board board) {
+        return this.board.getId() == board.getId();
+    }
+
+    public boolean hasPassedDeadline() {
+        return this.timeOfDeadline.isBefore(LocalDateTime.now());
+    }
+
     public String getPriority() {
         if (this.priority.equals(Priority.LOWEST))
             return "Lowest";
@@ -89,8 +111,32 @@ public class Task implements Serializable {
         }
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+        this.category = board.getFirstCategory();
+    }
+
+    public void moveToNextCategory() {
+        if (this.category.equalsIgnoreCase("done"))
+            return;
+        this.category = this.board.getNextCategory(this.category);
+    }
+
+    public boolean isDone() {
+        return this.category.equalsIgnoreCase("done");
+    }
+
     public LocalDateTime getTimeOfCreation() {
         return this.timeOfCreation;
+    }
+
+    public String getTimeOfCreationFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+        return this.timeOfCreation.format(formatter);
     }
 
     public void setTimeOfCreation(LocalDateTime timeOfCreation) {
@@ -99,6 +145,11 @@ public class Task implements Serializable {
 
     public LocalDateTime getTimeOfDeadline() {
         return timeOfDeadline;
+    }
+
+    public String getTimeOfDeadlineFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+        return this.timeOfDeadline.format(formatter);
     }
 
     public void setTimeOfDeadline(LocalDateTime timeOfDeadline) {
@@ -119,6 +170,17 @@ public class Task implements Serializable {
 
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getAssignedUsersFormatted() {
+        this.assignedUsers.sort(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getUsername().compareTo(o2.getUsername());
+            }
+        });
+        return this.assignedUsers.stream().map(User::getUsername)
+                .collect(Collectors.joining(", "));
     }
 
     public static Task getTask(int id) {
