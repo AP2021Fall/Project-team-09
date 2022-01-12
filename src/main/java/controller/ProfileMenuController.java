@@ -91,13 +91,10 @@ public class ProfileMenuController {
     public Response showTeams() {
         tries = 0;
         // Todo respond according to user type [MEMBER/LEADER]
-        Team[] teams = UserController.loggedUser.getTeams();
+        ArrayList<Team> teams = UserController.loggedUser.getTeams();
         StringBuilder response = new StringBuilder();
-        String[] teamNames = new String[teams.length];
-        for (int i = 0; i < teams.length; i++) {
-            Team team = teams[i];
+        for (Team team : teams) {
             response.append(team.getName()).append(",");
-            teamNames[i] = team.getName();
         }
         if (response.length() > 0)
             response = new StringBuilder(response.substring(0, response.length() - 1));

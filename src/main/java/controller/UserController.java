@@ -13,8 +13,6 @@ public class UserController {
         loggedUser = null;
     }
 
-
-
     public static Response clearNotifications() {
         loggedUser.clearNotifications();
         return new Response("Notifications cleared!",true);

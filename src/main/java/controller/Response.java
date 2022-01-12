@@ -6,10 +6,10 @@ public class Response {
     private Object object;
 
     public Response(String message, boolean success) {
-        this(message,success,null);
+        this(message, success, null);
     }
 
-    public Response(String message, boolean success,Object object) {
+    public Response(String message, boolean success, Object object) {
         this.message = message;
         this.success = success;
         this.object = object;

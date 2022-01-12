@@ -94,4 +94,27 @@ public class ArgumentManager {
                 return false;
         return true;
     }
+
+    public boolean isCommandIgnoreFlag(String input) {
+        if (!this.command.toLowerCase().startsWith(input))
+            return false;
+        String[] commands = this.command.split(" ");
+
+        return commands.length >= 3;
+    }
+
+    public String extractValueIgnoreFlag(String input) {
+        String[] commands = this.command.split(" ");
+        return commands[2];
+    }
+
+    @Override
+    public String toString() {
+        return "ArgumentManager{" +
+                "input='" + input + '\'' +
+                ", arguments=" + arguments +
+                ", contains=" + contains +
+                ", command='" + command + '\'' +
+                '}';
+    }
 }

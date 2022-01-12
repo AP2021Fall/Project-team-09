@@ -1,6 +1,5 @@
 package model;
 
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class User implements Serializable {
 
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<LocalDate> logs = new ArrayList<>();
-    private ArrayList<Team> teams = new ArrayList<>();
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<String> notifications;
 
@@ -173,11 +171,6 @@ public class User implements Serializable {
         return user;
     }
 
-    public Team[] getTeams() {
-        return teams.toArray(new Team[0]);
-    }
-
-
     public void logLogin() {
         logs.add(LocalDate.now());
     }
@@ -209,6 +202,15 @@ public class User implements Serializable {
 
     public void clearNotifications() {
         notifications.clear();
+    }
+
+    public ArrayList<Team> getTeams() {
+        ArrayList<Team> teams = new ArrayList<>();
+        for (Team team : Team.getTeams()) {
+            if (team.hasMember(this))
+                teams.add(team);
+        }
+        return teams;
     }
 
     @Override
