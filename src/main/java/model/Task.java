@@ -29,6 +29,7 @@ public class Task implements Serializable {
         this.id = idCounter++;
         this.title = title;
         this.description = "";
+        this.priority = Priority.LOW;
         this.status = Status.IN_PROGRESS;
         this.timeOfCreation = LocalDateTime.now();
         this.startTime = startTime;
@@ -205,6 +206,11 @@ public class Task implements Serializable {
         return this.timeOfCreation.format(formatter);
     }
 
+    public String getStartTimeFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+        return this.startTime.format(formatter);
+    }
+
     public void setTimeOfCreation(LocalDateTime timeOfCreation) {
         this.timeOfCreation = timeOfCreation;
     }
@@ -279,6 +285,7 @@ public class Task implements Serializable {
                 .append("Title: ").append(this.title).append("\n")
                 .append("Description: ").append(this.description).append("\n")
                 .append("Priority: ").append(this.getPriority()).append("\n")
+                .append("Date and time of creation: ").append(this.timeOfCreation).append("\n")
                 .append("Date and time of creation: ").append(this.timeOfCreation).append("\n")
                 .append("Date and time of deadline: ").append(this.timeOfDeadline).append("\n")
                 .append("Assigned users: ").append("\n");

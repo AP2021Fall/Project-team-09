@@ -188,10 +188,10 @@ public class Team implements Serializable {
         this.tasks.sort(new Comparator<Task>() {
             @Override
             public int compare(Task o1, Task o2) {
-                LocalDateTime dead1 = o1.getTimeOfCreation();
-                LocalDateTime dead2 = o2.getTimeOfCreation();
+                LocalDateTime dead1 = o1.getTimeOfDeadline();
+                LocalDateTime dead2 = o2.getTimeOfDeadline();
 
-                return dead1.compareTo(dead2);
+                return dead2.compareTo(dead1);
             }
         });
 
@@ -199,13 +199,17 @@ public class Team implements Serializable {
 
         for (Task task : this.tasks) {
             result.append(String.format("%d- title: %s," +
+                                    " id: %d," +
                                     " created: %s," +
+                                    " start time: %s," +
                                     " deadline: %s," +
                                     " status %s," +
                                     " priority: %s",
                             index++,
                             task.getTitle(),
+                            task.getId(),
                             task.getTimeOfCreationFormatted(),
+                            task.getStartTimeFormatted(),
                             task.getTimeOfDeadlineFormatted(),
                             task.getStatus().name(),
                             task.getPriority()))
@@ -215,6 +219,9 @@ public class Team implements Serializable {
             for (User user : task.getAssignedUsers()) {
                 result.append(user.getUsername()).append("\n");
             }
+
+            if (task.getAssignedUsers().isEmpty())
+                result.append("No use is assigned to this task!");
         }
         return result.toString();
     }

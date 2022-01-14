@@ -3,6 +3,7 @@ package terminal_view;
 import controller.AdminController;
 import controller.NotificationController;
 import controller.Response;
+import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
 public class AdminMenu implements TerminalView {
@@ -21,7 +22,7 @@ public class AdminMenu implements TerminalView {
     private final String COMMAND_NOTIFICATION_TEAM =
             "send --notification [notification] --team [team name]";
     private final String COMMAND_CHANGE_ROLE =
-            "change role --user [username] --role [role]";
+            "change role --username [username] --role [role]";
     private final String COMMAND_SHOW_PENDING =
             "show --pendingTeams";
     private final String COMMAND_ACCEPT_TEAMS =
@@ -92,7 +93,7 @@ public class AdminMenu implements TerminalView {
             sendNotification(input);
         } else if (input.isCommandFollowArg(SEND, NOTIFICATION, TEAM)) {
             sendNotificationToTeam(input);
-        } else if (input.isCommandFollowArg(CHANGE_ROLE, USER, ROLE)) {
+        } else if (input.isCommandFollowArg(CHANGE_ROLE, USERNAME, ROLE)) {
             changeRole(input);
         } else if (input.isCommandFollowArg(SHOW, PENDING_TEAMS)) {
             showPendingTeams();
@@ -104,55 +105,91 @@ public class AdminMenu implements TerminalView {
     }
 
     private void sendNotification(ArgumentManager input) {
-        Response response = NotificationController.getInstance()
-                .sendNotificationToUser(input.get(NOTIFICATION), input.get(USER));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = NotificationController.getInstance()
+                    .sendNotificationToUser(input.get(NOTIFICATION), input.get(USER));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void sendNotificationAll(ArgumentManager input) {
-        Response response = NotificationController.getInstance()
-                .sendNotificationToAll(input.get(NOTIFICATION));
-        System.out.println(response.getMessage());
+        try {
+            Response response = NotificationController.getInstance()
+                    .sendNotificationToAll(input.get(NOTIFICATION));
+            System.out.println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void sendNotificationToTeam(ArgumentManager input) {
-        Response response = NotificationController.getInstance()
-                .sendNotificationToTeam(input.get(NOTIFICATION), input.get(TEAM));
-        System.out.println(response.getMessage());
+        try {
+            Response response = NotificationController.getInstance()
+                    .sendNotificationToTeam(input.get(NOTIFICATION), input.get(TEAM));
+            System.out.println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void banUser(ArgumentManager input) {
-        Response response = AdminController.getInstance()
-                .banUser(input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance()
+                    .banUser(input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showUserProfile(ArgumentManager input) {
-        Response response = AdminController.getInstance().getProfile(input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance().getProfile(input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void changeRole(ArgumentManager input) {
-        Response response = AdminController.getInstance()
-                .changeRole(input.get(USERNAME), input.get(ROLE));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance()
+                    .changeRole(input.get(USERNAME), input.get(ROLE));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showPendingTeams() {
-        Response response = AdminController.getInstance()
-                .getPendingTeams();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance()
+                    .getPendingTeams();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void acceptPendingTeams(ArgumentManager input) {
-        Response response = AdminController.getInstance()
-                .acceptPendingTeams(input.get(TEAMS).split(" "));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance()
+                    .acceptPendingTeams(input.get(TEAMS).split(" "));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void rejectPendingTeams(ArgumentManager input) {
-        Response response = AdminController.getInstance()
-                .rejectPendingTeams(input.get(TEAMS).split(" "));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = AdminController.getInstance()
+                    .rejectPendingTeams(input.get(TEAMS).split(" "));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 }
