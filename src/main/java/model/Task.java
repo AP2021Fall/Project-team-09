@@ -4,6 +4,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -16,19 +17,22 @@ public class Task implements Serializable {
     private String description;
     private Priority priority;
     private LocalDateTime timeOfCreation;
+    private LocalDateTime startTime;
     private LocalDateTime timeOfDeadline;
     private ArrayList<User> assignedUsers;
     private ArrayList<Comment> comments;
     private Board board;
     private String category;
+    private Status status;
 
-    public Task(String title, Priority priority) {
+    public Task(String title, LocalDateTime startTime, LocalDateTime timeOfDeadline) {
         this.id = idCounter++;
         this.title = title;
         this.description = "";
-        this.priority = priority;
+        this.status = Status.IN_PROGRESS;
         this.timeOfCreation = LocalDateTime.now();
-        this.timeOfDeadline = null;
+        this.startTime = startTime;
+        this.timeOfDeadline = timeOfDeadline;
         this.assignedUsers = new ArrayList<>();
         this.comments = new ArrayList<>();
         this.board = null;
@@ -59,12 +63,72 @@ public class Task implements Serializable {
         this.title = title;
     }
 
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static void addTask(Task task) {
+        allTask.add(task);
+    }
+
+    public static String getDeadlines(User user) {
+        StringBuilder result = new StringBuilder();
+
+        if (allTask.isEmpty())
+            return "no deadlines";
+
+        for (Task task : allTask)
+            if (task.isInAssignedUsers(user.getUsername()) != null) {
+                if (task.isDone() || task.hasPassedDeadline())
+                    continue;
+                long remainingDays = LocalDateTime.now()
+                        .until(task.getTimeOfDeadline(), ChronoUnit.DAYS);
+
+                String state = "";
+                if (remainingDays > 10)
+                    state = "*";
+                else if (remainingDays >= 4 && remainingDays <= 10)
+                    state = "**";
+                else
+                    state = "***";
+                result.append(String.format("%s%s__remaining days: %d__Team: %s",
+                        state,
+                        task.getTimeOfDeadlineFormatted(),
+                        remainingDays,
+                        getTeamName(task.getId())));
+            }
+        return result.toString();
+    }
+
+    public static String getTeamName(int taskId) {
+        Team team = Team.getTeamOfTask(taskId);
+        if (team == null)
+            return null;
+        return team.getName();
     }
 
     public String getCategory() {
@@ -76,6 +140,8 @@ public class Task implements Serializable {
     }
 
     public boolean isAddedToBoard(Board board) {
+        if(this.board == null)
+            return false;
         return this.board.getId() == board.getId();
     }
 
@@ -185,20 +251,20 @@ public class Task implements Serializable {
 
     public static Task getTask(int id) {
         for (Task task : allTask)
-            if(task.getId() == id)
+            if (task.getId() == id)
                 return task;
         return null;
     }
 
     public User isInAssignedUsers(String username) {
         for (User user : assignedUsers)
-            if(user.getUsername().equals(username))
+            if (user.getUsername().equals(username))
                 return user;
         return null;
     }
 
     public void removeFromAssignedUsers(User user) {
-        if(this.assignedUsers.contains(user))
+        if (this.assignedUsers.contains(user))
             assignedUsers.remove(user);
     }
 
@@ -232,5 +298,9 @@ public class Task implements Serializable {
 
     enum Priority {
         LOWEST, LOW, HIGH, HIGHEST;
+    }
+
+    enum Status {
+        IN_PROGRESS, FAILED, DONE
     }
 }

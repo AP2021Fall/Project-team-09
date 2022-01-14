@@ -251,6 +251,11 @@ public class Team implements Serializable {
         return new ArrayList<>(this.teamMembers.keySet());
     }
 
+    public void sendNotification(String body) {
+        for (User user : this.teamMembers.keySet())
+            user.sendNotification(body);
+    }
+
     public void addMember(User user) {
         this.teamMembers.put(user, 0);
         this.membersStatus.put(user, MemberStatus.ACTIVE);

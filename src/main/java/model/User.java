@@ -15,7 +15,6 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String email;
-    private int score = 0;
     private Type type;
 
     private static ArrayList<User> allUsers = new ArrayList<>();
@@ -28,7 +27,8 @@ public class User implements Serializable {
         this.username = username;
         this.email = email;
         this.password = password;
-        type = Type.teamMember;
+        this.type = Type.teamMember;
+        this.notifications = new ArrayList<>();
     }
 
     public void setPassword(String newPassword) {
@@ -101,6 +101,10 @@ public class User implements Serializable {
 
     public ArrayList<LocalDate> getLogs() {
         return logs;
+    }
+
+    public void sendNotification(String notification) {
+        this.notifications.add(notification);
     }
 
     public static User getAdmin() {
@@ -226,14 +230,14 @@ public class User implements Serializable {
     public ArrayList<Team> getMyTeams() {
         ArrayList<Team> teams = new ArrayList<>();
         for (Team team : Team.getTeams())
-            if(team.getLeader().getUsername().equalsIgnoreCase(this.username))
+            if (team.getLeader().getUsername().equalsIgnoreCase(this.username))
                 teams.add(team);
         return teams;
     }
 
     public Team getMyTeam(String teamName) {
         for (Team team : Team.getTeams())
-            if(team.getName().equalsIgnoreCase(teamName))
+            if (team.getName().equalsIgnoreCase(teamName))
                 return team;
         return null;
     }
@@ -244,8 +248,7 @@ public class User implements Serializable {
                 "Username: " + username + "\n" +
                 "Email: " + email + "\n" +
                 "Birthday: " + birthday + "\n" +
-                "Role: " + type.toString() + "\n" +
-                "Score: " + score;
+                "Role: " + type.toString() + "\n";
     }
 
     enum Type {
@@ -262,7 +265,5 @@ public class User implements Serializable {
             else
                 return null;
         }
-
-
     }
 }
