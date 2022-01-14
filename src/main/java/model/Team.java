@@ -113,6 +113,26 @@ public class Team implements Serializable {
         this.boards.remove(board);
     }
 
+    public boolean isPending() {
+        return this.status == Status.PENDING;
+    }
+
+    public void accept() {
+        this.status = Status.ACCEPTED;
+    }
+
+    public void reject() {
+        this.status = Status.REJECTED;
+    }
+
+    public static ArrayList<Team> getPendingTeams() {
+        ArrayList<Team> pending = new ArrayList<>();
+        for (Team team : teams)
+            if (team.isPending())
+                pending.add(team);
+        return pending;
+    }
+
     public Board getBoardByName(String name) {
         for (Board board : this.boards)
             if (board.getName().equalsIgnoreCase(name))
@@ -313,7 +333,7 @@ public class Team implements Serializable {
     public String getScoreboard() {
         List<User> members = new ArrayList<>(this.teamMembers.keySet());
 
-        if(members.isEmpty())
+        if (members.isEmpty())
             return "There is no member in this team!";
 
         members.sort(new Comparator<User>() {
@@ -346,7 +366,7 @@ public class Team implements Serializable {
     }
 
     private enum Status {
-        PENDING, ACCEPTED
+        PENDING, ACCEPTED, REJECTED
     }
 
     private enum MemberStatus {
