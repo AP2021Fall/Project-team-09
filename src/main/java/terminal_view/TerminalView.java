@@ -6,6 +6,8 @@ import controller.SaveAndLoadController;
 import controller.UserController;
 import utilities.ConsoleHelper;
 
+import java.util.Calendar;
+
 public interface TerminalView {
 
     String BACK = "back";
@@ -18,6 +20,12 @@ public interface TerminalView {
     String ENTER_TEAM = "enter menu team";
     String ENTER_TASKS = "enter menu tasks";
     String ENTER_NOTIFICATIONS = "enter menu notifications";
+    String ENTER_CALENDAR = "enter menu calendar";
+
+    String SHOW = "show";
+    String TEAMS = "teams";
+    String TEAM = "team";
+    String CREATE = "create";
 
     String text();
 
@@ -27,8 +35,9 @@ public interface TerminalView {
         consoleHelper.println(text());
 
         while (true) {
-            if (forceExit())
+            if (forceExit()) {
                 return;
+            }
             ArgumentManager argumentManager = ArgumentManager.readInput();
             if (argumentManager.isCommand(BACK))
                 return;
@@ -46,6 +55,8 @@ public interface TerminalView {
                     enterNotificationsMenu();
                 } else if (argumentManager.isCommand(ENTER_TASKS)) {
                     enterTasksMenu();
+                } else if (argumentManager.isCommand(ENTER_CALENDAR)) {
+                    enterCalendarMenu();
                 } else if (argumentManager.isCommand("enter menu admin")) {
                     if (UserController.getLoggedUser().isAdmin()) {
                         enterAdminMenu();
@@ -60,6 +71,8 @@ public interface TerminalView {
         }
     }
 
+    void showHelp();
+
     default void enterTasksMenu() {
         new TasksMenu().show();
     }
@@ -72,14 +85,16 @@ public interface TerminalView {
         return UserController.getLoggedUser() == null;
     }
 
-    void showHelp();
-
     default void enterTeamMenu() {
         new TeamMenu().show();
     }
 
     default void enterProfileMenu() {
         new ProfileMenu().show();
+    }
+
+    default void enterCalendarMenu() {
+        new CalendarMenu().show();
     }
 
     default void enterAdminMenu() {
