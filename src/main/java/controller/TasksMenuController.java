@@ -23,6 +23,8 @@ public class TasksMenuController {
             "There is not any user with this username %s!";
     private final String WARN_FAILED =
             "Operation failed!";
+    private final String WARN_404_TASK =
+            "Task with id %d not found!";
 
     private static TasksMenuController tasksMenuController = null;
 
@@ -32,75 +34,108 @@ public class TasksMenuController {
         return tasksMenuController;
     }
 
-    public Response editTaskTitle(int id, String title) {
-        Task task = Task.getTask(id);
+    public Response editTaskTitle(String id, String title) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            task.setTitle(title);
-            return new Response(SUCCESS_TITLE_UPDATE, true);
-        }
-        return new Response(WARN_FAILED, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+        task.setTitle(title);
+        return new Response(SUCCESS_TITLE_UPDATE, false);
     }
 
-    public Response editTaskDescription(int id, String description) {
-        Task task = Task.getTask(id);
+    public Response editTaskDescription(String id, String description) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            task.setDescription(description);
-            return new Response(SUCCESS_DES_UPDATE, true);
-        }
-        return new Response(WARN_FAILED, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+        task.setDescription(description);
+        return new Response(SUCCESS_DES_UPDATE, false);
     }
 
-    public Response editTaskPriority(int id, String priority) {
-        Task task = Task.getTask(id);
+    public Response editTaskPriority(String id, String priority) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            task.setPriority(priority);
-            return new Response(SUCCESS_PRIO_UPDATE, true);
-        }
-        return new Response(WARN_FAILED, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+        task.setPriority(priority);
+        return new Response(SUCCESS_PRIO_UPDATE, true);
     }
 
-    public Response editTaskDeadline(int id, String deadline) {
-        Task task = Task.getTask(id);
+    public Response editTaskDeadline(String id, String deadline) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            LocalDateTime deadDateTime =
-                    isTimeValid(task.getTimeOfCreation(), deadline);
-            if (deadDateTime == null)
-                return new Response(WARN_DEAD_INVALID, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
-            task.setTimeOfDeadline(deadDateTime);
-            return new Response(SUCCESS_DEAD_UPDATE, true);
-        }
-        return new Response(WARN_FAILED, false);
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+
+        LocalDateTime deadDateTime =
+                isTimeValid(task.getTimeOfCreation(), deadline);
+
+        if (deadDateTime == null)
+            return new Response(WARN_DEAD_INVALID, false);
+
+        task.setTimeOfDeadline(deadDateTime);
+        return new Response(SUCCESS_DEAD_UPDATE, true);
     }
 
-    public Response addToAssignedUsers(int id, String username) {
-        Task task = Task.getTask(id);
+    public Response addToAssignedUsers(String id, String username) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            User user = User.getUser(username);
-            if(user == null)
-                return new Response(WARN_404_USER, false);
-            task.assignUser(user);
-            return new Response(SUCCESS_USER_ADD, true);
-        }
-        return new Response(WARN_FAILED, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+        User user = User.getUser(username);
+        if (user == null)
+            return new Response(WARN_404_USER, false);
+
+        task.assignUser(user);
+        return new Response(SUCCESS_USER_ADD, true);
     }
 
-    public Response removeAssignedUsers(int id, String username) {
-        Task task = Task.getTask(id);
+    public Response removeAssignedUsers(String id, String username) {
+        int taskId = getInt(id);
 
-        if (task != null) {
-            User user = task.isInAssignedUsers(username);
-            if(user == null)
-                return new Response(WARN_404_USER_LIST, false);
-            task.removeFromAssignedUsers(user);
-            return new Response(SUCCESS_USER_REMOVE, true);
-        }
-        return new Response(WARN_FAILED, false);
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), true);
+
+        User user = task.isInAssignedUsers(username);
+        if (user == null)
+            return new Response(WARN_404_USER_LIST, false);
+        task.removeFromAssignedUsers(user);
+        return new Response(SUCCESS_USER_REMOVE, true);
     }
 
     private LocalDateTime isTimeValid(LocalDateTime creationDateTime, String deadline) {
@@ -118,5 +153,15 @@ public class TasksMenuController {
         } catch (DateTimeParseException exception) {
             return null;
         }
+    }
+
+    private int getInt(String input) {
+        int out = -1;
+        try {
+            out = Integer.parseInt(input);
+        } catch (Exception e) {
+            return out;
+        }
+        return out;
     }
 }

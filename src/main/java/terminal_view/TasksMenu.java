@@ -74,41 +74,41 @@ public class TasksMenu implements TerminalView {
 
     private void editTaskTitle(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .editTaskTitle(Integer.parseInt(input.get(ID)), input.get(TITLE));
+                .editTaskTitle(input.get(ID), input.get(TITLE));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void editTaskDescription(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .editTaskDescription(Integer.parseInt(input.get(ID)),
+                .editTaskDescription(input.get(ID),
                         input.get(DESCRIPTION));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void editTaskPriority(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .editTaskPriority(Integer.parseInt(input.get(ID)),
+                .editTaskPriority(input.get(ID),
                         input.get(PRIORITY));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void editTaskDeadline(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .editTaskDeadline(Integer.parseInt(input.get(ID)),
+                .editTaskDeadline(input.get(ID),
                         input.get(DEADLINE));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void addToAssignedUsers(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .addToAssignedUsers(Integer.parseInt(input.get(ID)),
+                .addToAssignedUsers(input.get(ID),
                         input.get(ASSIGNED_USERS));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void removeFromAssignedUsers(ArgumentManager input) {
         Response response = TasksMenuController.getInstance()
-                .removeAssignedUsers(Integer.parseInt(input.get(ID)),
+                .removeAssignedUsers(input.get(ID),
                         input.get(ASSIGNED_USERS));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
