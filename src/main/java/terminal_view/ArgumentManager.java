@@ -62,7 +62,7 @@ public class ArgumentManager {
     }
 
     public boolean contains(String input) {
-        return arguments.containsKey(input.toLowerCase());
+        return contains.contains(input.toLowerCase());
     }
 
     public static ArgumentManager readInput() {
@@ -89,9 +89,10 @@ public class ArgumentManager {
     public boolean isCommandFollowArg(String input1, String... input2) {
         if (!this.command.equalsIgnoreCase(input1))
             return false;
-        for (String s : input2)
+        for (String s : input2) {
             if (!contains(s.toLowerCase()))
                 return false;
+        }
         return true;
     }
 
