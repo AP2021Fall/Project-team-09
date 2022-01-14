@@ -48,4 +48,11 @@ public class NotificationController {
         team.sendNotification(body);
         return new Response(SUCCESS_NOTIFICATION_SENT, true);
     }
+
+    public Response sendNotificationToAll(String notification) {
+        for (User user : User.getAllUsers()) {
+            user.sendNotification(notification);
+        }
+        return new Response(SUCCESS_NOTIFICATION_SENT, true);
+    }
 }

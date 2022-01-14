@@ -55,21 +55,4 @@ public class AdminController {
             return new Response(WARN_WRONG_ROLE, false);
         }
     }
-
-    public Response sendNotificationToAll(String notification) {
-        for (User user : User.getAllUsers()) {
-            user.sendNotification(notification);
-        }
-        return new Response(SUCCESS_NOTIFICATION_SENT, true);
-    }
-
-    public Response sendNotification(String username, String notification) {
-        User user = User.getUser(username);
-
-        if (user == null)
-            return new Response(WARN_404_USER, false);
-
-        user.sendNotification(notification);
-        return new Response(SUCCESS_NOTIFICATION_SENT, true);
-    }
 }

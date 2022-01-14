@@ -1,6 +1,7 @@
 package terminal_view;
 
 import controller.AdminController;
+import controller.NotificationController;
 import controller.Response;
 import utilities.ConsoleHelper;
 
@@ -17,6 +18,8 @@ public class AdminMenu implements TerminalView {
             "send --notification [notification] --all";
     private final String COMMAND_NOTIFICATION_USER =
             "send --notification [notification] --user [username]";
+    private final String COMMAND_NOTIFICATION_TEAM =
+            "send --notification [notification] --team [team name]";
     private final String COMMAND_CHANGE_ROLE =
             "change role --user [username] --role [role]";
 
@@ -38,6 +41,8 @@ public class AdminMenu implements TerminalView {
             "all";
     private final String USER =
             "user";
+    private final String TEAM =
+            "team";
 
     @Override
     public String text() {
@@ -51,6 +56,7 @@ public class AdminMenu implements TerminalView {
                 .join(COMMAND_BAN_USER)
                 .join(COMMAND_NOTIFICATION_ALL)
                 .join(COMMAND_NOTIFICATION_USER)
+                .join(COMMAND_NOTIFICATION_TEAM)
                 .join(COMMAND_CHANGE_ROLE)
                 .printAll();
     }
@@ -65,20 +71,28 @@ public class AdminMenu implements TerminalView {
             sendNotificationAll(input);
         } else if (input.isCommandFollowArg(SEND, NOTIFICATION, USER)) {
             sendNotification(input);
+        } else if (input.isCommandFollowArg(SEND, NOTIFICATION, TEAM)) {
+            sendNotificationToTeam(input);
         } else if (input.isCommandFollowArg(CHANGE_ROLE, USER, ROLE)) {
             changeRole(input);
         }
     }
 
     private void sendNotification(ArgumentManager input) {
-        Response response = AdminController.getInstance()
-                .sendNotification(input.get(USER), input.get(NOTIFICATION));
+        Response response = NotificationController.getInstance()
+                .sendNotificationToUser(input.get(NOTIFICATION), input.get(USER));
         ConsoleHelper.getInstance().println(response.getMessage());
     }
 
     private void sendNotificationAll(ArgumentManager input) {
-        Response response = AdminController.getInstance()
+        Response response = NotificationController.getInstance()
                 .sendNotificationToAll(input.get(NOTIFICATION));
+        System.out.println(response.getMessage());
+    }
+
+    private void sendNotificationToTeam(ArgumentManager input) {
+        Response response = NotificationController.getInstance()
+                .sendNotificationToTeam(input.get(NOTIFICATION), input.get(TEAM));
         System.out.println(response.getMessage());
     }
 
