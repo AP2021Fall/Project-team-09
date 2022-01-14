@@ -1,7 +1,7 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +18,7 @@ public class User implements Serializable {
     private Type type;
 
     private static ArrayList<User> allUsers = new ArrayList<>();
-    private ArrayList<LocalDate> logs = new ArrayList<>();
+    private ArrayList<LocalDateTime> logs = new ArrayList<>();
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<String> notifications;
 
@@ -99,7 +99,7 @@ public class User implements Serializable {
         return notifications;
     }
 
-    public ArrayList<LocalDate> getLogs() {
+    public ArrayList<LocalDateTime> getLogs() {
         return logs;
     }
 
@@ -177,7 +177,7 @@ public class User implements Serializable {
     }
 
     public void logLogin() {
-        logs.add(LocalDate.now());
+        logs.add(LocalDateTime.now());
     }
 
     public static void setAdmin(User admin) {

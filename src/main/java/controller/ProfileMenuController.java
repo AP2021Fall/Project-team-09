@@ -4,6 +4,7 @@ import model.Team;
 import model.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,10 +135,10 @@ public class ProfileMenuController {
     }
 
     public Response getLogs() {
-        ArrayList<LocalDate> dates = UserController.loggedUser.getLogs();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        ArrayList<LocalDateTime> dates = UserController.loggedUser.getLogs();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss");
         String answer = "";
-        for (LocalDate date : dates) {
+        for (LocalDateTime date : dates) {
             answer += date.format(formatter) + "\n";
         }
         return new Response(answer, true, dates);

@@ -39,6 +39,7 @@ public interface TerminalView {
                 return;
             }
             ArgumentManager argumentManager = ArgumentManager.readInput();
+            System.out.println(argumentManager);
             if (argumentManager.isCommand(BACK))
                 return;
             else if (argumentManager.isCommand(HELP)) {

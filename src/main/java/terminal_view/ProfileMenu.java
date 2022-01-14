@@ -6,13 +6,13 @@ import controller.Response;
 import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
+import java.util.ArrayList;
+
 public class ProfileMenu implements TerminalView {
 
     private final String WELCOME_MESSAGE =
             "Welcome to profile menu";
 
-    private final String PROFILE_CHANGE_COMMAND =
-            "profile change";
 
     private final String CHANGE_PASS_COMMAND =
             "profile change --oldPassword [current_password] --newPassword [new_password]";
@@ -30,11 +30,13 @@ public class ProfileMenu implements TerminalView {
             "profile --show notifications";
 
     private final String PROFILE = "profile";
-    private final String CHANGE = "change";
+    private final String PROFILE_CHANGE =
+            "profile change";
     private final String USERNAME = "username";
     private final String SHOW = "show";
     private final String TEAM_NAME = "team name";
     private final String SHOW_TEAMS = "showteams";
+    private final String SHOW_TEAM = "showteam";
     private final String MY_PROFILE = "myprofile";
     private final String LOGS = "logs";
     private final String NOTIFICATIONS = "notifications";
@@ -62,22 +64,24 @@ public class ProfileMenu implements TerminalView {
 
     @Override
     public void parse(ArgumentManager input) {
-        if (input.isCommandFollowArg(PROFILE_CHANGE_COMMAND, OLD_PASSWORD, NEW_PASSWORD)) {
+        if (input.isCommandFollowArg(PROFILE_CHANGE, OLD_PASSWORD, NEW_PASSWORD)) {
+            System.out.println("profile change");
             changePassword(input);
-        } else if (input.isCommandFollowArg(PROFILE_CHANGE_COMMAND, USERNAME)) {
+        } else if (input.isCommandFollowArg(PROFILE_CHANGE, USERNAME)) {
+            System.out.println("change username");
             changeUsername(input);
-        } else if (input.isCommandFollowCommand(PROFILE, SHOW_TEAMS)) {
+        } else if (input.isCommandFollowArg(PROFILE, SHOW_TEAMS)) {
+            System.out.println("teams");
             showTeams();
-        } else if (input.isCommandFollowArg(PROFILE, SHOW_TEAM_COMMAND)) {
+        } else if (input.isCommandFollowArg(PROFILE, SHOW_TEAM)) {
+            System.out.println("show team");
             showTeam(input);
-        } else if (input.isCommandFollowCommand(PROFILE, SHOW, MY_PROFILE)) {
+        } else if (input.isCommandFollowArg(PROFILE, SHOW, MY_PROFILE)) {
+            System.out.println("show profile");
             showMyProfile();
-        } else if (input.isCommandFollowArg(PROFILE, SHOW)
-                && input.isCommandFollowCommand(PROFILE, LOGS)) {
-            showLogs();
-        } else if (input.isCommandFollowCommand(PROFILE, SHOW)
-                && input.isCommandFollowCommand(PROFILE, NOTIFICATIONS)) {
-            showNotifications();
+        } else if (input.isCommandFollowArg(PROFILE, SHOW)) {
+            System.out.println("show logs");
+            show(input);
         }
     }
 
@@ -88,7 +92,6 @@ public class ProfileMenu implements TerminalView {
             ConsoleHelper.getInstance().println(response.getMessage());
             if (response.isSuccess())
                 LoginController.getInstance().logout();
-            System.out.println("dont know");
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -105,28 +108,63 @@ public class ProfileMenu implements TerminalView {
     }
 
     private void showTeams() {
-        Response response = ProfileMenuController.getInstance().showTeams();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance().showTeams();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
     }
 
     private void showTeam(ArgumentManager input) {
-        Response response = ProfileMenuController.getInstance()
-                .showTeam(input.get(TEAM_NAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance()
+                    .showTeam(input.get(TEAM_NAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
     }
 
     private void showMyProfile() {
-        Response response = ProfileMenuController.getInstance().getMyProfile();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance().getMyProfile();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
     }
 
     private void showLogs() {
-        Response response = ProfileMenuController.getInstance().getLogs();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance().getLogs();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
     }
 
     private void showNotifications() {
-        Response response = ProfileMenuController.getInstance().getNotifications();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance().getNotifications();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
+    }
+
+    private void show(ArgumentManager input) {
+        try {
+            switch (input.get(SHOW)) {
+                case LOGS:
+                    showLogs();
+                    break;
+                case NOTIFICATIONS:
+                    showNotifications();
+                    break;
+            }
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());;
+        }
     }
 }
