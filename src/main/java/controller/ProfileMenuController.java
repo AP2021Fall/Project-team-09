@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ProfileMenuController {
 
@@ -24,6 +25,10 @@ public class ProfileMenuController {
     private final String WARN_WEAK_PASS =
             "Please Choose A strong Password (Containing at least 8 characters including 1 digit " +
                     "and 1 Capital Letter)";
+    private final String WARN_404_TEAMS =
+            "No teams available!";
+    private final String WARN_404_NOTIFICATIONS =
+            "No notifications available!";
 
     private final String WARN_LENGTH =
             "Your new username must include at least 4 characters!";
@@ -37,7 +42,7 @@ public class ProfileMenuController {
             "Team not found!";
 
     private final String USERNAME_REGEXP =
-            "[a-zA-Z0-9_]";
+            "[a-zA-Z0-9_]{4,}";
 
     private static ProfileMenuController controller = null;
     private static int tries = 0;
@@ -50,7 +55,7 @@ public class ProfileMenuController {
 
     public Response changePassword(String oldPassword, String newPassword) {
         User user = UserController.loggedUser;
-        if (tries == 2)
+        if (tries == 1)
             LoginController.getInstance().logout();
         if (user.getPassword().equals(oldPassword)) {
             if (user.passwordIntHistory(newPassword)) {
@@ -91,8 +96,25 @@ public class ProfileMenuController {
 
     public Response showTeams() {
         tries = 0;
-        // Todo respond according to user type [MEMBER/LEADER]
-        ArrayList<Team> teams = UserController.loggedUser.getTeams();
+
+        User user = UserController.getLoggedUser();
+        ArrayList<Team> teams;
+        if (user.isTeamLeader()) {
+            teams = user.getMyTeams();
+        } else {
+            teams = user.getTeams();
+        }
+
+        if (teams.isEmpty())
+            return new Response(WARN_404_TEAMS, false);
+
+        teams.sort(new Comparator<Team>() {
+            @Override
+            public int compare(Team o1, Team o2) {
+                return o2.getTimeOfCreation().compareTo(o1.getTimeOfCreation());
+            }
+        });
+
         StringBuilder response = new StringBuilder();
         for (Team team : teams) {
             response.append(team.getName()).append(",");
@@ -112,11 +134,19 @@ public class ProfileMenuController {
         String response = "";
         response += team.getName() + "\n";
         response += team.getLeader().getUsername() + "\n";
-        if (team.getLeader() != UserController.loggedUser) {
+        if (team.getLeader() != UserController.getLoggedUser()) {
             response += UserController.getLoggedUser().getUsername() + "\n";
         }
+
         ArrayList<User> members = team.getMembers();
-//        members.sort();
+
+        members.sort(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o2.getUsername().compareTo(o1.getUsername());
+            }
+        });
+
         for (User user : members) {
             response += user.getUsername() + "\n";
         }
@@ -129,13 +159,21 @@ public class ProfileMenuController {
     }
 
     public Response getMyProfile() {
-        String answer = UserController.loggedUser.toString();
+        String answer = UserController.getLoggedUser().toString();
 
-        return new Response(answer, true, UserController.loggedUser);
+        return new Response(answer, true, UserController.getLoggedUser());
     }
 
     public Response getLogs() {
-        ArrayList<LocalDateTime> dates = UserController.loggedUser.getLogs();
+        ArrayList<LocalDateTime> dates = UserController.getLoggedUser().getLogs();
+
+        dates.sort(new Comparator<LocalDateTime>() {
+            @Override
+            public int compare(LocalDateTime o1, LocalDateTime o2) {
+                return o2.compareTo(o1);
+            }
+        });
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss");
         String answer = "";
         for (LocalDateTime date : dates) {
@@ -146,6 +184,8 @@ public class ProfileMenuController {
 
     public Response getNotifications() {
         ArrayList<String> notifications = UserController.getLoggedUser().getNotifications();
+        if (notifications.isEmpty())
+            return new Response(WARN_404_NOTIFICATIONS, false);
 
         StringBuilder answer = new StringBuilder();
         for (String notification : notifications)
