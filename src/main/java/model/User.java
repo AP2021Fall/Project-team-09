@@ -83,6 +83,14 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public Type getType() {
         return type;
     }
@@ -150,7 +158,6 @@ public class User implements Serializable {
         return false;
     }
 
-
     public static boolean isEmailValid(String email) {
         Pattern pattern = Pattern.compile("([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$");
         Matcher matcher = pattern.matcher(email);
@@ -163,7 +170,6 @@ public class User implements Serializable {
     public boolean passwordIntHistory(String newPassword) {
         return oldPasswords.contains(newPassword);
     }
-
 
     public static User createUser(String username, String password, String email) {
         User user = new User(username, password, email);
@@ -182,6 +188,10 @@ public class User implements Serializable {
 
     public static boolean isAdmin(String username) {
         return username.equalsIgnoreCase(admin.getUsername());
+    }
+
+    public boolean isTeamLeader() {
+        return this.type == Type.teamLeader;
     }
 
     public boolean isAdmin() {
@@ -213,6 +223,21 @@ public class User implements Serializable {
         return teams;
     }
 
+    public ArrayList<Team> getMyTeams() {
+        ArrayList<Team> teams = new ArrayList<>();
+        for (Team team : Team.getTeams())
+            if(team.getLeader().getUsername().equalsIgnoreCase(this.username))
+                teams.add(team);
+        return teams;
+    }
+
+    public Team getMyTeam(String teamName) {
+        for (Team team : Team.getTeams())
+            if(team.getName().equalsIgnoreCase(teamName))
+                return team;
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Name: " + firstname + " " + lastName + "\n" +
@@ -237,5 +262,7 @@ public class User implements Serializable {
             else
                 return null;
         }
+
+
     }
 }

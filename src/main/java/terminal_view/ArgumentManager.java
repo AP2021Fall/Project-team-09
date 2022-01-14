@@ -30,7 +30,7 @@ public class ArgumentManager {
 
     private void readArguments() {
         Pattern pattern;
-        pattern = Pattern.compile("--[a-zA-Z0-9]+ (\".+\"|[^-\\s]+)");
+        pattern = Pattern.compile("--[a-zA-Z0-9 ]+ (\".+\"|[^-\\s]+)");
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()) {
             String arg = matcher.group(0); // --key value
@@ -62,7 +62,7 @@ public class ArgumentManager {
     }
 
     public boolean contains(String input) {
-        return arguments.containsKey(input);
+        return arguments.containsKey(input.toLowerCase());
     }
 
     public static ArgumentManager readInput() {

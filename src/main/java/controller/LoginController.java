@@ -23,6 +23,9 @@ public class LoginController {
             "There is not any user with username: %s!";
     private final String WARN_UP_NOT_MATCH =
             "Username and password didn’t match!";
+    private final String WARN_WEAK_PASS =
+            "Please Choose A strong Password (Containing at least 8 characters including 1 digit " +
+                    "and 1 Capital Letter)";
 
     private final String EMAIL_REGEXP =
             "[a-zA-Z0-9]+@(yahoo.com|gmail.com)";
@@ -42,6 +45,9 @@ public class LoginController {
         if (!password1.equals(password2))
             return new Response(WARN_PASS_NOT_MATCH, false);
 
+        if (!isHard(password1))
+            return new Response(WARN_WEAK_PASS, false);
+
         if (User.emailExists(email))
             return new Response(WARN_EMAIL_EXISTS, false);
 
@@ -58,9 +64,9 @@ public class LoginController {
             return new Response(String.format(WARN_USER_NOT_EXIST, username), false);
         }
         User user = User.getUser(username, password);
-        if (user == null) {
+        if (user == null)
             return new Response(WARN_UP_NOT_MATCH, false);
-        }
+
         UserController.loggedUser = user;
         user.logLogin();
         return new Response(SUCCESS_LOGIN, true, user);
@@ -79,5 +85,10 @@ public class LoginController {
         } else {
             return new Response("Username of password is incorrect", false);
         }
+    }
+
+    private boolean isHard(String newPassword) {
+        return newPassword.length() >= 8 && newPassword.matches(".*[A-Z].*")
+                && newPassword.matches(".*[a-z].*") && newPassword.matches(".*[0-9].*");
     }
 }

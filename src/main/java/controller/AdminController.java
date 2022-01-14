@@ -34,6 +34,7 @@ public class AdminController {
     public Response changeRole(String username, String role) {
         if(User.usernameExists(username)){
             User user = User.getUser(username);
+            System.out.println(role);
             if(user.setType(role)){
                 return new Response("User role changed to " + user.getType() + " successfully",true);
             }

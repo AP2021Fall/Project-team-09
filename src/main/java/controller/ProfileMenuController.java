@@ -114,8 +114,8 @@ public class ProfileMenuController {
         if (team.getLeader() != UserController.loggedUser) {
             response += UserController.getLoggedUser().getUsername() + "\n";
         }
-        User[] members = team.getMembers();
-        Arrays.sort(members);
+        ArrayList<User> members = team.getMembers();
+//        members.sort();
         for (User user : members) {
             response += user.getUsername() + "\n";
         }

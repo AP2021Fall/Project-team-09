@@ -88,6 +88,7 @@ public class ProfileMenu implements TerminalView {
             ConsoleHelper.getInstance().println(response.getMessage());
             if (response.isSuccess())
                 LoginController.getInstance().logout();
+            System.out.println("dont know");
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
