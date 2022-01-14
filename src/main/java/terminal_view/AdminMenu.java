@@ -2,7 +2,6 @@ package terminal_view;
 
 import controller.AdminController;
 import controller.Response;
-import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
 public class AdminMenu implements TerminalView {

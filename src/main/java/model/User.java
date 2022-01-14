@@ -132,13 +132,8 @@ public class User implements Serializable {
     }
 
 
-    public static void removeUser(String username) {
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username)) {
-                allUsers.remove(user);
-                return;
-            }
-        }
+    public static void removeUser(User user) {
+        allUsers.remove(user);
     }
 
     public static boolean checkAdmin(String username, String password) {
