@@ -39,7 +39,7 @@ public interface TerminalView {
                 return;
             }
             ArgumentManager argumentManager = ArgumentManager.readInput();
-            System.out.println(argumentManager);
+
             if (argumentManager.isCommand(BACK))
                 return;
             else if (argumentManager.isCommand(HELP)) {
@@ -48,15 +48,6 @@ public interface TerminalView {
             } else if (argumentManager.isCommand(LOGOUT)) {
                 LoginController.getInstance().logout();
             } else if (UserController.getLoggedUser() != null) {
-                if (UserController.getLoggedUser().isTeamLeader()) {
-                    if (argumentManager.isCommandFollowArg(SHOW, TEAMS)) {
-                        showMyTeams();
-                    } else if (argumentManager.isCommandFollowArg(SHOW, TEAM)) {
-                        showTeam(argumentManager.get(TEAM));
-                    } else if (argumentManager.isCommandFollowArg(CREATE, TEAM)) {
-                        createTeam(argumentManager.get(TEAM));
-                    }
-                }
                 if (argumentManager.isCommand(ENTER_PROFILE)) {
                     enterProfileMenu();
                 } else if (argumentManager.isCommand(ENTER_TEAM)) {
@@ -109,18 +100,6 @@ public interface TerminalView {
 
     default void enterAdminMenu() {
         new AdminMenu().show();
-    }
-
-    default void showMyTeams() {
-        new TeamMenu().showLeaderTeams();
-    }
-
-    default void showTeam(String teamName) {
-        new TeamMenu().showTheTeam(teamName);
-    }
-
-    default void createTeam(String teamName) {
-        new TeamMenu().createTeam(teamName);
     }
 
     void parse(ArgumentManager input);

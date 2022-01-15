@@ -30,13 +30,13 @@ public class ArgumentManager {
 
     private void readArguments() {
         Pattern pattern;
-        pattern = Pattern.compile("--[a-zA-Z0-9]+ (\\d{4}-\\d{2}-\\d{2}\\|\\d{2}:\\d{2}:\\d{2}|\\d{4}-\\d{2}-\\d{2}\\|\\d{2}:\\d{2}|[\\w.@*#$() ]+[^-\\s]|\"[\\w.!@#$%^&*() ]+\")");
+        pattern = Pattern.compile("--[a-zA-Z0-9]+ (\\d{4}-\\d{2}-\\d{2}\\|\\d{2}:\\d{2}:\\d{2}|\\d{4}-\\d{2}-\\d{2}\\|\\d{2}:\\d{2}|[\\w.@*#$() ]+|\"[\\w.!@#$%^&*() ]+\")");
 //        pattern = Pattern.compile("--[a-zA-Z0-9 ]+ (\".+\"|[^-\\s]+)");
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()) {
             String arg = matcher.group(0); // --key value
             String key = arg.split(" ", 2)[0].substring(2);
-            String value = arg.split(" ", 2)[1].replace("\"", "");
+            String value = arg.split(" ", 2)[1].replace("\"", "").trim();
             arguments.put(key.toLowerCase(), value);
         }
     }
