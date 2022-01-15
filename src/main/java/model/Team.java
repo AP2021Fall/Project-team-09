@@ -20,6 +20,19 @@ public class Team implements Serializable {
 
     private ArrayList<Message> chatroom;
 
+    public Team(int id, String name, User leader, LocalDateTime timeOfCreation, Status status, ArrayList<Task> tasks, ArrayList<Board> boards, HashMap<User, Integer> teamMembers, HashMap<User, MemberStatus> membersStatus, ArrayList<Message> chatroom) {
+        this.id = id;
+        this.name = name;
+        this.leader = leader;
+        this.timeOfCreation = timeOfCreation;
+        this.status = status;
+        this.tasks = tasks;
+        this.boards = boards;
+        this.teamMembers = teamMembers;
+        this.membersStatus = membersStatus;
+        this.chatroom = chatroom;
+    }
+
     public Team(String name, User leader) {
         this.id = ID_COUNTER++;
         this.name = name;
@@ -31,6 +44,13 @@ public class Team implements Serializable {
         this.membersStatus = new LinkedHashMap<>();
         this.chatroom = new ArrayList<>();
         this.timeOfCreation = LocalDateTime.now();
+    }
+
+    public static Team getTeamByName(String teamName) {
+        for (Team team : teams)
+            if (team.getName().equalsIgnoreCase(teamName))
+                return team;
+        return null;
     }
 
     public int getId() {
@@ -60,10 +80,6 @@ public class Team implements Serializable {
 
     public void setTimeOfCreation(LocalDateTime timeOfCreation) {
         this.timeOfCreation = timeOfCreation;
-    }
-
-    public static Team getTeamByName(String teamName) {
-        return null;
     }
 
     public static ArrayList<Team> getTeams() {
@@ -148,6 +164,10 @@ public class Team implements Serializable {
         this.boards = boards;
     }
 
+    public int getMemberScore(User user) {
+        return this.teamMembers.get(user);
+    }
+
     public boolean isSuspended(User user) {
         return this.membersStatus.get(user) == MemberStatus.SUSPENDED;
     }
@@ -191,7 +211,7 @@ public class Team implements Serializable {
                 LocalDateTime dead1 = o1.getTimeOfDeadline();
                 LocalDateTime dead2 = o2.getTimeOfDeadline();
 
-                return dead2.compareTo(dead1);
+                return dead1.compareTo(dead2);
             }
         });
 
@@ -221,7 +241,7 @@ public class Team implements Serializable {
             }
 
             if (task.getAssignedUsers().isEmpty())
-                result.append("No use is assigned to this task!");
+                result.append("No user is assigned to this task!\n");
         }
         return result.toString();
     }
@@ -243,10 +263,11 @@ public class Team implements Serializable {
                 if (compare != 0)
                     return compare;
 
-                String priority1 = o1.getPriority();
-                String priority2 = o2.getPriority();
-
-                return priority1.compareTo(priority2);
+                if (o2.getPriorityNumeric() > o1.getPriorityNumeric())
+                    return 1;
+                else if (o2.getPriorityNumeric() == o2.getPriorityNumeric())
+                    return 0;
+                else return -1;
             }
         });
 
@@ -265,7 +286,8 @@ public class Team implements Serializable {
                     .append(", assign to: ")
                     .append(task.getAssignedUsersFormatted())
                     .append(", priority: ")
-                    .append(task.getPriority());
+                    .append(task.getPriority())
+                    .append("\n");
 
         return result.toString();
     }
@@ -320,9 +342,10 @@ public class Team implements Serializable {
         });
 
         for (Message message : this.chatroom)
-            result.append(message.getSender().getFirstname())
+            result.append(message.getSender().getUsername())
                     .append(": ")
-                    .append(String.format("\"%s\"", message.getBody()));
+                    .append(String.format("\"%s\"", message.getBody()))
+                    .append("\n");
         return result.toString();
     }
 
@@ -333,7 +356,8 @@ public class Team implements Serializable {
             return "no task yet";
 
         for (Task task : this.tasks)
-            result.append(task.getTitle()).append(": ").append("% done");
+            result.append(task.getTitle()).append(": ").append(String.format("%.2f done\n", task.getProgress()));
+
         return result.toString();
     }
 
@@ -346,16 +370,16 @@ public class Team implements Serializable {
         members.sort(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
-                int score1 = teamMembers.get(o1);
-                int score2 = teamMembers.get(o2);
+                int score1 = teamMembers.get(o2);
+                int score2 = teamMembers.get(o1);
 
                 if (score1 > score2)
                     return 1;
                 else if (score2 > score1)
                     return -1;
 
-                String name1 = o1.getFirstname();
-                String name2 = o2.getFirstname();
+                String name1 = o1.getUsername();
+                String name2 = o2.getUsername();
                 return name1.compareTo(name2);
             }
         });
@@ -363,13 +387,77 @@ public class Team implements Serializable {
         int index = 1;
         StringBuilder result = new StringBuilder();
         for (User user : members) {
-            result.append(index)
+            result.append(index++)
                     .append(" ")
-                    .append(user.getFirstname())
+                    .append(user.getUsername())
                     .append(" ")
-                    .append(this.teamMembers.get(user));
+                    .append(this.teamMembers.get(user))
+                    .append("\n");
         }
+        result.append("\n");
         return result.toString();
+    }
+
+    public void givePoint(Task task) {
+        for (User user : task.getAssignedUsers()) {
+            this.teamMembers.put(user, this.teamMembers.get(user) + 10);
+        }
+    }
+
+    public void takePoint(Task task) {
+        for (User user : task.getAssignedUsers()) {
+            this.teamMembers.put(user, this.teamMembers.get(user) - 5);
+        }
+    }
+
+    public String getTasksByCategory(String category) {
+        StringBuilder result = new StringBuilder();
+        for (Task task : this.tasks)
+            if (task.getCategory().equalsIgnoreCase(category))
+                result.append(task.getTitle()).append("\n");
+        if (result.length() == 0)
+            return "no tasks";
+        return result.toString();
+    }
+
+    public ArrayList<Task> getBoardTasks(Board board) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (Task task : this.tasks)
+            if (task.getBoard().getId() == board.getId())
+                tasks.add(task);
+        return tasks;
+    }
+
+    public static int getIdCounter() {
+        return ID_COUNTER;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        ID_COUNTER = idCounter;
+    }
+
+    public HashMap<User, Integer> getTeamMembers() {
+        return teamMembers;
+    }
+
+    public void setTeamMembers(HashMap<User, Integer> teamMembers) {
+        this.teamMembers = teamMembers;
+    }
+
+    public HashMap<User, MemberStatus> getMembersStatus() {
+        return membersStatus;
+    }
+
+    public void setMembersStatus(HashMap<User, MemberStatus> membersStatus) {
+        this.membersStatus = membersStatus;
+    }
+
+    public ArrayList<Message> getChatroom() {
+        return chatroom;
+    }
+
+    public void setChatroom(ArrayList<Message> chatroom) {
+        this.chatroom = chatroom;
     }
 
     private enum Status {

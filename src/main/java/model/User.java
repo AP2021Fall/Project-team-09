@@ -22,6 +22,18 @@ public class User implements Serializable {
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<String> notifications;
 
+    public User(String lastName, String firstname, String birthday, String username, String password, String email, Type type, ArrayList<LocalDateTime> logs, ArrayList<String> oldPasswords, ArrayList<String> notifications) {
+        this.lastName = lastName;
+        this.firstname = firstname;
+        this.birthday = birthday;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.type = type;
+        this.logs = logs;
+        this.oldPasswords = oldPasswords;
+        this.notifications = notifications;
+    }
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -41,6 +53,26 @@ public class User implements Serializable {
 
     public static ArrayList<User> getAllUsers() {
         return allUsers;
+    }
+
+    public static void setAllUsers(ArrayList<User> allUsers) {
+        User.allUsers = allUsers;
+    }
+
+    public void setLogs(ArrayList<LocalDateTime> logs) {
+        this.logs = logs;
+    }
+
+    public ArrayList<String> getOldPasswords() {
+        return oldPasswords;
+    }
+
+    public void setOldPasswords(ArrayList<String> oldPasswords) {
+        this.oldPasswords = oldPasswords;
+    }
+
+    public void setNotifications(ArrayList<String> notifications) {
+        this.notifications = notifications;
     }
 
     public String getUsername() {

@@ -25,6 +25,21 @@ public class Task implements Serializable {
     private String category;
     private Status status;
 
+    public Task(int id, String title, String description, Priority priority, LocalDateTime timeOfCreation, LocalDateTime startTime, LocalDateTime timeOfDeadline, ArrayList<User> assignedUsers, ArrayList<Comment> comments, Board board, String category, Status status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.timeOfCreation = timeOfCreation;
+        this.startTime = startTime;
+        this.timeOfDeadline = timeOfDeadline;
+        this.assignedUsers = assignedUsers;
+        this.comments = comments;
+        this.board = board;
+        this.category = category;
+        this.status = status;
+    }
+
     public Task(String title, LocalDateTime startTime, LocalDateTime timeOfDeadline) {
         this.id = idCounter++;
         this.title = title;
@@ -92,6 +107,17 @@ public class Task implements Serializable {
         this.description = description;
     }
 
+    public float getProgress() {
+        if (this.board == null)
+            return 0;
+        if (this.category == null)
+            return 0;
+
+        int index = this.board.getCategories().indexOf(this.category);
+
+        return ((float) index / (float) this.board.getCategories().size()) * 100;
+    }
+
     public static void addTask(Task task) {
         allTask.add(task);
     }
@@ -117,10 +143,11 @@ public class Task implements Serializable {
                 else
                     state = "***";
                 result.append(String.format("%s%s__remaining days: %d__Team: %s",
-                        state,
-                        task.getTimeOfDeadlineFormatted(),
-                        remainingDays,
-                        getTeamName(task.getId())));
+                                state,
+                                task.getTimeOfDeadlineFormatted(),
+                                remainingDays,
+                                getTeamName(task.getId())))
+                        .append("\n");
             }
         return result.toString();
     }
@@ -141,7 +168,7 @@ public class Task implements Serializable {
     }
 
     public boolean isAddedToBoard(Board board) {
-        if(this.board == null)
+        if (this.board == null)
             return false;
         return this.board.getId() == board.getId();
     }
@@ -159,6 +186,17 @@ public class Task implements Serializable {
             return "High";
         else
             return "Highest";
+    }
+
+    public int getPriorityNumeric() {
+        if (this.priority.equals(Priority.LOWEST))
+            return 1;
+        else if (this.priority.equals(Priority.LOW))
+            return 2;
+        else if (this.priority.equals(Priority.HIGH))
+            return 3;
+        else
+            return 4;
     }
 
     public void setPriority(String priority) {
@@ -187,14 +225,19 @@ public class Task implements Serializable {
         this.category = board.getFirstCategory();
     }
 
-    public void moveToNextCategory() {
+    public boolean moveToNextCategory() {
         if (this.category.equalsIgnoreCase("done"))
-            return;
+            return false;
         this.category = this.board.getNextCategory(this.category);
+        return true;
     }
 
     public boolean isDone() {
         return this.category.equalsIgnoreCase("done");
+    }
+
+    public boolean isFailed() {
+        return this.category.equalsIgnoreCase("failed");
     }
 
     public LocalDateTime getTimeOfCreation() {
@@ -278,6 +321,7 @@ public class Task implements Serializable {
         this.assignedUsers.add(user);
     }
 
+
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
@@ -286,7 +330,7 @@ public class Task implements Serializable {
                 .append("Description: ").append(this.description).append("\n")
                 .append("Priority: ").append(this.getPriority()).append("\n")
                 .append("Date and time of creation: ").append(this.timeOfCreation).append("\n")
-                .append("Date and time of creation: ").append(this.timeOfCreation).append("\n")
+                .append("Date and time of start: ").append(this.startTime).append("\n")
                 .append("Date and time of deadline: ").append(this.timeOfDeadline).append("\n")
                 .append("Assigned users: ").append("\n");
 
@@ -295,12 +339,25 @@ public class Task implements Serializable {
 
         string.append("Comments: ").append("\n");
 
-        // Todo sort comments desc
+        comments.sort(new Comparator<Comment>() {
+            @Override
+            public int compare(Comment o1, Comment o2) {
+                return o2.getDateTime().compareTo(o1.getDateTime());
+            }
+        });
 
         for (Comment comment : comments)
             string.append(comment).append("\n");
 
         return string.toString();
+    }
+
+    public static int getIdCounter() {
+        return idCounter;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        Task.idCounter = idCounter;
     }
 
     enum Priority {
