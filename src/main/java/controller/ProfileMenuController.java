@@ -111,23 +111,27 @@ public class ProfileMenuController {
         teams.sort(new Comparator<Team>() {
             @Override
             public int compare(Team o1, Team o2) {
-                return o2.getTimeOfCreation().compareTo(o1.getTimeOfCreation());
+                int compare = o1.getTimeOfCreation().compareTo(o2.getTimeOfCreation());
+                if (compare == 0)
+                    return o1.getName().compareTo(o2.getName());
+                return compare;
             }
         });
 
         StringBuilder response = new StringBuilder();
+        int index = 1;
+
         for (Team team : teams) {
-            response.append(team.getName()).append(",");
+            response.append(String.format("%d- %s", index++, team.getName())).append("\n");
         }
-        if (response.length() > 0)
-            response = new StringBuilder(response.substring(0, response.length() - 1));
+
         return new Response(response.toString(), true, teams);
     }
 
     public Response showTeam(String teamName) {
         tries = 0;
 
-        Team team = Team.getTeamByName(teamName);
+        Team team = UserController.getLoggedUser().getMyTeam(teamName);
         if (team == null) {
             return new Response(WARN_404_TEAM, false);
         }
@@ -140,10 +144,12 @@ public class ProfileMenuController {
 
         ArrayList<User> members = team.getMembers();
 
+        members.remove(UserController.getLoggedUser());
+
         members.sort(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
-                return o2.getUsername().compareTo(o1.getUsername());
+                return o1.getUsername().compareTo(o2.getUsername());
             }
         });
 
@@ -159,7 +165,18 @@ public class ProfileMenuController {
     }
 
     public Response getMyProfile() {
+        User user = UserController.getLoggedUser();
+
         String answer = UserController.getLoggedUser().toString();
+
+        int score = 0;
+
+        ArrayList<Team> teams = user.getTeams();
+
+        for (Team team : teams)
+            if (team.hasMember(user))
+                score += team.getMemberScore(user);
+        answer += String.format("Score: %d\n", score);
 
         return new Response(answer, true, UserController.getLoggedUser());
     }

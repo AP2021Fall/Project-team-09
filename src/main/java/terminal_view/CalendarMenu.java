@@ -2,6 +2,7 @@ package terminal_view;
 
 import controller.CalendarMenuController;
 import controller.Response;
+import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
 public class CalendarMenu implements TerminalView {
@@ -35,8 +36,12 @@ public class CalendarMenu implements TerminalView {
     }
 
     private void showCalendar(ArgumentManager input) {
-        Response response = CalendarMenuController
-                .getInstance().getCalendar(input.get(SHOW));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = CalendarMenuController
+                    .getInstance().getCalendar(input.get(SHOW));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 }

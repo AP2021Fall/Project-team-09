@@ -11,6 +11,9 @@ public class ProfileMenu implements TerminalView {
     private final String WELCOME_MESSAGE =
             "Welcome to profile menu";
 
+    private final String SUCCESS_LOG_OUT =
+            "User logged out successfully!";
+
 
     private final String CHANGE_PASS_COMMAND =
             "profile change --oldPassword [current_password] --newPassword [new_password]";
@@ -81,8 +84,10 @@ public class ProfileMenu implements TerminalView {
             Response response = ProfileMenuController.getInstance()
                     .changePassword(input.get(OLD_PASSWORD), input.get(NEW_PASSWORD));
             ConsoleHelper.getInstance().println(response.getMessage());
-            if (response.isSuccess())
+            if (response.isSuccess()) {
                 LoginController.getInstance().logout();
+                ConsoleHelper.getInstance().println(SUCCESS_LOG_OUT);
+            }
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -161,7 +166,6 @@ public class ProfileMenu implements TerminalView {
             }
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
-            ;
         }
     }
 }
