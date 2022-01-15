@@ -21,8 +21,6 @@ public class TasksMenuController {
             "There is not any user with this username %s in list";
     private final String WARN_404_USER =
             "There is not any user with this username %s!";
-    private final String WARN_FAILED =
-            "Operation failed!";
     private final String WARN_404_TASK =
             "Task with id %d not found!";
 
@@ -114,10 +112,10 @@ public class TasksMenuController {
 
         User user = User.getUser(username);
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new Response(String.format(WARN_404_USER, username), false);
 
         task.assignUser(user);
-        return new Response(SUCCESS_USER_ADD, true);
+        return new Response(String.format(SUCCESS_USER_ADD, username), true);
     }
 
     public Response removeAssignedUsers(String id, String username) {
@@ -133,9 +131,9 @@ public class TasksMenuController {
 
         User user = task.isInAssignedUsers(username);
         if (user == null)
-            return new Response(WARN_404_USER_LIST, false);
+            return new Response(String.format(WARN_404_USER_LIST, username), false);
         task.removeFromAssignedUsers(user);
-        return new Response(SUCCESS_USER_REMOVE, true);
+        return new Response(String.format(SUCCESS_USER_REMOVE, username), true);
     }
 
     private LocalDateTime isTimeValid(LocalDateTime creationDateTime, String deadline) {

@@ -2,12 +2,19 @@ package terminal_view;
 
 import controller.Response;
 import controller.TasksMenuController;
+import controller.UserController;
+import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
 public class TasksMenu implements TerminalView {
 
     private final String WELCOME_MESSAGE =
             "Welcome to Tasks Menu";
+
+    private final String WARN_ACCESS =
+            "You don't have access to do this action!";
+    private final String WARN_COMMAND_INVALID =
+            "Invalid command!";
 
     private final String EDIT_TITLE_COMMAND =
             "edit --task --id [task id] --title [new title]";
@@ -53,8 +60,8 @@ public class TasksMenu implements TerminalView {
 
     @Override
     public void parse(ArgumentManager input) {
-        if (!input.isCommandFollowCommand(EDIT, TASK))
-            return;
+        if (!UserController.getLoggedUser().isTeamLeader())
+            showWarning();
         if (input.isCommandFollowArg(EDIT, TITLE)) {
             editTaskTitle(input);
         } else if (input.isCommandFollowArg(EDIT, DESCRIPTION)) {
@@ -69,47 +76,77 @@ public class TasksMenu implements TerminalView {
         } else if (input.isCommandFollowArg(EDIT, ASSIGNED_USERS)
                 && input.isCommandFollowCommand(EDIT, REMOVE)) {
             removeFromAssignedUsers(input);
+        } else {
+            ConsoleHelper.getInstance().println(WARN_COMMAND_INVALID);
         }
     }
 
+    private void showWarning() {
+        ConsoleHelper.getInstance().println(WARN_ACCESS);
+    }
+
     private void editTaskTitle(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .editTaskTitle(input.get(ID), input.get(TITLE));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .editTaskTitle(input.get(ID), input.get(TITLE));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void editTaskDescription(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .editTaskDescription(input.get(ID),
-                        input.get(DESCRIPTION));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .editTaskDescription(input.get(ID),
+                            input.get(DESCRIPTION));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void editTaskPriority(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .editTaskPriority(input.get(ID),
-                        input.get(PRIORITY));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .editTaskPriority(input.get(ID),
+                            input.get(PRIORITY));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void editTaskDeadline(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .editTaskDeadline(input.get(ID),
-                        input.get(DEADLINE));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .editTaskDeadline(input.get(ID),
+                            input.get(DEADLINE));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void addToAssignedUsers(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .addToAssignedUsers(input.get(ID),
-                        input.get(ASSIGNED_USERS));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .addToAssignedUsers(input.get(ID),
+                            input.get(ASSIGNED_USERS));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void removeFromAssignedUsers(ArgumentManager input) {
-        Response response = TasksMenuController.getInstance()
-                .removeAssignedUsers(input.get(ID),
-                        input.get(ASSIGNED_USERS));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TasksMenuController.getInstance()
+                    .removeAssignedUsers(input.get(ID),
+                            input.get(ASSIGNED_USERS));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 }
