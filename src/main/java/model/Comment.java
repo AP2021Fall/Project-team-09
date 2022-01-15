@@ -1,13 +1,19 @@
 package model;
 
-public class Comment {
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class Comment implements Serializable {
 
     private User user;
     private String message;
+    private LocalDateTime dateTime;
 
     public Comment(User user, String message) {
         this.user = user;
         this.message = message;
+        this.dateTime = LocalDateTime.now();
     }
 
     public User getUser() {
@@ -26,8 +32,21 @@ public class Comment {
         this.message = message;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getDateTimeFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+        return this.dateTime.format(formatter);
+    }
+
     @Override
     public String toString() {
-        return this.user.getUsername() + ": " + this.message;
+        return this.user.getUsername() + ": " + this.message + " - "+ this.dateTime;
     }
 }

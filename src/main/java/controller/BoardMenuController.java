@@ -4,8 +4,11 @@ import model.Board;
 import model.Task;
 import model.Team;
 import model.User;
-import terminal_view.ArgumentManager;
 import utilities.SharedPreferences;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class BoardMenuController {
 
@@ -27,6 +30,8 @@ public class BoardMenuController {
             "Task \"%s\" assigned to user \"%s\"";
     private String SUCCESS_SET_CATEGORY =
             "Task \"%s\" is moved to category \"%s\"";
+    private String SUCCESS_TASK_REOPENED =
+            "Task reopened successfully!";
 
     private String WARN_BOARD_EXISTS =
             "There is already a board with this name!";
@@ -50,12 +55,24 @@ public class BoardMenuController {
             "Invalid teammate!";
     private String WARN_TASK_ALREADY_DONE =
             "This task has already finished!";
+    private String WARN_TASK_FAILED =
+            "This task has failed!";
     private String WARN_404_TASK =
             "There is no task with given information!";
     private String WARN_INVALID_CATEGORY =
             "Invalid category!";
     private String WARN_NOT_YOURS =
             "This task is not assigned to you!";
+    private String WARN_TAKEN_CATEGORY =
+            "Name is already taken for a category!";
+    private String WARN_NOT_FAILED =
+            "Task is not in the failed section";
+    private String WARN_INVALID_DEADLINE =
+            "Invalid deadline!";
+    private String WARN_404_USER =
+            "User with this username does not exist!";
+    private final String WARN_PERMISSION =
+            "You don't have the permission to do this action!";
 
     private String BOARD =
             "board";
@@ -69,6 +86,10 @@ public class BoardMenuController {
     }
 
     public Response createNewBoard(Team team, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = team.getBoardByName(boardName);
 
         if (board != null)
@@ -79,6 +100,10 @@ public class BoardMenuController {
     }
 
     public Response removeBoard(Team team, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = team.getBoardByName(boardName);
 
         if (board == null)
@@ -91,30 +116,45 @@ public class BoardMenuController {
         Board board = team.getBoardByName(boardName);
 
         if (board == null)
-            new Response(WARN_404_BOARD, false);
-        return new Response(String.format(SUCCESS_BOARD_SELECTED, board), true, board);
+            return new Response(WARN_404_BOARD, false);
+
+        return new Response(String.format(SUCCESS_BOARD_SELECTED, board.getName()),
+                true, board);
     }
 
-    public Response deselectBoard(String boardName) {
+    public Response deselectBoard() {
         Board board = (Board) SharedPreferences.get(BOARD);
-
         if (board == null)
             return new Response(WARN_404_SELECTED_BOARD, false);
+        String boardName = board.getName();
+
+        SharedPreferences.remove(BOARD);
         return new Response(String.format(SUCCESS_BOARD_DESELECTED, boardName), true);
     }
 
     public Response createNewCategory(Team team, String categoryName, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
             return new Response(WARN_404_SELECTED_BOARD, false);
 
+        if (board.hasCategory(categoryName))
+            return new Response(WARN_TAKEN_CATEGORY, false);
+
         int column = board.addCategory(categoryName);
-        return new Response(String.format(SUCCESS_CATEGORY_CREATED, column, boardName),
+        return new Response(String.format(SUCCESS_CATEGORY_CREATED, column, board.getName()),
                 true);
     }
 
     public Response createNewCategoryAt(Team team, String categoryName, int column, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -130,6 +170,10 @@ public class BoardMenuController {
     }
 
     public Response setBoardToDone(Team team, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -143,6 +187,10 @@ public class BoardMenuController {
     }
 
     public Response addTaskToBoard(Team team, String taskId, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -174,6 +222,10 @@ public class BoardMenuController {
     }
 
     public Response assignTaskToMember(Team team, String username, String taskId, String boardName) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -208,6 +260,7 @@ public class BoardMenuController {
 
     public Response forceMoveTaskToCategory(Team team, String categoryName,
                                             String taskTitle, String boardName) {
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -225,11 +278,12 @@ public class BoardMenuController {
             return new Response(WARN_INVALID_CATEGORY, false);
 
         task.setCategory(categoryName);
-        return new Response(String.format(SUCCESS_SET_CATEGORY, categoryName), true);
+        return new Response(String.format(SUCCESS_SET_CATEGORY, taskTitle, categoryName), true);
     }
 
 
     public Response moveTaskToNextCategory(Team team, String taskTitle, String boardName) {
+
         Board board = getBoard(team, boardName);
 
         if (board == null)
@@ -248,17 +302,125 @@ public class BoardMenuController {
         if (task.isInAssignedUsers(loggedUser.getUsername()) == null)
             return new Response(WARN_NOT_YOURS, false);
 
-        task.moveToNextCategory();
-        return new Response(String.format(SUCCESS_SET_CATEGORY, task.getTitle(),
-                task.getCategory()), true);
+        boolean result = task.moveToNextCategory();
+
+        if (result) {
+            if (task.isDone()) {
+                team.givePoint(task);
+            }
+            return new Response(String.format(SUCCESS_SET_CATEGORY, task.getTitle(),
+                    task.getCategory()), true);
+        } else {
+            if (task.isDone())
+                return new Response(WARN_TASK_ALREADY_DONE, false);
+            else
+                return new Response(WARN_TASK_FAILED, false);
+        }
     }
 
     public Response showCategoryTasks(Team team, String categoryName, String boardName) {
         Board board = getBoard(team, boardName);
 
-        if(!board.hasCategory(categoryName))
+        if (!board.hasCategory(categoryName))
             return new Response(WARN_INVALID_CATEGORY, false);
         return new Response(board.getCategoryTasks(categoryName), true);
+    }
+
+    public Response getSpecificCategoryTasks(Team team, String category, String boardName) {
+        Board board = getBoard(team, boardName);
+
+        if (board == null)
+            return new Response(WARN_404_SELECTED_BOARD, false);
+
+        if (category.equalsIgnoreCase("done") || category.equalsIgnoreCase("failed")) {
+            return new Response(team.getTasksByCategory(category), true);
+        }
+        return new Response(WARN_INVALID_CATEGORY, false);
+    }
+
+    public Response openFailedTask(Team team, String taskTitle, String deadline, String boardName,
+                                   String teamMate, String category) {
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_PERMISSION, false);
+
+        Board board = getBoard(team, boardName);
+
+        boolean categorySet = false;
+        boolean teammateSet = false;
+
+        if (board == null)
+            return new Response(WARN_404_SELECTED_BOARD, false);
+
+        Task task = team.getTaskByTitle(taskTitle);
+
+        if (task == null)
+            return new Response(WARN_404_TASK, false);
+
+        if (!task.isAddedToBoard(board))
+            return new Response(WARN_404_TASK, false);
+
+        if (!task.isFailed())
+            return new Response(WARN_NOT_FAILED, false);
+
+        if (category != null) {
+            if (!board.hasCategory(category))
+                return new Response(WARN_INVALID_CATEGORY, false);
+            categorySet = true;
+        }
+        User user = null;
+        if (teamMate != null) {
+            user = User.getUser(teamMate);
+
+            if (user == null)
+                return new Response(WARN_404_USER, false);
+
+            if (!team.hasMember(user))
+                return new Response(WARN_INVALID_TEAMMATE, false);
+
+            if (task.isInAssignedUsers(user.getUsername()) == null)
+                teammateSet = true;
+        }
+
+        LocalDateTime deadlineTime = isTimeValid(task.getTimeOfCreation(), deadline);
+        if (deadlineTime == null)
+            return new Response(WARN_INVALID_DEADLINE, false);
+
+        if (!categorySet)
+            task.setCategory(board.getFirstCategory());
+        else task.setCategory(category);
+
+        if (teammateSet)
+            task.assignUser(user);
+        task.setTimeOfDeadline(deadlineTime);
+        return new Response(SUCCESS_TASK_REOPENED, true);
+    }
+
+    public Response showBoard(Team team, String boardName) {
+        Board board = getBoard(team, boardName);
+
+        if (board == null)
+            return new Response(WARN_404_SELECTED_BOARD, false);
+
+        return new Response(board.getInfo(team.getLeader().getUsername(),
+                team, board), true);
+    }
+
+    private LocalDateTime isTimeValid(LocalDateTime creationDateTime, String deadline) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+
+        try {
+            LocalDateTime dead = LocalDateTime.parse(deadline, formatter);
+            if (dead.isBefore(now))
+                return null;
+            if (dead.isBefore(creationDateTime))
+                return null;
+
+            return dead;
+        } catch (DateTimeParseException exception) {
+            return null;
+        }
     }
 
     private Board getBoard(Team team, String boardName) {

@@ -57,4 +57,12 @@ public class Message implements Serializable {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+
+    public static int getIdCounter() {
+        return ID_COUNTER;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        ID_COUNTER = idCounter;
+    }
 }

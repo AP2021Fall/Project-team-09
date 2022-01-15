@@ -107,7 +107,78 @@ public class Board implements Serializable {
         return this.state == State.DONE;
     }
 
+    private float getCompletion(Team team, Board board) {
+        int count = 0;
+        ArrayList<Task> boardTasks = team.getBoardTasks(board);
+        for (Task task : boardTasks)
+            if (task.isDone())
+                count++;
+        if (count > 0)
+            return ((float) count / (float) boardTasks.size()) * 100;
+        return 0;
+    }
+
+    private float getFailed(Team team, Board board) {
+        int count = 0;
+        ArrayList<Task> boardTasks = team.getBoardTasks(board);
+        for (Task task : boardTasks)
+            if (task.isFailed())
+                count++;
+        if (count > 0)
+            return ((float) count / (float) boardTasks.size()) * 100;
+        return 0;
+    }
+
+    public String getInfo(String teamLeader, Team team, Board board) {
+        StringBuilder result = new StringBuilder();
+        result.append(String.format("Board name: %s\n", this.getName()))
+                .append(String.format("Board completion: %.2f\n", this.getCompletion(team, board)))
+                .append(String.format("Board failed: %.2f\n", this.getFailed(team, board)))
+                .append(String.format("Board leader: %s\n", teamLeader))
+                .append("Board tasks:\n");
+
+        ArrayList<Task> boardTasks = team.getBoardTasks(board);
+        StringBuilder highest = new StringBuilder();
+        StringBuilder high = new StringBuilder();
+        StringBuilder low = new StringBuilder();
+        StringBuilder lowest = new StringBuilder();
+
+        highest.append("Highest priority:\n");
+        high.append("High priority:\n");
+        low.append("Low priority:\n");
+        lowest.append("Lowest priority:\n");
+
+        for (Task task : boardTasks)
+            if (task.getPriority().equalsIgnoreCase("highest"))
+                highest.append(task);
+            else if (task.getPriority().equalsIgnoreCase("high"))
+                high.append(task);
+            else if (task.getPriority().equalsIgnoreCase("low"))
+                low.append(task);
+            else if (task.getPriority().equalsIgnoreCase("lowest"))
+                lowest.append(task);
+
+        result.append(highest);
+        result.append(high);
+        result.append(low);
+        result.append(lowest);
+        return result.toString();
+    }
+
+    public static int getIdCounter() {
+        return ID_COUNTER;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        ID_COUNTER = idCounter;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     private enum State {
         INCOMPLETE, DONE
     }
+
 }
