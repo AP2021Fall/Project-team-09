@@ -4,6 +4,7 @@ import controller.ProfileMenuController;
 import controller.Response;
 import controller.TeamMenuController;
 import controller.UserController;
+import exceptions.IllegalCommandException;
 import model.Team;
 import model.User;
 import utilities.ConsoleHelper;
@@ -18,16 +19,41 @@ public class TeamMenu implements TerminalView {
             "enter team <teamName>";
     private final String SHOW_SCORE_COMMAND =
             "scoreboard --show";
-
-    private final String SUCCESS_TASK_CREATED =
-            "Task created successfully!";
-
-    private final String WARN_DUPLICATE_TITLE =
-            "There is another task with this title!";
-    private final String WARN_INVALID_START_DATE =
-            "Invalid start date!";
-    private final String WARN_INVALID_DEADLINE =
-            "Invalid deadline!";
+    private final String SHOW_ROADMAP_COMMAND =
+            "roadmap --show";
+    private final String SHOW_CHATROOM_COMMAND =
+            "chatroom --show";
+    private final String SHOW_TASKS_COMMAND =
+            "show tasks";
+    private final String SHOW_TASK_COMMAND =
+            "show task --id [task id]";
+    private final String SHOW_TEAMS_COMMAND =
+            "show --teams";
+    private final String SHOW_TEAM_COMMAND =
+            "show --team <team name>";
+    private final String CREATE_TEAM_COMMAND =
+            "create --team <team name>";
+    private final String SUDO_SHOW_COMMAND =
+            "sudo show --all --tasks";
+    private final String CREATE_TASK_COMMAND =
+            "create task --title <task title> --starttime <start time> " +
+                    "--deadline <deadline>";
+    private final String SHOW_MEMBERS_COMMAND =
+            "show --members";
+    private final String ADD_MEMBER_COMMAND =
+            "add member --username <username>";
+    private final String DELETE_MEMBER_COMMAND =
+            "delete member --username <username>";
+    private final String SUSPEND_MEMBER_COMMAND =
+            "suspend member --username <username>";
+    private final String PROMOTE_USER_COMMAND =
+            "promote --username --rate <rate>";
+    private final String ASSIGN_MEMBER_COMMAND =
+            "assign member --task <task id> --username <username>";
+    private final String SEND_NOTIF_USER_COMMAND =
+            "send --notification [notification] --username [username]";
+    private final String SEND_NOTIF_TEAM_COMMAND =
+            "send --notification [notification] --team [team name]";
 
     private final String ENTER_TEAM =
             "enter team";
@@ -73,6 +99,10 @@ public class TeamMenu implements TerminalView {
             "add member";
     private final String USERNAME =
             "username";
+    private final String PROMOTE =
+            "promote";
+    private final String RATE =
+            "rate";
     private final String DELETE_MEMBER =
             "delete member";
     private final String SUSPEND_MEMBER =
@@ -94,6 +124,24 @@ public class TeamMenu implements TerminalView {
     public void showHelp() {
         ConsoleHelper.getInstance()
                 .join(ENTER_TEAM_COMMAND)
+                .join(SHOW_SCORE_COMMAND)
+                .join(SHOW_ROADMAP_COMMAND)
+                .join(SHOW_CHATROOM_COMMAND)
+                .join(SHOW_TASKS_COMMAND)
+                .join(SHOW_TASK_COMMAND)
+                .join(SHOW_TEAMS_COMMAND)
+                .join(SHOW_TEAM_COMMAND)
+                .join(CREATE_TEAM_COMMAND)
+                .join(SUDO_SHOW_COMMAND)
+                .join(CREATE_TASK_COMMAND)
+                .join(SHOW_MEMBERS_COMMAND)
+                .join(ADD_MEMBER_COMMAND)
+                .join(DELETE_MEMBER_COMMAND)
+                .join(SUSPEND_MEMBER_COMMAND)
+                .join(PROMOTE_USER_COMMAND)
+                .join(ASSIGN_MEMBER_COMMAND)
+                .join(SEND_NOTIF_USER_COMMAND)
+                .join(SEND_NOTIF_TEAM_COMMAND)
                 .printAll();
     }
 
@@ -103,8 +151,20 @@ public class TeamMenu implements TerminalView {
             enterTeamPage(input.extractValueIgnoreFlag(ENTER_TEAM));
         }
 
+        User user = UserController.getLoggedUser();
+
+        if (user.isTeamLeader()) {
+            if (input.isCommandFollowArg(SHOW, TEAMS)) {
+                showLeaderTeams();
+            } else if (input.isCommandFollowArg(SHOW, TEAM)) {
+                showTheTeam(input.get(TEAM));
+            } else if (input.isCommandFollowArg(CREATE, TEAM)) {
+                createTeam(input.get(TEAM));
+            }
+        }
+
         if (team != null) {
-            User user = UserController.getLoggedUser();
+
             if (user.isTeamLeader()) {
                 if (input.isCommandFollowArg(SUDO_SHOW, ALL, TASKS)) {
                     showAllTasks();
@@ -118,6 +178,8 @@ public class TeamMenu implements TerminalView {
                     deleteMember(input);
                 } else if (input.isCommandFollowArg(SUSPEND_MEMBER, USERNAME)) {
                     suspendMember(input);
+                } else if(input.isCommandFollowArg(PROMOTE, USERNAME, RATE)){
+                    promoteMember(input);
                 } else if (input.isCommandFollowArg(ASSIGN_MEMBER, TASK, USERNAME)) {
                     assignUserToTask(input);
                 } else if (input.isCommandFollowArg(SHOW, SCOREBOARD)) {
@@ -135,7 +197,7 @@ public class TeamMenu implements TerminalView {
             } else if (input.isCommand(SHOW_TASKS)) {
                 showTasks();
             } else if (input.isCommandFollowArg(SHOW_TASK, ID)) {
-                // Todo
+                showTask(input);
             } else if (input.isCommand(ENTER_BOARD)) {
                 SharedPreferences.add(TEAM, team);
                 new BoardMenu().show();
@@ -144,109 +206,196 @@ public class TeamMenu implements TerminalView {
     }
 
     private void showAllTasks() {
-        Response response = TeamMenuController.getInstance()
-                .getAllTasks(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getAllTasks(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void createTask(ArgumentManager input) {
-        Response response = TeamMenuController.getInstance()
-                .createTask(team, input.get(TITLE), input.get(START_TIME), input.get(DEADLINE));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .createTask(team, input.get(TITLE), input.get(START_TIME), input.get(DEADLINE));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showMembers() {
-        Response response = TeamMenuController.getInstance()
-                .getMembers(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getMembers(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void addMemberToTeam(ArgumentManager input) {
-        Response response = TeamMenuController.getInstance()
-                .addMemberToTeam(team, input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .addMemberToTeam(team, input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void deleteMember(ArgumentManager input) {
-        Response response = TeamMenuController.getInstance()
-                .deleteMember(team, input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .deleteMember(team, input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void suspendMember(ArgumentManager input) {
-        Response response = TeamMenuController.getInstance()
-                .suspendMember(team, input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .suspendMember(team, input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
+    }
+
+    private void promoteMember(ArgumentManager input) {
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .promoteUser(team, input.get(USERNAME), input.get(RATE));
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void assignUserToTask(ArgumentManager input) {
-        Response response = TeamMenuController.getInstance()
-                .assignToTask(team, input.get(TASK), input.get(USERNAME));
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .assignToTask(team, input.get(TASK), input.get(USERNAME));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void enterTeamPage(String teamName) {
-        Response response = TeamMenuController.getInstance().getTeam(teamName);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance().getTeam(teamName);
+            ConsoleHelper.getInstance().println(response.getMessage());
 
-        if (response.isSuccess())
-            this.team = (Team) response.getObject();
+            if (response.isSuccess())
+                this.team = (Team) response.getObject();
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showScoreboard() {
-        Response response = TeamMenuController.getInstance()
-                .getScoreboard(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getScoreboard(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showRoadMap() {
-        Response response = TeamMenuController.getInstance()
-                .getRoadmap(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getRoadmap(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showChatRoom() {
-        Response response = TeamMenuController.getInstance()
-                .getMessages(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getMessages(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void sendMessage(ArgumentManager input) {
-        TeamMenuController.getInstance()
-                .sendMessage(team, input.get(MESSAGE));
+        try {
+            TeamMenuController.getInstance()
+                    .sendMessage(team, input.get(MESSAGE));
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showTasks() {
-        Response response = TeamMenuController.getInstance()
-                .showTasks(team);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .showTasks(team);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
+    }
+
+    private void showTask(ArgumentManager input) {
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .showTask(team, input.get(ID));
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     private void showTeams() {
-        Response response = ProfileMenuController.getInstance()
-                .showTeams();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = ProfileMenuController.getInstance()
+                    .showTeams();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     public void showLeaderTeams() {
-        Response response = TeamMenuController.getInstance()
-                .getLeaderTeams();
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getLeaderTeams();
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 
     public void showTheTeam(String teamName) {
-        Response response = TeamMenuController.getInstance()
-                .getLeaderTeam(teamName);
-        ConsoleHelper.getInstance().println(response.getMessage());
-        if (response.isSuccess()) {
-            this.team = (Team) response.getObject();
-            show();
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .getLeaderTeam(teamName);
+            ConsoleHelper.getInstance().println(response.getMessage());
+            if (response.isSuccess()) {
+                this.team = (Team) response.getObject();
+                show();
+            }
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
         }
     }
 
     public void createTeam(String teamName) {
-        Response response = TeamMenuController.getInstance()
-                .createTeam(teamName);
-        ConsoleHelper.getInstance().println(response.getMessage());
+        try {
+            Response response = TeamMenuController.getInstance()
+                    .createTeam(teamName);
+            ConsoleHelper.getInstance().println(response.getMessage());
+        } catch (IllegalCommandException e) {
+            ConsoleHelper.getInstance().println(e.getMessage());
+        }
     }
 }

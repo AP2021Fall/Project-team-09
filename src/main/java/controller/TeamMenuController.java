@@ -26,6 +26,8 @@ public class TeamMenuController {
             "User suspended successfully!";
     private final String SUCCESS_MEMBER_ASSIGNED =
             "Member assigned successfully!";
+    private final String SUCCESS_PROMOTED =
+            "User promoted to team leader successfully!";
 
     private final String WARN_404_TEAM =
             "Team with name %s not found!";
@@ -55,6 +57,14 @@ public class TeamMenuController {
             "User is already suspended";
     private final String WARN_TASK_ID_INVALID =
             "No task exists with this id!";
+    private final String WARN_ALREADY_ASSIGNED =
+            "Task is already assigned to this user!";
+    private final String WARN_WAIT_CONFIRM =
+            "Team is waiting for sysadmin confirmation!";
+    private final String WARN_USER_SUSPENDED =
+            "User is suspended!";
+    private final String WARN_USER_TEAM_LEADER =
+            "User is team leader!";
 
     private final String TEAM_NAME_REGEXP =
             "^(?=.{5,12}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$";
@@ -80,10 +90,13 @@ public class TeamMenuController {
     }
 
     public Response getTeam(String teamName) {
-        Team team = Team.getTeamByName(teamName);
+        Team team = UserController.getLoggedUser().getMyTeam(teamName);
 
         if (team == null)
             return new Response(String.format(WARN_404_TEAM, teamName), false);
+
+        if (team.isPending())
+            return new Response(WARN_WAIT_CONFIRM, false);
 
         return new Response(SUCCESS_FOUND_TEAM, true, team);
     }
@@ -96,6 +109,22 @@ public class TeamMenuController {
 
     public Response showTasks(Team team) {
         return new Response(team.getTasksFormatted(), true);
+    }
+
+    public Response showTask(Team team, String taskId) {
+        int id;
+        try {
+            id = Integer.parseInt(taskId);
+        } catch (Exception e) {
+            return new Response(WARN_TASK_ID_INVALID, false);
+        }
+
+        Task task = team.getTaskById(id);
+
+        if (task == null)
+            return new Response(WARN_TASK_ID_INVALID, false);
+
+        return new Response(task.toString(), true);
     }
 
     public Response getLeaderTeams() {
@@ -214,11 +243,14 @@ public class TeamMenuController {
     public Response addMemberToTeam(Team team, String username) {
         User user = User.getUser(username);
 
-        if(user == null)
+        if (user == null)
             return new Response(WARN_404_USER, false);
 
-        if(team.hasMember(user))
+        if (team.hasMember(user))
             return new Response(WARN_USER_EXISTS, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.addMember(user);
         return new Response(SUCCESS_USER_ADDED, true);
@@ -227,11 +259,14 @@ public class TeamMenuController {
     public Response deleteMember(Team team, String username) {
         User user = User.getUser(username);
 
-        if(user == null)
+        if (user == null)
             return new Response(WARN_404_USER, false);
 
-        if(!team.hasMember(user))
+        if (!team.hasMember(user))
             return new Response(WARN_404_USER, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.deleteMember(user);
         return new Response(SUCCESS_USER_DELETED, true);
@@ -239,27 +274,56 @@ public class TeamMenuController {
 
     public Response suspendMember(Team team, String username) {
         User user = User.getUser(username);
-        if(user == null)
+        if (user == null)
             return new Response(WARN_404_USER, false);
 
-        if(!team.hasMember(user))
+        if (!team.hasMember(user))
             return new Response(WARN_404_USER, false);
 
-        if(team.isSuspended(user))
+        if (team.isSuspended(user))
             return new Response(WARN_ALREADY_SUSPENDED, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.suspendMember(user);
         return new Response(SUCCESS_USER_SUSPENDED, true);
     }
 
+    public Response promoteUser(Team team, String username, String rate) {
+        User user = User.getUser(username);
+
+        if (user == null)
+            return new Response(WARN_404_USER, false);
+
+        if (!team.hasMember(user))
+            return new Response(WARN_404_USER, false);
+
+        if (team.isSuspended(user))
+            return new Response(WARN_USER_SUSPENDED, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new Response(WARN_USER_TEAM_LEADER, false);
+
+        user.setType("team leader");
+        team.setLeader(user);
+        return new Response(SUCCESS_PROMOTED, true);
+    }
+
     public Response assignToTask(Team team, String taskId, String username) {
         User user = User.getUser(username);
 
-        if(user == null)
+        if (user == null)
             return new Response(WARN_404_USER, false);
 
-        if(!team.hasMember(user))
+        if (!team.hasMember(user))
             return new Response(WARN_404_USER, false);
+
+        if (team.isSuspended(user))
+            return new Response(WARN_USER_SUSPENDED, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new Response(WARN_USER_TEAM_LEADER, false);
 
         int tId;
         try {
@@ -270,8 +334,11 @@ public class TeamMenuController {
 
         Task task = team.getTaskById(tId);
 
-        if(task == null)
+        if (task == null)
             return new Response(WARN_TASK_ID_INVALID, false);
+
+        if (task.isInAssignedUsers(username) != null)
+            return new Response(WARN_ALREADY_ASSIGNED, false);
 
         task.assignUser(user);
         return new Response(SUCCESS_MEMBER_ASSIGNED, true);
