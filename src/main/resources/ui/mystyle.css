@@ -34,6 +34,11 @@
     -fx-graphic: url('assets/team-w-24.png');
 }
 
+.notif-btn {
+    -fx-graphic: url('assets/notification-w-24.png');
+}
+
 .tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
 }
+

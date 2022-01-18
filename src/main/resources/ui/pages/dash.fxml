@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -92,6 +93,18 @@
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
                                     <String fx:value="profile-btn" />
+                                 </styleClass>
+                              </Button>
+                              <Button graphicTextGap="20.0" layoutX="10.0" layoutY="144.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Notification" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="custom-menu-btn" />
+                                    <String fx:value="notif-btn" />
+                                 </styleClass>
+                              </Button>
+                              <Button graphicTextGap="20.0" layoutX="10.0" layoutY="189.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Requests" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="custom-menu-btn" />
+                                    <String fx:value="notif-btn" />
                                  </styleClass>
                               </Button>
                               <Pane VBox.vgrow="ALWAYS" />
@@ -278,7 +291,7 @@
                                                                                                 </HBox>
                                                                                              </children>
                                                                                              <padding>
-                                                                                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                                                                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                                                              </padding>
                                                                                           </VBox>
                                                                                        </content>
@@ -555,6 +568,11 @@
                                                                                                                         </VBox>
                                                                                                                      </content>
                                                                                                                   </ScrollPane>
+                                                                                                                  <HBox alignment="CENTER_RIGHT">
+                                                                                                                     <children>
+                                                                                                                        <Button mnemonicParsing="false" styleClass="custom-btn" text="Add member to team" />
+                                                                                                                     </children>
+                                                                                                                  </HBox>
                                                                                                                </children>
                                                                                                             </VBox>
                                                                                                          </children>
@@ -841,92 +859,25 @@
                                                                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                                                                                </padding>
                                                                                                                <children>
+                                                                                                                  <HBox>
+                                                                                                                     <children>
+                                                                                                                        <TextField promptText="Search board by name" HBox.hgrow="ALWAYS" />
+                                                                                                                     </children>
+                                                                                                                  </HBox>
                                                                                                                   <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                                                                                                                      <content>
-                                                                                                                        <VBox spacing="10.0">
+                                                                                                                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                                                                                                                            <children>
-                                                                                                                              <VBox layoutX="10.0" layoutY="20.0">
+                                                                                                                              <HBox style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
                                                                                                                                  <children>
-                                                                                                                                    <HBox>
-                                                                                                                                       <children>
-                                                                                                                                          <Pane maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 100px;">
-                                                                                                                                             <children>
-                                                                                                                                                <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                                                                                                                                             </children>
-                                                                                                                                          </Pane>
-                                                                                                                                          <VBox alignment="CENTER_LEFT">
-                                                                                                                                             <children>
-                                                                                                                                                <Label text="Member name" />
-                                                                                                                                                <Label layoutX="10.0" layoutY="10.0" text="Leader" />
-                                                                                                                                             </children>
-                                                                                                                                          </VBox>
-                                                                                                                                       </children>
-                                                                                                                                    </HBox>
-                                                                                                                                    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
-                                                                                                                                       <padding>
-                                                                                                                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                                                                                       </padding>
-                                                                                                                                       <children>
-                                                                                                                                          <VBox HBox.hgrow="ALWAYS">
-                                                                                                                                             <children>
-                                                                                                                                                <Label text="Hello this is my new message" />
-                                                                                                                                                <Separator prefWidth="200.0">
-                                                                                                                                                   <VBox.margin>
-                                                                                                                                                      <Insets top="10.0" />
-                                                                                                                                                   </VBox.margin>
-                                                                                                                                                </Separator>
-                                                                                                                                                <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                                                                                                                                                   <children>
-                                                                                                                                                      <Label text="2022-09-08" />
-                                                                                                                                                   </children>
-                                                                                                                                                </HBox>
-                                                                                                                                             </children>
-                                                                                                                                          </VBox>
-                                                                                                                                       </children>
-                                                                                                                                    </HBox>
+                                                                                                                                    <Label text="Board name" />
+                                                                                                                                    <Pane HBox.hgrow="ALWAYS" />
+                                                                                                                                    <Button mnemonicParsing="false" styleClass="custom-btn" text="Remove" />
                                                                                                                                  </children>
-                                                                                                                              </VBox>
-                                                                                                                              <VBox layoutX="10.0" layoutY="152.0">
-                                                                                                                                 <children>
-                                                                                                                                    <HBox>
-                                                                                                                                       <children>
-                                                                                                                                          <Pane maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 100px;">
-                                                                                                                                             <children>
-                                                                                                                                                <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                                                                                                                                             </children>
-                                                                                                                                          </Pane>
-                                                                                                                                          <VBox alignment="CENTER_LEFT">
-                                                                                                                                             <children>
-                                                                                                                                                <Label text="Member name" />
-                                                                                                                                                <Label layoutX="10.0" layoutY="10.0" text="Leader" />
-                                                                                                                                             </children>
-                                                                                                                                          </VBox>
-                                                                                                                                       </children>
-                                                                                                                                    </HBox>
-                                                                                                                                    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
-                                                                                                                                       <padding>
-                                                                                                                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                                                                                       </padding>
-                                                                                                                                       <children>
-                                                                                                                                          <VBox HBox.hgrow="ALWAYS">
-                                                                                                                                             <children>
-                                                                                                                                                <Label text="Hello this is my new message" />
-                                                                                                                                                <Separator prefWidth="200.0">
-                                                                                                                                                   <VBox.margin>
-                                                                                                                                                      <Insets top="10.0" />
-                                                                                                                                                   </VBox.margin>
-                                                                                                                                                </Separator>
-                                                                                                                                                <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                                                                                                                                                   <children>
-                                                                                                                                                      <Label text="2022-09-08" />
-                                                                                                                                                   </children>
-                                                                                                                                                </HBox>
-                                                                                                                                             </children>
-                                                                                                                                          </VBox>
-                                                                                                                                       </children>
-                                                                                                                                    </HBox>
-                                                                                                                                 </children>
-                                                                                                                              </VBox>
+                                                                                                                                 <padding>
+                                                                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                                                                 </padding>
+                                                                                                                              </HBox>
                                                                                                                            </children>
                                                                                                                            <padding>
                                                                                                                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -934,14 +885,9 @@
                                                                                                                         </VBox>
                                                                                                                      </content>
                                                                                                                   </ScrollPane>
-                                                                                                                  <HBox alignment="CENTER" spacing="10.0">
+                                                                                                                  <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                                                                                                      <children>
-                                                                                                                        <TextField promptText="Write your message..." HBox.hgrow="ALWAYS">
-                                                                                                                           <font>
-                                                                                                                              <Font size="14.0" />
-                                                                                                                           </font>
-                                                                                                                        </TextField>
-                                                                                                                        <Button mnemonicParsing="false" styleClass="custom-btn" text="SEND" />
+                                                                                                                        <Button layoutX="704.0" layoutY="10.0" mnemonicParsing="false" styleClass="custom-btn" text="Create board" />
                                                                                                                      </children>
                                                                                                                   </HBox>
                                                                                                                </children>
@@ -989,10 +935,7 @@
                                                                   <TextField promptText="Search task by title" />
                                                                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                                                                      <children>
-                                                                        <ComboBox prefWidth="150.0" promptText="Priority" />
-                                                                        <ComboBox layoutX="20.0" layoutY="20.0" prefWidth="150.0" promptText="Title" />
                                                                         <ComboBox layoutX="181.0" layoutY="20.0" prefWidth="150.0" promptText="Deadline" />
-                                                                        <ComboBox layoutX="342.0" layoutY="20.0" prefWidth="150.0" promptText="Team" />
                                                                      </children>
                                                                      <padding>
                                                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -1009,44 +952,8 @@
                                                                               <Label text="Task title" />
                                                                               <Label layoutX="21.0" layoutY="43.0" text="Priority" />
                                                                               <Label layoutX="79.0" layoutY="21.0" text="Team name" />
+                                                                              <Label layoutX="128.0" layoutY="21.0" text="Deadline" />
                                                                               <Pane HBox.hgrow="ALWAYS" />
-                                                                              <ProgressBar prefWidth="200.0" progress="0.86" />
-                                                                           </children>
-                                                                           <padding>
-                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                           </padding>
-                                                                        </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
-                                                                           <children>
-                                                                              <Label text="Task title" />
-                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
-                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
-                                                                              <Pane HBox.hgrow="ALWAYS" />
-                                                                              <ProgressBar prefWidth="200.0" progress="0.61" />
-                                                                           </children>
-                                                                           <padding>
-                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                           </padding>
-                                                                        </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="72.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
-                                                                           <children>
-                                                                              <Label text="Task title" />
-                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
-                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
-                                                                              <Pane HBox.hgrow="ALWAYS" />
-                                                                              <ProgressBar prefWidth="200.0" progress="0.48" />
-                                                                           </children>
-                                                                           <padding>
-                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                           </padding>
-                                                                        </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="123.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
-                                                                           <children>
-                                                                              <Label text="Task title" />
-                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
-                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
-                                                                              <Pane HBox.hgrow="ALWAYS" />
-                                                                              <ProgressBar prefWidth="200.0" progress="0.73" />
                                                                            </children>
                                                                            <padding>
                                                                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -1169,6 +1076,731 @@
                                                             <HBox alignment="CENTER_RIGHT">
                                                                <children>
                                                                   <Button mnemonicParsing="false" styleClass="custom-btn" text="Create Task" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Board page">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <Label text="Board name">
+                                                                     <font>
+                                                                        <Font size="22.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Pane HBox.hgrow="ALWAYS" />
+                                                                  <CheckBox mnemonicParsing="false" text="Only my tasks" />
+                                                               </children>
+                                                            </HBox>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <HBox spacing="10.0">
+                                                                     <children>
+                                                                        <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
+                                                                           <children>
+                                                                              <HBox alignment="CENTER" layoutX="16.0" layoutY="11.0">
+                                                                                 <children>
+                                                                                    <Label text="Tasks">
+                                                                                       <font>
+                                                                                          <Font size="18.0" />
+                                                                                       </font>
+                                                                                    </Label>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="11.0" layoutY="11.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                                 <VBox.margin>
+                                                                                    <Insets />
+                                                                                 </VBox.margin>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="69.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="167.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="264.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="362.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets left="5.0" right="5.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                        <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
+                                                                           <children>
+                                                                              <HBox alignment="CENTER">
+                                                                                 <children>
+                                                                                    <Label text="Failed" textFill="RED">
+                                                                                       <font>
+                                                                                          <Font size="18.0" />
+                                                                                       </font>
+                                                                                    </Label>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="11.0" layoutY="11.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                                 <VBox.margin>
+                                                                                    <Insets />
+                                                                                 </VBox.margin>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="69.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="167.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="264.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="362.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets left="5.0" right="5.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                        <VBox alignment="TOP_CENTER" layoutX="244.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
+                                                                           <children>
+                                                                              <HBox alignment="CENTER">
+                                                                                 <children>
+                                                                                    <Label text="Done" textFill="#26a8ff">
+                                                                                       <font>
+                                                                                          <Font size="18.0" />
+                                                                                       </font>
+                                                                                    </Label>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="11.0" layoutY="11.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                                 <VBox.margin>
+                                                                                    <Insets />
+                                                                                 </VBox.margin>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="69.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="167.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="264.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                              <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="362.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" style="-fx-border-color: #26a8ff;">
+                                                                                 <children>
+                                                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <Label text="Task description about something" wrapText="true" />
+                                                                                          <Separator prefWidth="200.0" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Label text="2022-02-10" textFill="RED" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding>
+                                                                              </HBox>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets left="5.0" right="5.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                     </children>
+                                                                     <padding>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                     </padding>
+                                                                  </HBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" styleClass="custom-btn" text="Create task" />
+                                                                  <Button layoutX="704.0" layoutY="10.0" mnemonicParsing="false" styleClass="custom-btn" text="Create category" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Calendar">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <VBox VBox.vgrow="NEVER">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <TextField promptText="Search task by title" />
+                                                               </children>
+                                                            </VBox>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <VBox spacing="10.0">
+                                                                     <children>
+                                                                        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Label text="Task title" />
+                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
+                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <ProgressBar prefWidth="200.0" progress="0.86" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Label text="Task title" />
+                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
+                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <ProgressBar prefWidth="200.0" progress="0.61" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="72.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Label text="Task title" />
+                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
+                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <ProgressBar prefWidth="200.0" progress="0.48" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="123.0" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Label text="Task title" />
+                                                                              <Label layoutX="21.0" layoutY="43.0" text="Priority" />
+                                                                              <Label layoutX="79.0" layoutY="21.0" text="Team name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <ProgressBar prefWidth="200.0" progress="0.73" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                     </children>
+                                                                     <padding>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                     </padding>
+                                                                  </VBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                            <HBox alignment="CENTER_RIGHT">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" styleClass="custom-btn" text="Create Task" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Add members">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <VBox VBox.vgrow="NEVER">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <TextField promptText="Search member by name" />
+                                                               </children>
+                                                            </VBox>
+                                                            <HBox>
+                                                               <children>
+                                                                  <ComboBox prefWidth="150.0" promptText="Team" />
+                                                               </children>
+                                                            </HBox>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <VBox spacing="10.0">
+                                                                     <children>
+                                                                        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Pane maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 100px;">
+                                                                                 <children>
+                                                                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                                                 </children>
+                                                                              </Pane>
+                                                                              <Label text="Member name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="custom-btn" text="Add to team" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                     </children>
+                                                                     <padding>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                     </padding>
+                                                                  </VBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Notification">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <VBox spacing="10.0">
+                                                                     <children>
+                                                                        <VBox style="-fx-border-color: #26a8ff; -fx-border-radius: 5px; -fx-background-radius: 5px;">
+                                                                           <children>
+                                                                              <HBox spacing="10.0">
+                                                                                 <children>
+                                                                                    <Label text="Sender:" />
+                                                                                    <Label layoutX="10.0" layoutY="10.0" text="Admin" />
+                                                                                 </children>
+                                                                              </HBox>
+                                                                              <HBox layoutX="10.0" layoutY="10.0" spacing="10.0">
+                                                                                 <children>
+                                                                                    <Label text="Hello this is the notification sent by admin" />
+                                                                                 </children>
+                                                                              </HBox>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                        <VBox layoutX="20.0" layoutY="20.0" style="-fx-border-color: #26a8ff; -fx-border-radius: 5px; -fx-background-radius: 5px;">
+                                                                           <children>
+                                                                              <HBox spacing="10.0">
+                                                                                 <children>
+                                                                                    <Label text="Sender:" />
+                                                                                    <Label layoutX="10.0" layoutY="10.0" text="Admin" />
+                                                                                 </children>
+                                                                              </HBox>
+                                                                              <HBox layoutX="10.0" layoutY="10.0" spacing="10.0">
+                                                                                 <children>
+                                                                                    <Label text="Hello this is the notification sent by admin" />
+                                                                                 </children>
+                                                                              </HBox>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                     </children>
+                                                                     <padding>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                     </padding>
+                                                                  </VBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Send Notification">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label text="Send notification" />
+                                                            <Separator prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox>
+                                                         <children>
+                                                            <ComboBox prefWidth="150.0" promptText="Team" />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox layoutX="20.0" layoutY="52.0">
+                                                         <children>
+                                                            <TextArea promptText="Write notification body here..." HBox.hgrow="ALWAYS" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Pane VBox.vgrow="ALWAYS" />
+                                                      <HBox alignment="CENTER_RIGHT">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" styleClass="custom-btn" text="Send notification" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Create request">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <VBox layoutX="20.0" layoutY="20.0">
+                                                               <children>
+                                                                  <Label text="Team info" />
+                                                                  <Separator prefWidth="200.0" />
+                                                               </children>
+                                                            </VBox>
+                                                            <HBox spacing="20.0">
+                                                               <children>
+                                                                  <TextField promptText="Team name" />
+                                                               </children>
+                                                            </HBox>
+                                                            <Pane VBox.vgrow="ALWAYS" />
+                                                            <HBox alignment="CENTER_RIGHT">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" styleClass="custom-btn" text="Submit Request" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab style="-fx-opacity: 0;" text="Requests">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <VBox VBox.vgrow="NEVER">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <TextField promptText="Search team by name" />
+                                                               </children>
+                                                            </VBox>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <VBox spacing="10.0">
+                                                                     <children>
+                                                                        <HBox style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
+                                                                           <children>
+                                                                              <Label text="Team name" />
+                                                                              <Pane HBox.hgrow="ALWAYS" />
+                                                                              <Label text="status" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                           </padding>
+                                                                        </HBox>
+                                                                     </children>
+                                                                     <padding>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                     </padding>
+                                                                  </VBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                            <Pane VBox.vgrow="NEVER" />
+                                                            <HBox alignment="CENTER_RIGHT">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" styleClass="custom-btn" text="Create team" />
                                                                </children>
                                                             </HBox>
                                                          </children>
