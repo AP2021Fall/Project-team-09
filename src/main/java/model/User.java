@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 public class User implements Serializable {
 
     private static User admin;
-    private String lastName;
+
     private String firstname;
+    private String lastName;
     private String birthday = "Not Entered Yet";
     private String username;
     private String password;
