@@ -30,6 +30,8 @@ public class TeamMenuController {
             "User promoted to team leader successfully!";
     private final String SUCCESS_USERS_RECEIVED =
             "Users received!";
+    private final String SUCCESS =
+            "Success!";
 
     private final String WARN_404_TEAM =
             "Team with name %s not found!";
@@ -69,6 +71,8 @@ public class TeamMenuController {
             "User is team leader!";
     private final String WARN_NOT_TEAM_LEADER =
             "You're not a team leader";
+    private final String WARN_EMPTY_MESSAGE =
+            "You cannot send empty message!";
 
     private final String TEAM_NAME_REGEXP =
             "^(?=.{5,12}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$";
@@ -85,12 +89,20 @@ public class TeamMenuController {
         return new Response(team.getScoreboard(), true);
     }
 
+    public Response getRoadmapFormatted(Team team) {
+        return new Response(team.getRoadmapFormatted(), true);
+    }
+
     public Response getRoadmap(Team team) {
-        return new Response(team.getRoadmap(), true);
+        return new Response(SUCCESS, true, team.getRoadmap());
+    }
+
+    public Response getMessagesFormatted(Team team) {
+        return new Response(team.getMessagesFormatted(), true);
     }
 
     public Response getMessages(Team team) {
-        return new Response(team.getMessages(), true);
+        return new Response(SUCCESS, true, team.getMessages());
     }
 
     public Response getTeam(String teamName) {
@@ -105,10 +117,13 @@ public class TeamMenuController {
         return new Response(SUCCESS_FOUND_TEAM, true, team);
     }
 
-    public void sendMessage(Team team, String body) {
+    public Response sendMessage(Team team, String body) {
         User user = UserController.getLoggedUser();
 
+        if (body.isEmpty())
+            return new Response(WARN_EMPTY_MESSAGE, false);
         team.sendMessage(user, body);
+        return new Response(SUCCESS, true);
     }
 
     public Response showTasks(Team team) {
@@ -216,6 +231,33 @@ public class TeamMenuController {
         return new Response(SUCCESS_TASK_CREATED, true);
     }
 
+    public Response createTask(Team team, String title,
+                               String priority, String startTime, String deadline, String description) {
+
+        if (title.isEmpty())
+            return new Response(WARN_TITLE_INVALID, false);
+
+        Task task = team.getTaskByTitle(title);
+
+        if (task != null)
+            return new Response(WARN_DUPLICATE_TITLE, false);
+
+        LocalDateTime start = isTimeValid(startTime);
+        LocalDateTime dead = isTimeValid(deadline);
+
+        if (start == null)
+            return new Response(WARN_START_TIME_INVALID, false);
+
+        if (dead == null)
+            return new Response(WARN_DEADLINE_INVALID, false);
+
+        if (dead.isBefore(start))
+            return new Response(WARN_DEADLINE_INVALID, false);
+
+        team.createTask(title, priority, start, dead, description);
+        return new Response(SUCCESS_TASK_CREATED, true);
+    }
+
     private LocalDateTime isTimeValid(String time) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
@@ -244,7 +286,7 @@ public class TeamMenuController {
         for (User user : teamMembers)
             result.append(String.format("%d- %s", index++, user.getUsername())).append("\n");
 
-        return new Response(result.toString(), true);
+        return new Response(result.toString(), true, teamMembers);
     }
 
     public Response addMemberToTeam(Team team, String username) {

@@ -178,6 +178,14 @@ public class Team implements Serializable {
         Task.addTask(task);
     }
 
+    public void createTask(String title, String priority, LocalDateTime start, LocalDateTime deadline,
+                           String description) {
+        Task.Priority p = Task.Priority.valueOf(priority.toUpperCase());
+        Task task = new Task(title, p, start, deadline, description);
+        this.tasks.add(task);
+        Task.addTask(task);
+    }
+
     public boolean hasTask(int id) {
         for (Task task : tasks)
             if (task.getId() == id)
@@ -323,7 +331,7 @@ public class Team implements Serializable {
         this.chatroom.add(new Message(sender, body));
     }
 
-    public String getMessages() {
+    public String getMessagesFormatted() {
         StringBuilder result = new StringBuilder();
 
         if (this.chatroom.isEmpty())
@@ -349,7 +357,22 @@ public class Team implements Serializable {
         return result.toString();
     }
 
-    public String getRoadmap() {
+    public ArrayList<Message> getMessages() {
+        this.chatroom.sort(new Comparator<Message>() {
+            @Override
+            public int compare(Message o1, Message o2) {
+                if (o1.getDateTime().isAfter(o2.getDateTime()))
+                    return 1;
+                else if (o1.getDateTime().isBefore(o2.getDateTime()))
+                    return -1;
+
+                return 0;
+            }
+        });
+        return this.chatroom;
+    }
+
+    public String getRoadmapFormatted() {
         StringBuilder result = new StringBuilder();
 
         if (this.tasks.isEmpty())
@@ -359,6 +382,10 @@ public class Team implements Serializable {
             result.append(task.getTitle()).append(": ").append(String.format("%.2f done\n", task.getProgress()));
 
         return result.toString();
+    }
+
+    public ArrayList<Task> getRoadmap() {
+        return this.tasks;
     }
 
     public String getScoreboard() {

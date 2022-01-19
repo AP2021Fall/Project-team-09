@@ -309,7 +309,7 @@ public class TeamMenu implements TerminalView {
     private void showRoadMap() {
         try {
             Response response = TeamMenuController.getInstance()
-                    .getRoadmap(team);
+                    .getRoadmapFormatted(team);
             ConsoleHelper.getInstance().println(response.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
@@ -319,7 +319,7 @@ public class TeamMenu implements TerminalView {
     private void showChatRoom() {
         try {
             Response response = TeamMenuController.getInstance()
-                    .getMessages(team);
+                    .getMessagesFormatted(team);
             ConsoleHelper.getInstance().println(response.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
