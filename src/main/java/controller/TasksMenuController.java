@@ -1,11 +1,14 @@
 package controller;
 
 import model.Task;
+import model.Team;
 import model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TasksMenuController {
 
@@ -15,6 +18,7 @@ public class TasksMenuController {
     private final String SUCCESS_DEAD_UPDATE = "Deadline updated successfully!";
     private final String SUCCESS_USER_REMOVE = "User %s removed successfully!";
     private final String SUCCESS_USER_ADD = "User %s added successfully!";
+    private final String SUCCESS = "Success!";
 
     private final String WARN_DEAD_INVALID = "New deadline is invalid!";
     private final String WARN_404_USER_LIST =
@@ -30,6 +34,20 @@ public class TasksMenuController {
         if (tasksMenuController == null)
             tasksMenuController = new TasksMenuController();
         return tasksMenuController;
+    }
+
+    public Response getAllTasks() {
+        User user = UserController.getLoggedUser();
+
+        ArrayList<Team> teams = user.getTeams();
+
+        HashMap<Team, ArrayList<Task>> teamTasks = new HashMap<>();
+
+        for (Team team : teams) {
+            teamTasks.put(team, team.getTasks());
+        }
+
+        return new Response(SUCCESS, true, teamTasks);
     }
 
     public Response editTaskTitle(String id, String title) {

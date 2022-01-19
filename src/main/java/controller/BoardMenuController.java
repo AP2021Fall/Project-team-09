@@ -9,6 +9,7 @@ import utilities.SharedPreferences;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 public class BoardMenuController {
 
@@ -32,6 +33,8 @@ public class BoardMenuController {
             "Task \"%s\" is moved to category \"%s\"";
     private String SUCCESS_TASK_REOPENED =
             "Task reopened successfully!";
+    private final String SUCCESS =
+            "Success!";
 
     private String WARN_BOARD_EXISTS =
             "There is already a board with this name!";
@@ -421,6 +424,12 @@ public class BoardMenuController {
         } catch (DateTimeParseException exception) {
             return null;
         }
+    }
+
+    public Response getBoards(Team team) {
+        ArrayList<Board> boards = team.getBoards();
+
+        return new Response(SUCCESS, true, boards);
     }
 
     private Board getBoard(Team team, String boardName) {

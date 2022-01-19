@@ -55,6 +55,22 @@ public class Task implements Serializable {
         this.category = null;
     }
 
+    public Task(String title, Priority priority, LocalDateTime startTime, LocalDateTime timeOfDeadline,
+                String description) {
+        this.id = idCounter++;
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.status = Status.IN_PROGRESS;
+        this.timeOfCreation = LocalDateTime.now();
+        this.startTime = startTime;
+        this.timeOfDeadline = timeOfDeadline;
+        this.assignedUsers = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.board = null;
+        this.category = null;
+    }
+
     public static ArrayList<Task> getAllTask() {
         return allTask;
     }
