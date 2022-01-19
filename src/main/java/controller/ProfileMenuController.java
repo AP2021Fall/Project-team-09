@@ -17,6 +17,8 @@ public class ProfileMenuController {
 
     private final String SUCCESS_USERNAME_CHANGED =
             "Username changed successfully!";
+    private final String SUCCESS_PROFILE_UPDATED =
+            "Profile updated successfully!";
 
     private final String WARN_WRONG_PASS =
             "Wrong old password!";
@@ -29,6 +31,10 @@ public class ProfileMenuController {
             "No teams available!";
     private final String WARN_404_NOTIFICATIONS =
             "No notifications available!";
+    private final String WARN_404_USER =
+            "User not found!";
+    private final String WARN_SAME_PASS =
+            "Password is the same!";
 
     private final String WARN_LENGTH =
             "Your new username must include at least 4 characters!";
@@ -40,9 +46,21 @@ public class ProfileMenuController {
             "you already have this username!";
     private final String WARN_404_TEAM =
             "Team not found!";
+    private final String WARN_404_FN =
+            "First name cannot be empty!";
+    private final String WARN_404_LN =
+            "Last name cannot be empty!";
+    private final String WARN_404_BD =
+            "Birth date cannot be empty!";
+    private final String WARN_NAME_INVALID =
+            "Name is invalid";
+    private final String WARN_TOO_MANY =
+            "Too many tries, logging out!";
 
     private final String USERNAME_REGEXP =
             "[a-zA-Z0-9_]{4,}";
+    private final String NAME_REGEXP =
+            "[a-zA-Z ]{1,}";
 
     private static ProfileMenuController controller = null;
     private static int tries = 0;
@@ -55,8 +73,15 @@ public class ProfileMenuController {
 
     public Response changePassword(String oldPassword, String newPassword) {
         User user = UserController.loggedUser;
-        if (tries == 1)
+        if (tries == 1) {
             LoginController.getInstance().logout();
+            return new Response(WARN_TOO_MANY, false);
+        }
+
+        if (user.getPassword().equals(newPassword))
+            return new Response(WARN_SAME_PASS, false);
+
+
         if (user.getPassword().equals(oldPassword)) {
             if (user.passwordIntHistory(newPassword)) {
                 return new Response(WARN_PASS_IN_HISTORY, false);
@@ -208,5 +233,33 @@ public class ProfileMenuController {
         for (String notification : notifications)
             answer.append(notification).append("\n");
         return new Response(answer.toString(), true, notifications);
+    }
+
+    public Response updateProfile(String firstName, String lastName, LocalDate birthDate) {
+        User user = UserController.getLoggedUser();
+
+        if (user == null)
+            return new Response(WARN_404_USER, false);
+
+        if (firstName.isEmpty())
+            return new Response(WARN_404_FN, false);
+
+        if (!firstName.matches(NAME_REGEXP) || !lastName.matches(NAME_REGEXP))
+            return new Response(WARN_NAME_INVALID, false);
+
+        if (lastName.isEmpty())
+            return new Response(WARN_404_LN, false);
+
+        if (birthDate == null)
+            return new Response(WARN_404_BD, false);
+
+        user.setFirstname(firstName);
+        user.setLastName(lastName);
+        user.setBirthday(birthDate);
+        return new Response(SUCCESS_PROFILE_UPDATED, true);
+    }
+
+    public void resetTries() {
+        tries = 0;
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -12,7 +13,7 @@ public class User implements Serializable {
 
     private String firstname;
     private String lastName;
-    private String birthday = "Not Entered Yet";
+    private LocalDate birthday;
     private String username;
     private String password;
     private String email;
@@ -23,7 +24,9 @@ public class User implements Serializable {
     private ArrayList<String> oldPasswords = new ArrayList<>();
     private ArrayList<String> notifications;
 
-    public User(String lastName, String firstname, String birthday, String username, String password, String email, Type type, ArrayList<LocalDateTime> logs, ArrayList<String> oldPasswords, ArrayList<String> notifications) {
+    public User(String lastName, String firstname, LocalDate birthday, String username, String password,
+                String email, Type type, ArrayList<LocalDateTime> logs, ArrayList<String> oldPasswords,
+                ArrayList<String> notifications) {
         this.lastName = lastName;
         this.firstname = firstname;
         this.birthday = birthday;
@@ -100,11 +103,11 @@ public class User implements Serializable {
         return firstname;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
@@ -275,11 +278,11 @@ public class User implements Serializable {
         return "Name: " + firstname + " " + lastName + "\n" +
                 "Username: " + username + "\n" +
                 "Email: " + email + "\n" +
-                "Birthday: " + birthday + "\n" +
+                "Birthday: " + birthday.toString() + "\n" +
                 "Role: " + type.toString() + "\n";
     }
 
-    enum Type {
+    public enum Type {
         teamMember, teamLeader, systemAdministrator;
 
         public static Type get(String role) {

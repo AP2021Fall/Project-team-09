@@ -460,11 +460,11 @@ public class Team implements Serializable {
         this.chatroom = chatroom;
     }
 
-    private enum Status {
+    public enum Status {
         PENDING, ACCEPTED, REJECTED
     }
 
-    private enum MemberStatus {
+    public enum MemberStatus {
         ACTIVE, SUSPENDED
     }
 }

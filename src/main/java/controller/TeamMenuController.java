@@ -28,6 +28,8 @@ public class TeamMenuController {
             "Member assigned successfully!";
     private final String SUCCESS_PROMOTED =
             "User promoted to team leader successfully!";
+    private final String SUCCESS_USERS_RECEIVED =
+            "Users received!";
 
     private final String WARN_404_TEAM =
             "Team with name %s not found!";
@@ -65,6 +67,8 @@ public class TeamMenuController {
             "User is suspended!";
     private final String WARN_USER_TEAM_LEADER =
             "User is team leader!";
+    private final String WARN_NOT_TEAM_LEADER =
+            "You're not a team leader";
 
     private final String TEAM_NAME_REGEXP =
             "^(?=.{5,12}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$";
@@ -166,6 +170,9 @@ public class TeamMenuController {
 
     public Response createTeam(String teamName) {
         Team team = Team.getTeamByName(teamName);
+
+        if (!UserController.getLoggedUser().isTeamLeader())
+            return new Response(WARN_NOT_TEAM_LEADER, false);
 
         if (team != null)
             return new Response(WARN_TEAM_EXISTS, false);
@@ -342,5 +349,18 @@ public class TeamMenuController {
 
         task.assignUser(user);
         return new Response(SUCCESS_MEMBER_ASSIGNED, true);
+    }
+
+    public Response getAllUsers(Team team) {
+
+        ArrayList<User> users = new ArrayList<>();
+
+        for (User user : User.getAllUsers()) {
+            if (!team.hasMember(user))
+                if (!user.isTeamLeader())
+                    users.add(user);
+        }
+
+        return new Response(SUCCESS_USERS_RECEIVED, true, users);
     }
 }

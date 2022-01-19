@@ -7,7 +7,7 @@
     -fx-font-family: Roboto;
     -fx-text-fill: #ffffff;
     -fx-background-color: #26a8ff;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-cursor: hand;
 }
 
@@ -40,5 +40,31 @@
 
 .tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
+}
+
+.text-field {
+    -fx-font-family: Roboto;
+    -fx-font-size: 18px;
+}
+
+.label {
+    -fx-font-size: 16px;
+}
+
+.custom-title {
+    -fx-font-size: 32px;
+}
+
+.combo-box {
+    -fx-font-size: 16px;
+}
+
+.list-item {
+    -fx-border-width: 1px;
+    -fx-border-color: #26a8ff;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
 }
 
