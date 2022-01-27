@@ -1,5 +1,6 @@
 package controller;
 
+import model.Notification;
 import model.User;
 
 public class UserController {
@@ -20,7 +21,7 @@ public class UserController {
 
     public static Response getNotifications() {
         String answer = "";
-        for(String notification : loggedUser.getNotifications()){
+        for(Notification notification : loggedUser.getNotifications()){
             answer += notification + "\n";
         }
         return new Response(answer,true, loggedUser.getNotifications());

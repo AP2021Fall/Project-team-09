@@ -39,7 +39,13 @@ public class TasksMenuController {
     public Response getAllTasks() {
         User user = UserController.getLoggedUser();
 
-        ArrayList<Team> teams = user.getTeams();
+        ArrayList<Team> teams = new ArrayList<>();
+
+        if (user.isTeamLeader()) {
+            teams = user.getMyTeams();
+        }else {
+            teams = user.getTeams();
+        }
 
         HashMap<Team, ArrayList<Task>> teamTasks = new HashMap<>();
 
