@@ -273,6 +273,14 @@ public class DashboardUIController implements Initializable, GUI {
         if (tab == TEAM && tab != TAB) {
             teamsSetTeams();
             teamTabPane.getSelectionModel().select(0);
+        } else if (tab == ADD_MEMBER && tab != TAB) {
+            setAMMembers();
+        } else if (tab == CREATE_TASK) {
+            setUpTaskCreationPage();
+            setTaskMembers();
+        } else if (tab == TASKS) {
+            setUpTasksPage();
+            setTTasks();
         }
 
         if (tab != TAB) {
@@ -750,5 +758,126 @@ public class DashboardUIController implements Initializable, GUI {
                 BoardMenuController.getInstance().createNewBoard(team, boardName);
         showResponse(response);
         save();
+    }
+
+    // tasks
+    private void setTTasks() {
+
+        Response response =
+                TasksMenuController.getInstance().getAllTasks();
+//
+//        showResponse(response);
+
+        TTaskItemHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) response.getObject();
+            for (Team team : teamTasks.keySet()) {
+                for (Task task : team.getTasks()) {
+                    TaskItem taskItem = new TaskItem(team, task);
+                    taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
+                        @Override
+                        public void onClick(Task task) {
+
+                        }
+                    });
+                    HBox taskItemBox = taskItem.draw();
+                    TTaskItemHolder.getChildren().add(taskItemBox);
+                }
+            }
+        }
+    }
+
+    private void setUpTasksPage() {
+        // teams
+        ObservableList<String> teams = FXCollections.observableArrayList();
+        teams.addAll("All");
+        Response response =
+                ProfileMenuController.getInstance().showTeams();
+        if (response.isSuccess()) {
+            ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+
+            for (Team team : allTeams) {
+                teams.add(team.getName());
+            }
+        }
+        TTeamCombo.setItems(teams);
+        TTeamCombo.getSelectionModel().select(0);
+
+        // priorities
+        ObservableList<String> priorities = FXCollections.observableArrayList();
+        priorities.addAll("All", "Low->High", "High->Low", "Lowest", "Low", "High", "Highest");
+        TPriorityCombo.setItems(priorities);
+        TPriorityCombo.getSelectionModel().select(0);
+
+        // deadlines
+        ObservableList<String> deadlines = FXCollections.observableArrayList();
+        deadlines.addAll("All", "Oldest->Newest", "Newest->Oldest");
+        TDeadlineCombo.setItems(deadlines);
+        TDeadlineCombo.getSelectionModel().select(0);
+    }
+
+    @FXML
+    private void onTCTask() {
+        tabPaneHandler(null, CREATE_TASK, 0);
+    }
+
+    // tasks > create task
+
+    private void setTaskMembers() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                TeamMenuController.getInstance().getAllUsers(team);
+
+        TTMemberItemHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            ArrayList<User> members = (ArrayList<User>) response.getObject();
+            for (User user : members) {
+                TaskMemberItem taskMemberItem = new TaskMemberItem(user);
+                HBox taskMember = taskMemberItem.draw();
+                TTMemberItemHolder.getChildren().add(taskMember);
+            }
+        }
+    }
+
+    @FXML
+    private void onCreateTask() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        String name = getValue(TTNameInput);
+        String priority = getComboValue(TTPriorityCombo);
+        LocalDate startDate = getDate(TTStartDate);
+        String startTime = getValue(TTStartTime);
+        LocalDate deadlineDate = getDate(TTDeadlineDate);
+        String deadlineTime = getValue(TTDeadlineTime);
+        String description = getValue(TTDescription);
+
+
+        String startDateTime = "";
+        String deadDateTime = "";
+
+        try {
+            startDateTime = String.format("%s|%s", startDate.toString(), startTime);
+            deadDateTime = String.format("%s|%s", deadlineDate.toString(), deadlineTime);
+        } catch (Exception e) {
+
+        }
+        Response response =
+                TeamMenuController.getInstance().createTask(team, name, priority, startDateTime, deadDateTime, description);
+        showResponse(response);
+        save();
+    }
+
+    private void setUpTaskCreationPage() {
+        ObservableList<String> priorities = FXCollections.observableArrayList();
+        priorities.addAll("Lowest", "Low", "High", "Highest");
+        TTPriorityCombo.setItems(priorities);
+        TTPriorityCombo.getSelectionModel().select(0);
     }
 }
