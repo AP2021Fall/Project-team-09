@@ -22,11 +22,11 @@ public class User implements Serializable {
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<LocalDateTime> logs = new ArrayList<>();
     private ArrayList<String> oldPasswords = new ArrayList<>();
-    private ArrayList<String> notifications;
+    private ArrayList<Notification> notifications;
 
     public User(String lastName, String firstname, LocalDate birthday, String username, String password,
                 String email, Type type, ArrayList<LocalDateTime> logs, ArrayList<String> oldPasswords,
-                ArrayList<String> notifications) {
+                ArrayList<Notification> notifications) {
         this.lastName = lastName;
         this.firstname = firstname;
         this.birthday = birthday;
@@ -75,7 +75,7 @@ public class User implements Serializable {
         this.oldPasswords = oldPasswords;
     }
 
-    public void setNotifications(ArrayList<String> notifications) {
+    public void setNotifications(ArrayList<Notification> notifications) {
         this.notifications = notifications;
     }
 
@@ -131,7 +131,7 @@ public class User implements Serializable {
         return type;
     }
 
-    public ArrayList<String> getNotifications() {
+    public ArrayList<Notification> getNotifications() {
         return notifications;
     }
 
@@ -139,7 +139,7 @@ public class User implements Serializable {
         return logs;
     }
 
-    public void sendNotification(String notification) {
+    public void sendNotification(Notification notification) {
         this.notifications.add(notification);
     }
 
@@ -239,10 +239,6 @@ public class User implements Serializable {
             return true;
         }
         return false;
-    }
-
-    public void addNotification(String notification) {
-        notifications.add(notification);
     }
 
     public void clearNotifications() {

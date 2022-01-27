@@ -1,5 +1,6 @@
 package controller;
 
+import model.Notification;
 import model.Team;
 import model.User;
 
@@ -225,12 +226,12 @@ public class ProfileMenuController {
     }
 
     public Response getNotifications() {
-        ArrayList<String> notifications = UserController.getLoggedUser().getNotifications();
+        ArrayList<Notification> notifications = UserController.getLoggedUser().getNotifications();
         if (notifications.isEmpty())
             return new Response(WARN_404_NOTIFICATIONS, false);
 
         StringBuilder answer = new StringBuilder();
-        for (String notification : notifications)
+        for (Notification notification : notifications)
             answer.append(notification).append("\n");
         return new Response(answer.toString(), true, notifications);
     }

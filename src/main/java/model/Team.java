@@ -308,9 +308,9 @@ public class Team implements Serializable {
         return new ArrayList<>(this.teamMembers.keySet());
     }
 
-    public void sendNotification(String body) {
+    public void sendNotification(Notification notification) {
         for (User user : this.teamMembers.keySet())
-            user.sendNotification(body);
+            user.sendNotification(notification);
     }
 
     public void addMember(User user) {

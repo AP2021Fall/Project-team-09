@@ -1,5 +1,6 @@
 package controller;
 
+import model.Notification;
 import model.Team;
 import model.User;
 
@@ -32,7 +33,8 @@ public class NotificationController {
         if(body.isEmpty())
             return new Response(WARN_404_BODY, false);
 
-        user.sendNotification(body);
+        Notification notification = new Notification(UserController.getLoggedUser(), null, body);
+        user.sendNotification(notification);
         return new Response(SUCCESS_NOTIFICATION_SENT, true);
     }
 
@@ -45,11 +47,13 @@ public class NotificationController {
         if(body.isEmpty())
             return new Response(WARN_404_BODY, false);
 
-        team.sendNotification(body);
+        Notification notification = new Notification(UserController.getLoggedUser(), team, body);
+        team.sendNotification(notification);
         return new Response(SUCCESS_NOTIFICATION_SENT, true);
     }
 
-    public Response sendNotificationToAll(String notification) {
+    public Response sendNotificationToAll(String body) {
+        Notification notification = new Notification(UserController.getLoggedUser(), null, body);
         for (User user : User.getAllUsers()) {
             user.sendNotification(notification);
         }
