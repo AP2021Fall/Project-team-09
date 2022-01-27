@@ -281,6 +281,8 @@ public class DashboardUIController implements Initializable, GUI {
         } else if (tab == TASKS) {
             setUpTasksPage();
             setTTasks();
+        } else if (tab == NOTIFICATION) {
+            setNotifications();
         }
 
         if (tab != TAB) {
@@ -879,5 +881,26 @@ public class DashboardUIController implements Initializable, GUI {
         priorities.addAll("Lowest", "Low", "High", "Highest");
         TTPriorityCombo.setItems(priorities);
         TTPriorityCombo.getSelectionModel().select(0);
+    }
+
+    //  notifications
+
+    private void setNotifications() {
+        User user = UserController.getLoggedUser();
+
+        ArrayList<Notification> notifications =
+                user.getNotifications();
+        NNotificationItemHolder.getChildren().clear();
+        for (Notification notification : notifications) {
+            NotificationItem notificationItem = new NotificationItem(notification);
+            notificationItem.setOnItemClickListener(new NotificationItem.OnItemClickListener() {
+                @Override
+                public void onClick(Notification notification) {
+
+                }
+            });
+            VBox itemBox = notificationItem.draw();
+            NNotificationItemHolder.getChildren().add(itemBox);
+        }
     }
 }
