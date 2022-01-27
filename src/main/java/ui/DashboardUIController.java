@@ -273,6 +273,8 @@ public class DashboardUIController implements Initializable, GUI {
         if (tab == TEAM && tab != TAB) {
             teamsSetTeams();
             teamTabPane.getSelectionModel().select(0);
+        } else if (tab == REQUESTS && tab != TAB) {
+            requestsSetTeams();
         } else if (tab == ADD_MEMBER && tab != TAB) {
             setAMMembers();
         } else if (tab == CREATE_TASK) {
@@ -902,5 +904,76 @@ public class DashboardUIController implements Initializable, GUI {
             VBox itemBox = notificationItem.draw();
             NNotificationItemHolder.getChildren().add(itemBox);
         }
+    }
+
+
+    // requests
+
+    private void requestsSetTeams() {
+        ArrayList<Team> teams = null;
+
+        Response response =
+                ProfileMenuController.getInstance().showTeams();
+
+        if (response.isSuccess()) {
+            teams = (ArrayList<Team>) response.getObject();
+        }
+
+        RTeamsItemHolder.getChildren().clear();
+        if (teams != null) {
+            for (Team team : teams) {
+                RequestTeamItem teamItem = new RequestTeamItem(team);
+                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Team team) {
+
+                    }
+                });
+                HBox teamBox = teamItem.draw();
+                RTeamsItemHolder.getChildren().add(teamBox);
+            }
+            onRequestTeamsSearchListener(teams);
+        }
+    }
+
+    private void onRequestTeamsSearchListener(ArrayList<Team> teams) {
+        if (!RTeamsItemHolder.getChildren().isEmpty()) {
+            ArrayList<Team> filteredTeams = new ArrayList<>();
+            RSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                for (Team team : teams) {
+                    if (team.getName().contains(newValue)) {
+                        filteredTeams.add(team);
+                    }
+                }
+            });
+            for (Team team : filteredTeams) {
+                RequestTeamItem teamItem = new RequestTeamItem(team);
+                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Team team) {
+
+                    }
+                });
+                HBox teamBox = teamItem.draw();
+                RTeamsItemHolder.getChildren().add(teamBox);
+            }
+        }
+    }
+
+    @FXML
+    private void onCreateTeamRequest() {
+        tabPaneHandler(null, CREATE_REQUEST, 0);
+    }
+
+    // create team request
+
+    @FXML
+    private void onCTSubmitRequest() {
+        String teamName = getValue(CTTeamName);
+
+        Response response =
+                TeamMenuController.getInstance().createTeam(teamName);
+        showResponse(response);
+        save();
     }
 }
