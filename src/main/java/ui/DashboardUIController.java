@@ -90,11 +90,128 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private PasswordField PANewPass;
 
+    // team
+
+    @FXML
+    private VBox TTeamsItemHolder;
+
+    @FXML
+    private TextField TTSearchInput;
+
+    // teams
+
+    @FXML
+    private TabPane teamTabPane;
+
     @FXML
     private VBox PTeamsItemHolder;
 
     @FXML
     private TextField PTSearchInput;
+
+    // teams > team page
+
+    @FXML
+    private TabPane TPTabPane;
+
+    // teams > members
+
+    @FXML
+    private VBox TMemberItemHolder;
+
+    // teams > add member
+
+    @FXML
+    private ComboBox<String> AMTeamCombo;
+
+    @FXML
+    private VBox AMMembersItemHolder;
+
+    // teams > roadmap
+
+    @FXML
+    private VBox TRTasksHolder;
+
+    // teams > chatroom
+
+    @FXML
+    private VBox TCChatItemHolder;
+
+    @FXML
+    private TextField TCMessageInput;
+
+    // boards > boards
+
+    @FXML
+    private VBox TBBoardItemHolder;
+
+    // boards > board > create board
+
+    @FXML
+    private TextField CBNameInput;
+
+
+    // tasks
+
+    @FXML
+    private VBox TTaskItemHolder;
+
+    @FXML
+    private TextField TSearchInput;
+
+    @FXML
+    private ComboBox<String> TTeamCombo;
+
+    @FXML
+    private ComboBox<String> TPriorityCombo;
+
+    @FXML
+    private ComboBox<String> TDeadlineCombo;
+
+    // tasks > create task
+
+    @FXML
+    private TextField TTNameInput;
+
+    @FXML
+    private ComboBox<String> TTPriorityCombo;
+
+    @FXML
+    private DatePicker TTStartDate;
+
+    @FXML
+    private TextField TTStartTime;
+
+    @FXML
+    private DatePicker TTDeadlineDate;
+
+    @FXML
+    private TextField TTDeadlineTime;
+
+    @FXML
+    private TextArea TTDescription;
+
+    @FXML
+    private VBox TTMemberItemHolder;
+
+    // notifications
+
+    @FXML
+    private VBox NNotificationItemHolder;
+
+
+    // requests
+
+    @FXML
+    private VBox RTeamsItemHolder;
+
+    @FXML
+    private TextField RSearchInput;
+
+    // create request
+
+    @FXML
+    private TextField CTTeamName;
 
 
     private double xOffset, yOffset;
@@ -153,6 +270,11 @@ public class DashboardUIController implements Initializable, GUI {
 
     private void tabPaneHandler(TabPane subTabPane, int tab, int subTab) {
 
+        if (tab == TEAM && tab != TAB) {
+            teamsSetTeams();
+            teamTabPane.getSelectionModel().select(0);
+        }
+
         if (tab != TAB) {
             mainTabPane.getSelectionModel().select(tab);
             TAB = tab;
@@ -161,6 +283,7 @@ public class DashboardUIController implements Initializable, GUI {
         if (subTabPane == null)
             return;
 
+//        if (subTab != SUB_TAB) {
         subTabPane.getSelectionModel().select(subTab);
         SUB_TAB = subTab;
 
@@ -174,8 +297,46 @@ public class DashboardUIController implements Initializable, GUI {
                     break;
             }
         }
+//        else if (tab == TEAM && tab != TAB) {
+//            switch (subTab) {
+//                case MEMBERS:
+//                    setMembers();
+//                    break;
+//                case ROADMAP:
+//                    break;
+//                case CHATROOM:
+//                    break;
+//                case BOARDS:
+//                    break;
+//            }
+//        }
+//        }
     }
 
+    private void teamPageTabPaneHandler(int subTab) {
+        if (TAB != TEAM) {
+            mainTabPane.getSelectionModel().select(TEAM);
+        }
+
+        teamTabPane.getSelectionModel().select(TEAMS_PAGE);
+
+        TPTabPane.getSelectionModel().select(subTab);
+
+        switch (subTab) {
+            case MEMBERS:
+                setMembers();
+                break;
+            case ROADMAP:
+                setRoadMap();
+                break;
+            case CHATROOM:
+                setChatroom();
+                break;
+            case BOARDS:
+                setBoards();
+                break;
+        }
+    }
 
     private void showPage(String pathName) {
         try {
@@ -326,6 +487,268 @@ public class DashboardUIController implements Initializable, GUI {
             ProfileMenuController.getInstance().resetTries();
             return;
         }
+        save();
+    }
+
+
+    // teams
+    private void teamsSetTeams() {
+        ArrayList<Team> teams = null;
+
+        Response response =
+                ProfileMenuController.getInstance().showTeams();
+
+//        showResponse(response);
+        if (response.isSuccess()) {
+            teams = (ArrayList<Team>) response.getObject();
+        }
+
+        TTeamsItemHolder.getChildren().clear();
+        if (teams != null) {
+            for (Team team : teams) {
+                TeamItem teamItem = new TeamItem(team);
+                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Team team) {
+                        SharedPreferences.add(SELECTED_TEAM, team);
+                        teamPageTabPaneHandler(MEMBERS);
+                    }
+                });
+                HBox teamBox = teamItem.draw();
+                TTeamsItemHolder.getChildren().add(teamBox);
+            }
+            onTeamTeamsSearchListener(teams);
+        }
+    }
+
+    private void onTeamTeamsSearchListener(ArrayList<Team> teams) {
+        if (!TTeamsItemHolder.getChildren().isEmpty()) {
+            ArrayList<Team> filteredTeams = new ArrayList<>();
+            TTSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                for (Team team : teams) {
+                    if (team.getName().contains(newValue)) {
+                        filteredTeams.add(team);
+                    }
+                }
+            });
+            for (Team team : filteredTeams) {
+                TeamItem teamItem = new TeamItem(team);
+                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Team team) {
+
+                    }
+                });
+                HBox teamBox = teamItem.draw();
+                TTeamsItemHolder.getChildren().add(teamBox);
+            }
+        }
+    }
+
+
+    // teams page
+    @FXML
+    private void onMembersMenu() {
+        teamPageTabPaneHandler(MEMBERS);
+    }
+
+    @FXML
+    private void onRoadmapMenu() {
+        teamPageTabPaneHandler(ROADMAP);
+    }
+
+    @FXML
+    private void onChatroomMenu() {
+        teamPageTabPaneHandler(CHATROOM);
+    }
+
+    @FXML
+    private void onBoardsMenu() {
+        teamPageTabPaneHandler(BOARDS);
+    }
+
+
+    // team > members
+    private void setMembers() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+        if (team == null)
+            return;
+
+        ArrayList<User> members = team.getMembers();
+
+        if (members == null)
+            return;
+
+        TMemberItemHolder.getChildren().clear();
+        for (User user : members) {
+            TeamMemberItem teamMemberItem = new TeamMemberItem(user);
+            teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
+                @Override
+                public void onClick(User member) {
+
+                }
+            });
+            HBox teamMemberBox = teamMemberItem.draw();
+            TMemberItemHolder.getChildren().add(teamMemberBox);
+        }
+    }
+
+    @FXML
+    private void onAddMember() {
+        tabPaneHandler(null, ADD_MEMBER, 0);
+    }
+
+
+    // team > add member
+    private void setAMMembers() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                TeamMenuController.getInstance().getAllUsers(team);
+        AMMembersItemHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            ArrayList<User> users = (ArrayList<User>) response.getObject();
+
+            for (User user : users) {
+                AssignMemberItem assignMemberItem = new AssignMemberItem(user);
+                assignMemberItem.setOnItemClickListener(new AssignMemberItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(User member) {
+
+                    }
+                });
+                HBox assignMemberBox = assignMemberItem.draw();
+                AMMembersItemHolder.getChildren().add(assignMemberBox);
+            }
+        }
+    }
+
+
+    // team > roadmap
+    private void setRoadMap() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                TeamMenuController.getInstance().getRoadmap(team);
+
+        TRTasksHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            ArrayList<Task> tasks = (ArrayList<Task>) response.getObject();
+
+            for (Task task : tasks) {
+                RoadmapItem roadmapItem = new RoadmapItem(task);
+                roadmapItem.setOnItemClickListener(new RoadmapItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Task task) {
+
+                    }
+                });
+                HBox roadmapBox = roadmapItem.draw();
+                TRTasksHolder.getChildren().add(roadmapBox);
+            }
+        }
+    }
+
+
+    // team > chatroom
+    private void setChatroom() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                TeamMenuController.getInstance().getMessages(team);
+        TCChatItemHolder.getChildren().clear();
+
+        if (response.isSuccess()) {
+            ArrayList<Message> messages = (ArrayList<Message>) response.getObject();
+
+            for (Message message : messages) {
+                ChatItem chatItem = new ChatItem(message);
+                chatItem.setOnItemClickListener(new ChatItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Message message) {
+
+                    }
+                });
+                VBox chatBox = chatItem.draw();
+                TCChatItemHolder.getChildren().add(chatBox);
+            }
+        }
+    }
+
+    @FXML
+    private void onSendMessage() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        String message = getValue(TCMessageInput);
+
+        Response response =
+                TeamMenuController.getInstance().sendMessage(team, message);
+        if (response.isSuccess()) {
+            setChatroom();
+        }
+        save();
+    }
+
+
+    // team > board
+    private void setBoards() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                BoardMenuController.getInstance().getBoards(team);
+
+        TBBoardItemHolder.getChildren().clear();
+
+        if (response.isSuccess()) {
+            ArrayList<Board> boards = (ArrayList<Board>) response.getObject();
+
+            for (Board board : boards) {
+                BoardItem boardItem = new BoardItem(board);
+                boardItem.setOnItemClickListener(new BoardItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Board board) {
+
+                    }
+                });
+                HBox boardBox = boardItem.draw();
+                TBBoardItemHolder.getChildren().add(boardBox);
+            }
+        }
+    }
+
+    @FXML
+    private void onTCBoard() {
+        tabPaneHandler(null, CREATE_BOARD, 0);
+    }
+
+
+    // team > board > create board
+    @FXML
+    private void onCreateBoard() {
+        String boardName = getValue(CBNameInput);
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                BoardMenuController.getInstance().createNewBoard(team, boardName);
+        showResponse(response);
         save();
     }
 }
