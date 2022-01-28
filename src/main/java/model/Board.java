@@ -42,7 +42,7 @@ public class Board implements Serializable {
         this.name = name;
     }
 
-    public String getCategoryTasks(String categoryName) {
+    public String getCategoryTasksFormatted(String categoryName) {
         StringBuilder result = new StringBuilder();
 
         for (Task task : Task.getAllTask())
@@ -52,6 +52,15 @@ public class Board implements Serializable {
                                 "something"))
                         .append("\n");
         return result.toString();
+    }
+
+    public ArrayList<Task> getCategoryTasks(String categoryName) {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        for (Task task : Task.getAllTask())
+            if (task.getCategory().equalsIgnoreCase(categoryName))
+                tasks.add(task);
+        return tasks;
     }
 
     public ArrayList<String> getCategories() {
@@ -77,7 +86,7 @@ public class Board implements Serializable {
         int index = this.categories.indexOf(categoryName);
 
         if (index < this.categories.size() - 1)
-            return this.categories.get(this.categories.size() - 1);
+            return this.categories.get(index + 1);
         return "done";
     }
 

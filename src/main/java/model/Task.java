@@ -131,6 +131,11 @@ public class Task implements Serializable {
 
         int index = this.board.getCategories().indexOf(this.category);
 
+        if (this.isDone())
+            index = this.board.getCategories().size();
+        if (this.isFailed())
+            index = -100;
+
         return ((float) index / (float) this.board.getCategories().size()) * 100;
     }
 

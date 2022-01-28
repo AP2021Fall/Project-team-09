@@ -145,6 +145,9 @@ public class BoardMenuController {
         if (board == null)
             return new Response(WARN_404_SELECTED_BOARD, false);
 
+        if (categoryName.isEmpty())
+            return new Response(WARN_INVALID_CATEGORY, false);
+
         if (board.hasCategory(categoryName))
             return new Response(WARN_TAKEN_CATEGORY, false);
 
@@ -326,7 +329,7 @@ public class BoardMenuController {
 
         if (!board.hasCategory(categoryName))
             return new Response(WARN_INVALID_CATEGORY, false);
-        return new Response(board.getCategoryTasks(categoryName), true);
+        return new Response(board.getCategoryTasksFormatted(categoryName), true);
     }
 
     public Response getSpecificCategoryTasks(Team team, String category, String boardName) {

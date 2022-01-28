@@ -31,7 +31,7 @@ public class RoadmapItem {
 
         Pane pane = new Pane();
 
-        progressBar.setProgress(task.getProgress());
+        progressBar.setProgress(task.getProgress() / 100);
 
         hBox.getStyleClass().add("list-item");
         HBox.setHgrow(hBox, Priority.ALWAYS);

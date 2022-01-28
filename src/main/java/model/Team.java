@@ -450,8 +450,9 @@ public class Team implements Serializable {
     public ArrayList<Task> getBoardTasks(Board board) {
         ArrayList<Task> tasks = new ArrayList<>();
         for (Task task : this.tasks)
-            if (task.getBoard().getId() == board.getId())
-                tasks.add(task);
+            if (task.getBoard() != null)
+                if (task.getBoard().getId() == board.getId())
+                    tasks.add(task);
         return tasks;
     }
 
