@@ -24,12 +24,14 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DashboardUIController implements Initializable, GUI {
 
     private final String SELECTED_TEAM =
             "team";
+    private final String BOARD = "board";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -52,6 +54,8 @@ public class DashboardUIController implements Initializable, GUI {
     private final int ADD_MEMBER = 7;
     private final int CREATE_BOARD = 8;
     private final int CREATE_TASK = 9;
+    private final int BOARD_PAGE = 10;
+    private final int CREATE_CATEGORY = 11;
 
     private int TAB = 0;
     private int SUB_TAB = 0;
@@ -150,6 +154,15 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TextField CBNameInput;
 
+    // boards > board page
+
+    @FXML
+    private HBox BCategoryHolder;
+
+    // board > create category
+
+    @FXML
+    private TextField CCNameInput;
 
     // tasks
 
@@ -198,7 +211,6 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private VBox NNotificationItemHolder;
-
 
     // requests
 
@@ -285,6 +297,8 @@ public class DashboardUIController implements Initializable, GUI {
             setTTasks();
         } else if (tab == NOTIFICATION) {
             setNotifications();
+        } else if (tab == BOARD_PAGE) {
+            setBoard();
         }
 
         if (tab != TAB) {
@@ -392,6 +406,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // profile > info
+
     private void setProfile() {
 //        Response response = ProfileMenuController.getInstance().getMyProfile();
 //        if (!response.isSuccess())
@@ -424,7 +439,6 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // profile > teams
-
     private void setTeams() {
         ArrayList<Team> teams = null;
 
@@ -480,7 +494,6 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // profile > auth
-
     @FXML
     private void onPASaveChanges() {
         String oldPassword = getValue(PAOldPass);
@@ -504,6 +517,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // teams
+
     private void teamsSetTeams() {
         ArrayList<Team> teams = null;
 
@@ -559,6 +573,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // teams page
+
     @FXML
     private void onMembersMenu() {
         teamPageTabPaneHandler(MEMBERS);
@@ -581,6 +596,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // team > members
+
     private void setMembers() {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
         if (team == null)
@@ -612,6 +628,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // team > add member
+
     private void setAMMembers() {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
@@ -638,8 +655,8 @@ public class DashboardUIController implements Initializable, GUI {
         }
     }
 
-
     // team > roadmap
+
     private void setRoadMap() {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
@@ -667,8 +684,8 @@ public class DashboardUIController implements Initializable, GUI {
         }
     }
 
-
     // team > chatroom
+
     private void setChatroom() {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
@@ -715,6 +732,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
     // team > board
+
     private void setBoards() {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
@@ -734,7 +752,8 @@ public class DashboardUIController implements Initializable, GUI {
                 boardItem.setOnItemClickListener(new BoardItem.OnItemClickListener() {
                     @Override
                     public void onClick(Board board) {
-
+                        SharedPreferences.add(BOARD, board);
+                        tabPaneHandler(null, BOARD_PAGE, 0);
                     }
                 });
                 HBox boardBox = boardItem.draw();
@@ -762,6 +781,50 @@ public class DashboardUIController implements Initializable, GUI {
                 BoardMenuController.getInstance().createNewBoard(team, boardName);
         showResponse(response);
         save();
+    }
+
+    // board > board page
+
+    private void setBoard() {
+        Board board = (Board) SharedPreferences.get(BOARD);
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (board == null)
+            return;
+
+        BCategoryHolder.getChildren().clear();
+        BCategoryHolder.getChildren().add(new BoardCategoryItem("Tasks", team.getTasks()).draw());
+
+        for (String category : board.getCategories()) {
+            BoardCategoryItem boardCategoryItem = new BoardCategoryItem(category, new ArrayList<>());
+            boardCategoryItem.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
+                @Override
+                public void onClick(String category, List<Task> tasks) {
+
+                }
+            });
+            VBox boardVBox = boardCategoryItem.draw();
+            BCategoryHolder.getChildren().add(boardVBox);
+        }
+    }
+
+    @FXML
+    private void onBCCategory() {
+        tabPaneHandler(null, CREATE_CATEGORY, 0);
+    }
+
+    @FXML
+    private void onCreateCategory() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+        Board board = (Board) SharedPreferences.get(BOARD);
+        String categoryName = getValue(CCNameInput);
+
+        if (team == null)
+            return;
+
+        Response response =
+                BoardMenuController.getInstance().createNewCategory(team, categoryName, board.getName());
+        showResponse(response);
     }
 
     // tasks
