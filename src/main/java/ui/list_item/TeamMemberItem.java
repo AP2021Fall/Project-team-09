@@ -1,5 +1,6 @@
 package ui.list_item;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,19 +37,26 @@ public class TeamMemberItem {
         Pane pane = new Pane();
 
         Button button = new Button("REMOVE");
+        button.setMaxWidth(Double.MAX_VALUE);
         Button button1 = new Button("MESSAGE");
+        button1.setMaxWidth(Double.MAX_VALUE);
 
         button.getStyleClass().add("custom-btn");
         button1.getStyleClass().add("custom-btn");
 
+        button.setOnMouseClicked(event -> this.onItemClickListener.onRemove(this.member));
+
+        button1.setOnMouseClicked(event -> this.onItemClickListener.onMessage(this.member));
+
         vBox1.getChildren().addAll(button, button1);
+        vBox1.setSpacing(5);
 
         hBox.getStyleClass().add("list-item");
         HBox.setHgrow(hBox, Priority.ALWAYS);
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
         HBox.setHgrow(pane, Priority.ALWAYS);
-        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
+//        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
 
         hBox.getChildren().addAll(vBox, pane, vBox1);
 
@@ -57,6 +65,8 @@ public class TeamMemberItem {
 
     public interface OnItemClickListener {
 
-        void onClick(User member);
+        void onRemove(User member);
+
+        void onMessage(User member);
     }
 }

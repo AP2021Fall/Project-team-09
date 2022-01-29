@@ -178,12 +178,13 @@ public class Team implements Serializable {
         Task.addTask(task);
     }
 
-    public void createTask(String title, String priority, LocalDateTime start, LocalDateTime deadline,
+    public Task createTask(String title, String priority, LocalDateTime start, LocalDateTime deadline,
                            String description) {
         Task.Priority p = Task.Priority.valueOf(priority.toUpperCase());
         Task task = new Task(title, p, start, deadline, description);
         this.tasks.add(task);
         Task.addTask(task);
+        return task;
     }
 
     public boolean hasTask(int id) {

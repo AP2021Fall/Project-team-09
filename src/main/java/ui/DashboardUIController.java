@@ -24,7 +24,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class DashboardUIController implements Initializable, GUI {
@@ -32,6 +31,7 @@ public class DashboardUIController implements Initializable, GUI {
     private final String SELECTED_TEAM =
             "team";
     private final String BOARD = "board";
+    private final String TASK = "task";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -232,14 +232,14 @@ public class DashboardUIController implements Initializable, GUI {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tabPaneHandler(null, PROFILE, PROFILE_INFO);
+        tabPaneHandler(profileTabPane, PROFILE, PROFILE_INFO);
     }
 
     // main menu listeners
 
     @FXML
     private void onProfile() {
-        tabPaneHandler(null, PROFILE, 0);
+        tabPaneHandler(profileTabPane, PROFILE, PROFILE_INFO);
     }
 
     @FXML
@@ -612,13 +612,26 @@ public class DashboardUIController implements Initializable, GUI {
             TeamMemberItem teamMemberItem = new TeamMemberItem(user);
             teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
                 @Override
-                public void onClick(User member) {
+                public void onRemove(User member) {
+                    removeMember(team, member);
+                    save();
+                    setMembers();
+                }
+
+                @Override
+                public void onMessage(User member) {
 
                 }
             });
             HBox teamMemberBox = teamMemberItem.draw();
             TMemberItemHolder.getChildren().add(teamMemberBox);
         }
+    }
+
+    private void removeMember(Team team, User member) {
+        Response response =
+                TeamMenuController.getInstance().deleteMember(team, member.getUsername());
+        showResponse(response);
     }
 
     @FXML
@@ -809,6 +822,12 @@ public class DashboardUIController implements Initializable, GUI {
                 new BoardCategoryItem(team, board, "All tasks", team.getNoCategoryTasks());
         boardCategoryItem.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
             @Override
+            public void onClick(Task task) {
+                SharedPreferences.add(TASK, task);
+                tabPaneHandler(null, CREATE_TASK, 0);
+            }
+
+            @Override
             public void onDone(Task task) {
                 if (task.getBoard() == null) {
                     Response response =
@@ -846,6 +865,18 @@ public class DashboardUIController implements Initializable, GUI {
             public void onPre(Task task) {
                 System.out.println(task.getTitle());
             }
+
+            @Override
+            public void addToBoard(Task task) {
+                if (task.getBoard() == null) {
+                    Response response =
+                            BoardMenuController.getInstance()
+                                    .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                    showResponse(response);
+                }
+                save();
+                setBoard();
+            }
         });
         BCategoryHolder.getChildren().add(boardCategoryItem.draw());
 
@@ -868,6 +899,12 @@ public class DashboardUIController implements Initializable, GUI {
             System.out.println(tasks);
             BoardCategoryItem bciBox = new BoardCategoryItem(team, board, category, tasks);
             bciBox.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
+                @Override
+                public void onClick(Task task) {
+                    SharedPreferences.add(TASK, task);
+                    tabPaneHandler(null, CREATE_TASK, 0);
+                }
+
                 @Override
                 public void onDone(Task task) {
                     if (task.getBoard() == null) {
@@ -905,6 +942,18 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void onPre(Task task) {
 
+                }
+
+                @Override
+                public void addToBoard(Task task) {
+                    if (task.getBoard() == null) {
+                        Response response =
+                                BoardMenuController.getInstance()
+                                        .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                        showResponse(response);
+                    }
+                    save();
+                    setBoard();
                 }
             });
             VBox boardVBox = bciBox.draw();
@@ -990,12 +1039,17 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private void onTCTask() {
+        SharedPreferences.remove(TASK);
         tabPaneHandler(null, CREATE_TASK, 0);
     }
 
     // tasks > create task
 
     private void setTaskMembers() {
+        Task task = (Task) SharedPreferences.get(TASK);
+
+        TTMemberItemHolder.setDisable(task == null);
+
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
         if (team == null)
@@ -1009,10 +1063,43 @@ public class DashboardUIController implements Initializable, GUI {
             ArrayList<User> members = (ArrayList<User>) response.getObject();
             for (User user : members) {
                 TaskMemberItem taskMemberItem = new TaskMemberItem(user);
+                taskMemberItem.setOnItemClickListener(new TaskMemberItem.OnItemClickListener() {
+                    @Override
+                    public void onAdd(User member) {
+                        addMemberToTask(member);
+                        save();
+                        setTaskMembers();
+                    }
+
+                    @Override
+                    public void onRemove(User member) {
+                        removeMemberFromTask(member);
+                        save();
+                        setTaskMembers();
+                    }
+                });
                 HBox taskMember = taskMemberItem.draw();
                 TTMemberItemHolder.getChildren().add(taskMember);
             }
         }
+    }
+
+    private void addMemberToTask(User member) {
+        Task task = (Task) SharedPreferences.get(TASK);
+
+        Response response
+                = TasksMenuController.getInstance()
+                .addToAssignedUsers(String.valueOf(task.getId()), member.getUsername());
+        showResponse(response);
+    }
+
+    private void removeMemberFromTask(User member) {
+        Task task = (Task) SharedPreferences.get(TASK);
+
+        Response response
+                = TasksMenuController.getInstance()
+                .removeAssignedUsers(String.valueOf(task.getId()), member.getUsername());
+        showResponse(response);
     }
 
     @FXML
@@ -1043,6 +1130,11 @@ public class DashboardUIController implements Initializable, GUI {
         Response response =
                 TeamMenuController.getInstance().createTask(team, name, priority, startDateTime, deadDateTime, description);
         showResponse(response);
+        if (response.isSuccess()) {
+            Task task = (Task) response.getObject();
+            SharedPreferences.add(TASK, task);
+            setTaskMembers();
+        }
         save();
     }
 
@@ -1051,6 +1143,21 @@ public class DashboardUIController implements Initializable, GUI {
         priorities.addAll("Lowest", "Low", "High", "Highest");
         TTPriorityCombo.setItems(priorities);
         TTPriorityCombo.getSelectionModel().select(0);
+
+        Task task = (Task) SharedPreferences.get(TASK);
+        if (task != null) {
+            TTNameInput.setText(task.getTitle());
+            TTPriorityCombo.getSelectionModel().select(task.getPriorityNumeric() - 1);
+            TTStartDate.setValue(task.getStartTime().toLocalDate());
+            TTStartTime.setText(String.format("%d:%d", task.getStartTime().getHour(),
+                    task.getStartTime().getMinute()));
+            TTDeadlineDate.setValue(task.getTimeOfDeadline().toLocalDate());
+            TTDeadlineTime.setText(String.format("%d:%d", task.getTimeOfDeadline().getHour(),
+                    task.getTimeOfDeadline().getMinute()));
+            TTDescription.setText(task.getDescription());
+
+
+        }
     }
 
     //  notifications

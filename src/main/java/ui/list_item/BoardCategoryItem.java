@@ -50,6 +50,11 @@ public class BoardCategoryItem {
             BoardTaskItem boardTaskItem = new BoardTaskItem(task);
             boardTaskItem.setOnItemClickListener(new BoardTaskItem.OnItemClickListener() {
                 @Override
+                public void onClick(Task task) {
+                    onItemClickListener.onClick(task);
+                }
+
+                @Override
                 public void onDone(Task task) {
                     onItemClickListener.onDone(task);
                 }
@@ -62,6 +67,11 @@ public class BoardCategoryItem {
                 @Override
                 public void onPre(Task task) {
                     onItemClickListener.onPre(task);
+                }
+
+                @Override
+                public void addToBoard(Task task) {
+                    onItemClickListener.addToBoard(task);
                 }
             });
             HBox boardBox = boardTaskItem.draw();
@@ -78,10 +88,14 @@ public class BoardCategoryItem {
 
     public interface OnItemClickListener {
 
+        void onClick(Task task);
+
         void onDone(Task task);
 
         void onNext(Task task);
 
         void onPre(Task task);
+
+        void addToBoard(Task task);
     }
 }

@@ -36,20 +36,37 @@ public class BoardTaskItem {
         Button done = new Button("DONE");
         Button next = new Button(">");
 
+        Button addToBoard = new Button("ADD");
+
         pre.setMaxWidth(Double.MAX_VALUE);
         done.setMaxWidth(Double.MAX_VALUE);
         next.setMaxWidth(Double.MAX_VALUE);
+
+        addToBoard.setMaxWidth(Double.MAX_VALUE);
 
         pre.getStyleClass().add("custom-btn");
         done.getStyleClass().add("custom-btn");
         next.getStyleClass().add("custom-btn");
 
-        pre.setOnMouseClicked(event -> this.onItemClickListener.onPre(this.task));
-        done.setOnMouseClicked(event -> this.onItemClickListener.onDone(this.task));
-        next.setOnMouseClicked(event -> this.onItemClickListener.onNext(this.task));
+        addToBoard.getStyleClass().add("custom-btn");
+
+        if (task.getBoard() == null) {
+            hBox1.getChildren().add(addToBoard);
+            addToBoard.setOnMouseClicked(event -> this.onItemClickListener.addToBoard(this.task));
+            HBox.setHgrow(addToBoard, Priority.ALWAYS);
+        } else if (task.getBoard() != null) {
+            pre.setOnMouseClicked(event -> this.onItemClickListener.onPre(this.task));
+            done.setOnMouseClicked(event -> this.onItemClickListener.onDone(this.task));
+            next.setOnMouseClicked(event -> this.onItemClickListener.onNext(this.task));
+            hBox1.getChildren().addAll(pre, done, next);
+        }
+
+        if (task.getBoard() != null && task.getCategory().equalsIgnoreCase("done")) {
+            hBox1.getChildren().clear();
+        }
+
 
         HBox.setHgrow(done, Priority.ALWAYS);
-        hBox1.getChildren().addAll(pre, done, next);
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
 
@@ -70,6 +87,8 @@ public class BoardTaskItem {
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
 
+        hBox.setOnMouseClicked(event -> this.onItemClickListener.onClick(this.task));
+
         hBox.getChildren().add(vBox);
 
         return hBox;
@@ -77,10 +96,14 @@ public class BoardTaskItem {
 
     public interface OnItemClickListener {
 
+        void onClick(Task task);
+
         void onDone(Task task);
 
         void onNext(Task task);
 
         void onPre(Task task);
+
+        void addToBoard(Task task);
     }
 }

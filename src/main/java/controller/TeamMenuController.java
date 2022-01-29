@@ -254,8 +254,8 @@ public class TeamMenuController {
         if (dead.isBefore(start))
             return new Response(WARN_DEADLINE_INVALID, false);
 
-        team.createTask(title, priority, start, dead, description);
-        return new Response(SUCCESS_TASK_CREATED, true);
+        Task t = team.createTask(title, priority, start, dead, description);
+        return new Response(SUCCESS_TASK_CREATED, true, t);
     }
 
     private LocalDateTime isTimeValid(String time) {
