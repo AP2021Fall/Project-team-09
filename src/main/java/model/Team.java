@@ -282,7 +282,7 @@ public class Team implements Serializable {
         int index = 1;
 
         for (Task task : this.tasks)
-            result.append(index)
+            result.append(index++)
                     .append(".")
                     .append(task.getTitle())
                     .append(": id: ")
@@ -440,8 +440,9 @@ public class Team implements Serializable {
     public String getTasksByCategory(String category) {
         StringBuilder result = new StringBuilder();
         for (Task task : this.tasks)
-            if (task.getCategory().equalsIgnoreCase(category))
-                result.append(task.getTitle()).append("\n");
+            if (task.getCategory() != null)
+                if (task.getCategory().equalsIgnoreCase(category))
+                    result.append(task.getTitle()).append("\n");
         if (result.length() == 0)
             return "no tasks";
         return result.toString();
@@ -453,6 +454,14 @@ public class Team implements Serializable {
             if (task.getBoard() != null)
                 if (task.getBoard().getId() == board.getId())
                     tasks.add(task);
+        return tasks;
+    }
+
+    public ArrayList<Task> getNoCategoryTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (Task task : this.tasks)
+            if (task.getBoard() == null || task.getCategory() == null)
+                tasks.add(task);
         return tasks;
     }
 

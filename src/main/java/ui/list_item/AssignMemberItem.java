@@ -31,13 +31,14 @@ public class AssignMemberItem {
 
         Button button = new Button("Add to team");
         button.getStyleClass().add("custom-btn");
+        button.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
 
         hBox.getStyleClass().add("list-item");
         HBox.setHgrow(hBox, Priority.ALWAYS);
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
         HBox.setHgrow(pane, Priority.ALWAYS);
-        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
+//        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
 
         hBox.getChildren().addAll(label, pane, button);
 

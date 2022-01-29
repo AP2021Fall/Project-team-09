@@ -46,11 +46,13 @@ public class Board implements Serializable {
         StringBuilder result = new StringBuilder();
 
         for (Task task : Task.getAllTask())
-            if (task.getCategory().equalsIgnoreCase(categoryName))
-                result.append(String.format("Task %s by %s is %s",
-                                task.getTitle(), task.getAssignedUsers().get(0).getUsername(),
-                                "something"))
-                        .append("\n");
+            if (task.getCategory() != null && task.getBoard() != null)
+                if (task.getCategory().equalsIgnoreCase(categoryName) &&
+                        task.getBoard().getId() == this.id)
+                    result.append(String.format("Task %s by %s is %s",
+                                    task.getTitle(), task.getAssignedUsers().get(0).getUsername(),
+                                    "something"))
+                            .append("\n");
         return result.toString();
     }
 
@@ -58,8 +60,10 @@ public class Board implements Serializable {
         ArrayList<Task> tasks = new ArrayList<>();
 
         for (Task task : Task.getAllTask())
-            if (task.getCategory().equalsIgnoreCase(categoryName))
-                tasks.add(task);
+            if (task.getCategory() != null && task.getBoard() != null)
+                if (task.getCategory().equalsIgnoreCase(categoryName) &&
+                        task.getBoard().getId() == this.id)
+                    tasks.add(task);
         return tasks;
     }
 

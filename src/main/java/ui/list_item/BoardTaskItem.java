@@ -26,7 +26,7 @@ public class BoardTaskItem {
         VBox vBox = new VBox();
         HBox hBox1 = new HBox();
 
-        hBox.setPrefWidth(200);
+        vBox.setFillWidth(true);
 
         Label label;
         Label label1;
@@ -44,13 +44,21 @@ public class BoardTaskItem {
         done.getStyleClass().add("custom-btn");
         next.getStyleClass().add("custom-btn");
 
+        pre.setOnMouseClicked(event -> this.onItemClickListener.onPre(this.task));
+        done.setOnMouseClicked(event -> this.onItemClickListener.onDone(this.task));
+        next.setOnMouseClicked(event -> this.onItemClickListener.onNext(this.task));
+
         HBox.setHgrow(done, Priority.ALWAYS);
         hBox1.getChildren().addAll(pre, done, next);
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
 
         label = new Label(String.format("Title: %s", task.getTitle()));
+        label.setWrapText(true);
+        label.wrapTextProperty().set(true);
         label1 = new Label(String.format("Description: %s", task.getDescription()));
+        label1.setWrapText(true);
+        label1.wrapTextProperty().set(true);
         label2 = new Label(task.getTimeOfDeadlineFormatted());
 
         vBox.getChildren().addAll(label, label1, new Separator(), label2, new Separator(), hBox1);
@@ -61,7 +69,6 @@ public class BoardTaskItem {
         HBox.setHgrow(vBox, Priority.ALWAYS);
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
-        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.task)));
 
         hBox.getChildren().add(vBox);
 
@@ -70,6 +77,10 @@ public class BoardTaskItem {
 
     public interface OnItemClickListener {
 
-        void onClick(Task task);
+        void onDone(Task task);
+
+        void onNext(Task task);
+
+        void onPre(Task task);
     }
 }

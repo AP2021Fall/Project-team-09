@@ -80,7 +80,7 @@
                   </HBox>
                   <HBox VBox.vgrow="ALWAYS">
                      <children>
-                        <VBox style="-fx-background-color: #26a8ff; -fx-background-radius: 0 0 0 20px;">
+                        <VBox minWidth="-Infinity" style="-fx-background-color: #26a8ff; -fx-background-radius: 0 0 0 20px;">
                            <children>
                               <Button disable="true" graphicTextGap="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-opacity: 0;" text="Tasks">
                                  <styleClass>
@@ -1459,7 +1459,7 @@
                                                                      <content>
                                                                         <HBox fx:id="BCategoryHolder" spacing="10.0">
                                                                            <children>
-                                                                              <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
+                                                                              <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
                                                                                  <children>
                                                                                     <HBox alignment="CENTER" layoutX="16.0" layoutY="11.0">
                                                                                        <children>
@@ -1478,7 +1478,7 @@
                                                                                           <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                                                                              <children>
                                                                                                 <Label text="Task description about something" wrapText="true" />
-                                                                                                <Separator prefWidth="200.0" />
+                                                                                                <Separator />
                                                                                                 <HBox alignment="CENTER_RIGHT">
                                                                                                    <children>
                                                                                                       <Label text="2022-02-10" textFill="RED" />

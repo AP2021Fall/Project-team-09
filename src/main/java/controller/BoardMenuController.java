@@ -329,7 +329,7 @@ public class BoardMenuController {
 
         if (!board.hasCategory(categoryName))
             return new Response(WARN_INVALID_CATEGORY, false);
-        return new Response(board.getCategoryTasksFormatted(categoryName), true);
+        return new Response(board.getCategoryTasksFormatted(categoryName), true, board.getCategoryTasks(categoryName));
     }
 
     public Response getSpecificCategoryTasks(Team team, String category, String boardName) {
@@ -339,7 +339,7 @@ public class BoardMenuController {
             return new Response(WARN_404_SELECTED_BOARD, false);
 
         if (category.equalsIgnoreCase("done") || category.equalsIgnoreCase("failed")) {
-            return new Response(team.getTasksByCategory(category), true);
+            return new Response(team.getTasksByCategory(category), true, board.getCategoryTasks(category));
         }
         return new Response(WARN_INVALID_CATEGORY, false);
     }

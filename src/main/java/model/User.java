@@ -274,7 +274,7 @@ public class User implements Serializable {
         return "Name: " + firstname + " " + lastName + "\n" +
                 "Username: " + username + "\n" +
                 "Email: " + email + "\n" +
-                "Birthday: " + birthday.toString() + "\n" +
+                "Birthday: " + (birthday == null ? "" : birthday.toString()) + "\n" +
                 "Role: " + type.toString() + "\n";
     }
 

@@ -1,21 +1,29 @@
 package ui.list_item;
 
+import controller.BoardMenuController;
+import controller.Response;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import model.Board;
 import model.Task;
+import model.Team;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class BoardCategoryItem {
+    private Team team;
+    private Board board;
     private String category;
-    private List<Task> tasks;
+    private ArrayList<Task> tasks;
     private BoardCategoryItem.OnItemClickListener onItemClickListener;
 
-    public BoardCategoryItem(String category, List<Task> tasks) {
+    public BoardCategoryItem(Team team, Board board, String category, ArrayList<Task> tasks) {
+        this.team = team;
+        this.board = board;
         this.category = category;
         this.tasks = tasks;
     }
@@ -28,6 +36,9 @@ public class BoardCategoryItem {
         VBox vBox = new VBox();
         HBox hBox = new HBox();
 
+        vBox.setMinWidth(200);
+        vBox.setPrefWidth(200);
+
         Label label = new Label(category);
         label.setTextAlignment(TextAlignment.CENTER);
         hBox.getChildren().add(label);
@@ -39,8 +50,18 @@ public class BoardCategoryItem {
             BoardTaskItem boardTaskItem = new BoardTaskItem(task);
             boardTaskItem.setOnItemClickListener(new BoardTaskItem.OnItemClickListener() {
                 @Override
-                public void onClick(Task task) {
+                public void onDone(Task task) {
+                    onItemClickListener.onDone(task);
+                }
 
+                @Override
+                public void onNext(Task task) {
+                    onItemClickListener.onNext(task);
+                }
+
+                @Override
+                public void onPre(Task task) {
+                    onItemClickListener.onPre(task);
                 }
             });
             HBox boardBox = boardTaskItem.draw();
@@ -51,13 +72,16 @@ public class BoardCategoryItem {
         HBox.setHgrow(hBox, Priority.ALWAYS);
         hBox.setAlignment(Pos.CENTER);
         HBox.setHgrow(hBox, Priority.ALWAYS);
-        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.category, this.tasks)));
 
         return vBox;
     }
 
     public interface OnItemClickListener {
 
-        void onClick(String category, List<Task> tasks);
+        void onDone(Task task);
+
+        void onNext(Task task);
+
+        void onPre(Task task);
     }
 }

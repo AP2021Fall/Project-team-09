@@ -646,13 +646,22 @@ public class DashboardUIController implements Initializable, GUI {
                 assignMemberItem.setOnItemClickListener(new AssignMemberItem.OnItemClickListener() {
                     @Override
                     public void onClick(User member) {
-
+                        addMemberToTeam(member);
+                        System.out.println("add");
                     }
                 });
                 HBox assignMemberBox = assignMemberItem.draw();
                 AMMembersItemHolder.getChildren().add(assignMemberBox);
             }
         }
+    }
+
+    private void addMemberToTeam(User member) {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        Response response
+                = TeamMenuController.getInstance().addMemberToTeam(team, member.getUsername());
+        showResponse(response);
     }
 
     // team > roadmap
@@ -792,18 +801,113 @@ public class DashboardUIController implements Initializable, GUI {
         if (board == null)
             return;
 
-        BCategoryHolder.getChildren().clear();
-        BCategoryHolder.getChildren().add(new BoardCategoryItem("Tasks", team.getTasks()).draw());
+        if (team == null)
+            return;
 
-        for (String category : board.getCategories()) {
-            BoardCategoryItem boardCategoryItem = new BoardCategoryItem(category, new ArrayList<>());
-            boardCategoryItem.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
+        BCategoryHolder.getChildren().clear();
+        BoardCategoryItem boardCategoryItem =
+                new BoardCategoryItem(team, board, "All tasks", team.getNoCategoryTasks());
+        boardCategoryItem.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
+            @Override
+            public void onDone(Task task) {
+                if (task.getBoard() == null) {
+                    Response response =
+                            BoardMenuController.getInstance()
+                                    .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                    showResponse(response);
+                }
+                if (task.getBoard() != null) {
+                    Response res = BoardMenuController.getInstance()
+                            .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
+                    showResponse(res);
+                }
+                save();
+                setBoard();
+            }
+
+            @Override
+            public void onNext(Task task) {
+                if (task.getBoard() == null) {
+                    Response response =
+                            BoardMenuController.getInstance()
+                                    .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                    showResponse(response);
+                }
+                if (task.getBoard() != null) {
+                    Response res = BoardMenuController.getInstance()
+                            .moveTaskToNextCategory(team, task.getTitle(), board.getName());
+                    showResponse(res);
+                }
+                save();
+                setBoard();
+            }
+
+            @Override
+            public void onPre(Task task) {
+                System.out.println(task.getTitle());
+            }
+        });
+        BCategoryHolder.getChildren().add(boardCategoryItem.draw());
+
+        ArrayList<String> categories = new ArrayList<>(board.getCategories());
+        System.out.println(categories);
+        categories.add("done");
+        categories.add("failed");
+
+        for (String category : categories) {
+            System.out.println(category);
+            Response response = null;
+            if (category.equalsIgnoreCase("done") || category.equalsIgnoreCase("failed"))
+                response = BoardMenuController.getInstance().getSpecificCategoryTasks(team, category, board.getName());
+            else
+                response = BoardMenuController.getInstance().showCategoryTasks(team, category, board.getName());
+
+            ArrayList<Task> tasks = new ArrayList<>();
+            if (response.isSuccess())
+                tasks = (ArrayList<Task>) response.getObject();
+            System.out.println(tasks);
+            BoardCategoryItem bciBox = new BoardCategoryItem(team, board, category, tasks);
+            bciBox.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
                 @Override
-                public void onClick(String category, List<Task> tasks) {
+                public void onDone(Task task) {
+                    if (task.getBoard() == null) {
+                        Response response =
+                                BoardMenuController.getInstance()
+                                        .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                        showResponse(response);
+                    }
+                    if (task.getBoard() != null) {
+                        Response res = BoardMenuController.getInstance()
+                                .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
+                        showResponse(res);
+                    }
+                    save();
+                    setBoard();
+                }
+
+                @Override
+                public void onNext(Task task) {
+                    if (task.getBoard() == null) {
+                        Response response =
+                                BoardMenuController.getInstance()
+                                        .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
+                        showResponse(response);
+                    }
+                    if (task.getBoard() != null) {
+                        Response res = BoardMenuController.getInstance()
+                                .moveTaskToNextCategory(team, task.getTitle(), board.getName());
+                        showResponse(res);
+                    }
+                    save();
+                    setBoard();
+                }
+
+                @Override
+                public void onPre(Task task) {
 
                 }
             });
-            VBox boardVBox = boardCategoryItem.draw();
+            VBox boardVBox = bciBox.draw();
             BCategoryHolder.getChildren().add(boardVBox);
         }
     }
@@ -825,6 +929,7 @@ public class DashboardUIController implements Initializable, GUI {
         Response response =
                 BoardMenuController.getInstance().createNewCategory(team, categoryName, board.getName());
         showResponse(response);
+        save();
     }
 
     // tasks
@@ -897,7 +1002,7 @@ public class DashboardUIController implements Initializable, GUI {
             return;
 
         Response response =
-                TeamMenuController.getInstance().getAllUsers(team);
+                TeamMenuController.getInstance().getMembers(team);
 
         TTMemberItemHolder.getChildren().clear();
         if (response.isSuccess()) {
