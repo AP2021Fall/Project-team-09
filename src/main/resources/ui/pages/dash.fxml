@@ -513,7 +513,7 @@
                                                                                                                               <Insets />
                                                                                                                            </VBox.margin>
                                                                                                                            <children>
-                                                                                                                              <TextField promptText="Search member by name" />
+                                                                                                                              <TextField fx:id="TMSearchInput" promptText="Search member by name" />
                                                                                                                            </children>
                                                                                                                         </VBox>
                                                                                                                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
@@ -606,7 +606,7 @@
                                                                                                                               <Insets />
                                                                                                                            </VBox.margin>
                                                                                                                            <children>
-                                                                                                                              <TextField promptText="Search task by title" />
+                                                                                                                              <TextField fx:id="TRSearchInput" promptText="Search task by title" />
                                                                                                                            </children>
                                                                                                                         </VBox>
                                                                                                                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
@@ -870,7 +870,7 @@
                                                                                                                      <children>
                                                                                                                         <HBox>
                                                                                                                            <children>
-                                                                                                                              <TextField promptText="Search board by name" HBox.hgrow="ALWAYS" />
+                                                                                                                              <TextField fx:id="TBSearchInput" promptText="Search board by name" HBox.hgrow="ALWAYS" />
                                                                                                                            </children>
                                                                                                                         </HBox>
                                                                                                                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
@@ -1251,11 +1251,7 @@
                                                                         <TextField promptText="Search member by name" />
                                                                      </children>
                                                                   </VBox>
-                                                                  <HBox>
-                                                                     <children>
-                                                                        <ComboBox fx:id="AMTeamCombo" prefWidth="150.0" promptText="Team" />
-                                                                     </children>
-                                                                  </HBox>
+                                                                  <HBox />
                                                                   <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                                                                      <content>
                                                                         <VBox fx:id="AMMembersItemHolder" spacing="10.0">
@@ -1422,8 +1418,9 @@
                                                                   </VBox>
                                                                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                                                      <children>
-                                                                        <Button layoutX="913.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCreateTask" styleClass="custom-btn" text="Clear" />
-                                                                        <Button layoutX="913.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCreateTask" styleClass="custom-btn" text="Create Task" />
+                                                                        <Button fx:id="TTClear" layoutX="913.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCreateTaskClear" styleClass="custom-btn" text="Clear" />
+                                                                        <Button fx:id="TTSaveChanges" disable="true" layoutX="913.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCTSaveChanges" styleClass="custom-btn" text="Save Changes" />
+                                                                        <Button fx:id="TTCreateTask" disable="true" layoutX="913.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCreateTask" styleClass="custom-btn" text="Create Task" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -1445,7 +1442,7 @@
                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                                </padding>
                                                                <children>
-                                                                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                                                  <HBox alignment="CENTER">
                                                                      <children>
                                                                         <Label text="Board name">
                                                                            <font>
@@ -1453,12 +1450,12 @@
                                                                            </font>
                                                                         </Label>
                                                                         <Pane HBox.hgrow="ALWAYS" />
-                                                                        <CheckBox mnemonicParsing="false" text="Only my tasks" />
+                                                                        <CheckBox fx:id="BMyTasksCheck" mnemonicParsing="false" onAction="#showMyTasks" text="Only my tasks" />
                                                                      </children>
                                                                   </HBox>
-                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                                                      <content>
-                                                                        <HBox fx:id="BCategoryHolder" spacing="10.0">
+                                                                        <HBox fx:id="BCategoryHolder" maxHeight="1.7976931348623157E308" spacing="10.0">
                                                                            <children>
                                                                               <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
                                                                                  <children>

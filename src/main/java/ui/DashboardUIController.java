@@ -32,6 +32,7 @@ public class DashboardUIController implements Initializable, GUI {
             "team";
     private final String BOARD = "board";
     private final String TASK = "task";
+    private final String ONLY_MINE = "only_mine";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -123,10 +124,10 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private VBox TMemberItemHolder;
 
-    // teams > add member
-
     @FXML
-    private ComboBox<String> AMTeamCombo;
+    private TextField TMSearchInput;
+
+    // teams > add member
 
     @FXML
     private VBox AMMembersItemHolder;
@@ -135,6 +136,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private VBox TRTasksHolder;
+
+    @FXML
+    private TextField TRSearchInput;
 
     // teams > chatroom
 
@@ -149,6 +153,9 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private VBox TBBoardItemHolder;
 
+    @FXML
+    private TextField TBSearchInput;
+
     // boards > board > create board
 
     @FXML
@@ -158,6 +165,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private HBox BCategoryHolder;
+
+    @FXML
+    private CheckBox BMyTasksCheck;
 
     // board > create category
 
@@ -206,6 +216,15 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private VBox TTMemberItemHolder;
+
+    @FXML
+    private Button TTCreateTask;
+
+    @FXML
+    private Button TTSaveChanges;
+
+    @FXML
+    private Button TTClear;
 
     // notifications
 
@@ -458,7 +477,8 @@ public class DashboardUIController implements Initializable, GUI {
                 teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
                     @Override
                     public void onClick(Team team) {
-
+                        SharedPreferences.add(SELECTED_TEAM, team);
+                        teamPageTabPaneHandler(MEMBERS);
                     }
                 });
                 HBox teamBox = teamItem.draw();
@@ -470,25 +490,23 @@ public class DashboardUIController implements Initializable, GUI {
 
     private void onTeamSearchListener(ArrayList<Team> teams) {
         if (!PTeamsItemHolder.getChildren().isEmpty()) {
-            ArrayList<Team> filteredTeams = new ArrayList<>();
             PTSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                PTeamsItemHolder.getChildren().clear();
                 for (Team team : teams) {
                     if (team.getName().contains(newValue)) {
-                        filteredTeams.add(team);
+                        TeamItem teamItem = new TeamItem(team);
+                        teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(Team team) {
+                                SharedPreferences.add(SELECTED_TEAM, team);
+                                teamPageTabPaneHandler(MEMBERS);
+                            }
+                        });
+                        HBox teamBox = teamItem.draw();
+                        PTeamsItemHolder.getChildren().add(teamBox);
                     }
                 }
             });
-            for (Team team : filteredTeams) {
-                TeamItem teamItem = new TeamItem(team);
-                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
-                    @Override
-                    public void onClick(Team team) {
-
-                    }
-                });
-                HBox teamBox = teamItem.draw();
-                PTeamsItemHolder.getChildren().add(teamBox);
-            }
         }
     }
 
@@ -549,25 +567,23 @@ public class DashboardUIController implements Initializable, GUI {
 
     private void onTeamTeamsSearchListener(ArrayList<Team> teams) {
         if (!TTeamsItemHolder.getChildren().isEmpty()) {
-            ArrayList<Team> filteredTeams = new ArrayList<>();
             TTSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TTeamsItemHolder.getChildren().clear();
                 for (Team team : teams) {
                     if (team.getName().contains(newValue)) {
-                        filteredTeams.add(team);
+                        TeamItem teamItem = new TeamItem(team);
+                        teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(Team team) {
+                                SharedPreferences.add(SELECTED_TEAM, team);
+                                teamPageTabPaneHandler(MEMBERS);
+                            }
+                        });
+                        HBox teamBox = teamItem.draw();
+                        TTeamsItemHolder.getChildren().add(teamBox);
                     }
                 }
             });
-            for (Team team : filteredTeams) {
-                TeamItem teamItem = new TeamItem(team);
-                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
-                    @Override
-                    public void onClick(Team team) {
-
-                    }
-                });
-                HBox teamBox = teamItem.draw();
-                TTeamsItemHolder.getChildren().add(teamBox);
-            }
         }
     }
 
@@ -625,6 +641,39 @@ public class DashboardUIController implements Initializable, GUI {
             });
             HBox teamMemberBox = teamMemberItem.draw();
             TMemberItemHolder.getChildren().add(teamMemberBox);
+        }
+        onTeamMemberSearchListener(members);
+    }
+
+    private void onTeamMemberSearchListener(ArrayList<User> members) {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+        if (team == null)
+            return;
+
+        if (!TMemberItemHolder.getChildren().isEmpty()) {
+            TMSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TMemberItemHolder.getChildren().clear();
+                for (User member : members) {
+                    if (member.getUsername().contains(newValue)) {
+                        TeamMemberItem teamMemberItem = new TeamMemberItem(member);
+                        teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
+                            @Override
+                            public void onRemove(User member) {
+                                removeMember(team, member);
+                                save();
+                                setMembers();
+                            }
+
+                            @Override
+                            public void onMessage(User member) {
+
+                            }
+                        });
+                        HBox teamMemberBox = teamMemberItem.draw();
+                        TMemberItemHolder.getChildren().add(teamMemberBox);
+                    }
+                }
+            });
         }
     }
 
@@ -868,7 +917,11 @@ public class DashboardUIController implements Initializable, GUI {
 
             @Override
             public void addToBoard(Task task) {
-                if (task.getBoard() == null) {
+                if (!board.isDone()) {
+                    Response res =
+                            BoardMenuController.getInstance().setBoardToDone(team, board.getName());
+                    showResponse(res);
+                } else if (task.getBoard() == null) {
                     Response response =
                             BoardMenuController.getInstance()
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
@@ -946,7 +999,11 @@ public class DashboardUIController implements Initializable, GUI {
 
                 @Override
                 public void addToBoard(Task task) {
-                    if (task.getBoard() == null) {
+                    if (!board.isDone()) {
+                        Response res =
+                                BoardMenuController.getInstance().setBoardToDone(team, board.getName());
+                        showResponse(res);
+                    } else if (task.getBoard() == null) {
                         Response response =
                                 BoardMenuController.getInstance()
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
@@ -979,6 +1036,14 @@ public class DashboardUIController implements Initializable, GUI {
                 BoardMenuController.getInstance().createNewCategory(team, categoryName, board.getName());
         showResponse(response);
         save();
+    }
+
+    @FXML
+    private void showMyTasks() {
+        boolean isCheck = BMyTasksCheck.isSelected();
+
+        SharedPreferences.add(ONLY_MINE, isCheck);
+        setBoard();
     }
 
     // tasks
@@ -1138,11 +1203,67 @@ public class DashboardUIController implements Initializable, GUI {
         save();
     }
 
+    @FXML
+    private void onCTSaveChanges() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Task task = (Task) SharedPreferences.get(TASK);
+
+        if (task == null)
+            return;
+
+        String name = getValue(TTNameInput);
+        String priority = getComboValue(TTPriorityCombo);
+        LocalDate startDate = getDate(TTStartDate);
+        String startTime = getValue(TTStartTime);
+        LocalDate deadlineDate = getDate(TTDeadlineDate);
+        String deadlineTime = getValue(TTDeadlineTime);
+        String description = getValue(TTDescription);
+
+
+        String startDateTime = "";
+        String deadDateTime = "";
+
+        try {
+            startDateTime = String.format("%s|%s", startDate.toString(), startTime);
+            deadDateTime = String.format("%s|%s", deadlineDate.toString(), deadlineTime);
+        } catch (Exception e) {
+
+        }
+
+        Response response =
+                TasksMenuController.getInstance().editTask(team, String.valueOf(task.getId()),
+                        name, priority, startDateTime, deadDateTime, description);
+        showResponse(response);
+        if (response.isSuccess()) {
+            task = (Task) response.getObject();
+            SharedPreferences.add(TASK, task);
+            setTaskMembers();
+        }
+        save();
+    }
+
+    @FXML
+    private void onCreateTaskClear() {
+        SharedPreferences.remove(TASK);
+        tabPaneHandler(null, CREATE_TASK, 0);
+    }
+
     private void setUpTaskCreationPage() {
         ObservableList<String> priorities = FXCollections.observableArrayList();
         priorities.addAll("Lowest", "Low", "High", "Highest");
         TTPriorityCombo.setItems(priorities);
         TTPriorityCombo.getSelectionModel().select(0);
+
+        TTNameInput.clear();
+        TTStartDate.setValue(LocalDate.now());
+        TTStartTime.clear();
+        TTDeadlineDate.setValue(LocalDate.now());
+        TTDeadlineTime.clear();
+        TTDescription.clear();
 
         Task task = (Task) SharedPreferences.get(TASK);
         if (task != null) {
@@ -1156,7 +1277,11 @@ public class DashboardUIController implements Initializable, GUI {
                     task.getTimeOfDeadline().getMinute()));
             TTDescription.setText(task.getDescription());
 
-
+            TTSaveChanges.setDisable(false);
+            TTCreateTask.setDisable(true);
+        } else {
+            TTSaveChanges.setDisable(true);
+            TTCreateTask.setDisable(false);
         }
     }
 
