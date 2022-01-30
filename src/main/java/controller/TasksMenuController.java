@@ -27,6 +27,14 @@ public class TasksMenuController {
             "There is not any user with this username %s!";
     private final String WARN_404_TASK =
             "Task with id %d not found!";
+    private final String WARN_TITLE_INVALID =
+            "Title is invalid!";
+    private final String WARN_DUPLICATE_TITLE =
+            "There is another task with this name!";
+    private final String WARN_START_TIME_INVALID =
+            "Invalid start time!";
+    private final String WARN_DEADLINE_INVALID =
+            "Invalid deadline!";
 
     private static TasksMenuController tasksMenuController = null;
 
@@ -43,7 +51,7 @@ public class TasksMenuController {
 
         if (user.isTeamLeader()) {
             teams = user.getMyTeams();
-        }else {
+        } else {
             teams = user.getTeams();
         }
 
@@ -65,10 +73,10 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
         task.setTitle(title);
-        return new Response(SUCCESS_TITLE_UPDATE, false);
+        return new Response(SUCCESS_TITLE_UPDATE, true);
     }
 
     public Response editTaskDescription(String id, String description) {
@@ -80,10 +88,10 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
         task.setDescription(description);
-        return new Response(SUCCESS_DES_UPDATE, false);
+        return new Response(SUCCESS_DES_UPDATE, true);
     }
 
     public Response editTaskPriority(String id, String priority) {
@@ -95,7 +103,7 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
         task.setPriority(priority);
         return new Response(SUCCESS_PRIO_UPDATE, true);
@@ -110,7 +118,7 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
 
         LocalDateTime deadDateTime =
@@ -132,7 +140,7 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
         User user = User.getUser(username);
         if (user == null)
@@ -151,13 +159,55 @@ public class TasksMenuController {
         Task task = Task.getTask(taskId);
 
         if (task == null)
-            return new Response(String.format(WARN_404_TASK, taskId), true);
+            return new Response(String.format(WARN_404_TASK, taskId), false);
 
         User user = task.isInAssignedUsers(username);
         if (user == null)
             return new Response(String.format(WARN_404_USER_LIST, username), false);
         task.removeFromAssignedUsers(user);
         return new Response(String.format(SUCCESS_USER_REMOVE, username), true);
+    }
+
+    public Response editTask(Team team, String id, String title,
+                             String priority, String startTime, String deadline, String description) {
+
+
+        int taskId = getInt(id);
+
+        if (taskId == -1)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task task = Task.getTask(taskId);
+
+        if (task == null)
+            return new Response(String.format(WARN_404_TASK, taskId), false);
+
+        Task t = team.getTaskByTitle(title);
+
+        if (t != null)
+            return new Response(WARN_DUPLICATE_TITLE, false);
+
+        if (title.isEmpty())
+            return new Response(WARN_TITLE_INVALID, false);
+
+        LocalDateTime start = isTimeValid(startTime);
+        LocalDateTime dead = isTimeValid(deadline);
+
+        if (start == null)
+            return new Response(WARN_START_TIME_INVALID, false);
+
+        if (dead == null)
+            return new Response(WARN_DEADLINE_INVALID, false);
+
+        if (dead.isBefore(start))
+            return new Response(WARN_DEADLINE_INVALID, false);
+
+        task.setTitle(title);
+        task.setPriority(priority);
+        task.setStartTime(start);
+        task.setTimeOfDeadline(dead);
+        task.setDescription(description);
+        return new Response(SUCCESS, true, task);
     }
 
     private LocalDateTime isTimeValid(LocalDateTime creationDateTime, String deadline) {
@@ -172,6 +222,21 @@ public class TasksMenuController {
                 return null;
 
             return dead;
+        } catch (DateTimeParseException exception) {
+            return null;
+        }
+    }
+
+    private LocalDateTime isTimeValid(String time) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
+
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+            if (dateTime.isBefore(now))
+                return null;
+
+            return dateTime;
         } catch (DateTimeParseException exception) {
             return null;
         }

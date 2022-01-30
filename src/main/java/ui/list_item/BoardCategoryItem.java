@@ -1,7 +1,6 @@
 package ui.list_item;
 
-import controller.BoardMenuController;
-import controller.Response;
+import controller.UserController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -11,6 +10,7 @@ import javafx.scene.text.TextAlignment;
 import model.Board;
 import model.Task;
 import model.Team;
+import utilities.SharedPreferences;
 
 import java.util.ArrayList;
 
@@ -45,8 +45,15 @@ public class BoardCategoryItem {
 
         vBox.getChildren().add(hBox);
         vBox.setSpacing(10);
+        Object mine = SharedPreferences.get("only_mine");
+        boolean onlyMineSelected = false;
+        if (mine != null)
+            onlyMineSelected = (Boolean) mine;
 
         for (Task task : this.tasks) {
+            if (onlyMineSelected)
+                if (task.isInAssignedUsers(UserController.getLoggedUser().getUsername()) == null)
+                    continue;
             BoardTaskItem boardTaskItem = new BoardTaskItem(task);
             boardTaskItem.setOnItemClickListener(new BoardTaskItem.OnItemClickListener() {
                 @Override

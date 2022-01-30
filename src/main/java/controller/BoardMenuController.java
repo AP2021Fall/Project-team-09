@@ -277,11 +277,17 @@ public class BoardMenuController {
         if (task == null)
             return new Response(WARN_404_TASK, false);
 
+        User loggedUser = UserController.getLoggedUser();
+
+        if (task.isInAssignedUsers(loggedUser.getUsername()) == null)
+            return new Response(WARN_NOT_YOURS, false);
+
         if (!task.isAddedToBoard(board))
             return new Response(WARN_404_TASK, false);
 
-        if (!board.hasCategory(categoryName))
-            return new Response(WARN_INVALID_CATEGORY, false);
+        if (!categoryName.equalsIgnoreCase("done"))
+            if (!board.hasCategory(categoryName))
+                return new Response(WARN_INVALID_CATEGORY, false);
 
         task.setCategory(categoryName);
         return new Response(String.format(SUCCESS_SET_CATEGORY, taskTitle, categoryName), true);
