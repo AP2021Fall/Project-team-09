@@ -146,7 +146,7 @@ public class AuthenticationUIController implements Initializable, GUI {
                 LoginController.getInstance()
                         .userCreate(username, password, confirmPass, email);
         if (response.isSuccess())
-            showPage(DashboardUIController.DASH_PAGE);
+            tabPaneHandler(SIGN_IN);
         else showResponse(response);
         save();
     }

@@ -143,7 +143,7 @@ public class Task implements Serializable {
         allTask.add(task);
     }
 
-    public static String getDeadlines(User user) {
+    public static String getDeadlinesFormatted(User user) {
         StringBuilder result = new StringBuilder();
 
         if (allTask.isEmpty())
@@ -171,6 +171,18 @@ public class Task implements Serializable {
                         .append("\n");
             }
         return result.toString();
+    }
+
+    public static ArrayList<Task> getDeadlines(User user) {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        for (Task task : allTask)
+            if (task.isInAssignedUsers(user.getUsername()) != null) {
+                if (task.isDone() || task.hasPassedDeadline())
+                    continue;
+                tasks.add(task);
+            }
+        return tasks;
     }
 
     public static String getTeamName(int taskId) {

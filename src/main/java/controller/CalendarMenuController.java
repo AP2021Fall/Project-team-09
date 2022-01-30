@@ -2,7 +2,6 @@ package controller;
 
 import model.Task;
 import model.User;
-import utilities.ConsoleHelper;
 
 public class CalendarMenuController {
 
@@ -20,13 +19,12 @@ public class CalendarMenuController {
         return calendarMenuController;
     }
 
-
     public Response getCalendar(String calendar) {
-        if(!calendar.equalsIgnoreCase(DEADLINES))
+        if (!calendar.equalsIgnoreCase(DEADLINES))
             return new Response(WARN_INVALID_OPERATION, false);
 
         User user = UserController.getLoggedUser();
 
-        return new Response(Task.getDeadlines(user), true);
+        return new Response(Task.getDeadlinesFormatted(user), true, Task.getDeadlines(user));
     }
 }

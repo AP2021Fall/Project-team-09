@@ -41,12 +41,12 @@
                            <children>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label text="Wednesday">
+                                    <Label fx:id="day" text="Wednesday">
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
                                     <Label layoutX="29.0" layoutY="27.0" text="-" />
-                                    <Label layoutX="134.0" layoutY="10.0" text="2022-12-12">
+                                    <Label fx:id="date" layoutX="134.0" layoutY="10.0" text="2022-12-12">
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
@@ -57,12 +57,12 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" spacing="10.0">
                                  <children>
-                                    <Label text="username">
+                                    <Label fx:id="username" text="username">
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
                                     <Label layoutX="10.0" layoutY="10.0" text="-" />
-                                    <Label layoutX="168.0" layoutY="43.0" text="email@gmail.com">
+                                    <Label fx:id="role" layoutX="168.0" layoutY="43.0" text="role">
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
@@ -113,6 +113,12 @@
                                  </styleClass>
                               </Button>
                               <Button graphicTextGap="20.0" layoutX="10.0" layoutY="189.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onRequests" text="Requests" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="custom-menu-btn" />
+                                    <String fx:value="notif-btn" />
+                                 </styleClass>
+                              </Button>
+                              <Button graphicTextGap="20.0" layoutX="10.0" layoutY="230.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCalendar" text="Calendar" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
                                     <String fx:value="notif-btn" />
@@ -1121,17 +1127,17 @@
                                                                         <Insets />
                                                                      </VBox.margin>
                                                                      <children>
-                                                                        <TextField promptText="Search task by title" />
+                                                                        <TextField fx:id="CTSearchInput" promptText="Search task by title" />
                                                                      </children>
                                                                   </VBox>
                                                                   <HBox>
                                                                      <children>
-                                                                        <ComboBox prefWidth="150.0" promptText="Deadline" />
+                                                                        <ComboBox fx:id="CDCombo" prefWidth="150.0" promptText="Deadline" />
                                                                      </children>
                                                                   </HBox>
                                                                   <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                                                                      <content>
-                                                                        <VBox spacing="10.0">
+                                                                        <VBox fx:id="CTasksItemHolder" spacing="10.0">
                                                                            <children>
                                                                               <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-border-color: #26a8ff; -fx-background-radius: 5px; -fx-border-radius: 5px;">
                                                                                  <children>
@@ -1188,11 +1194,6 @@
                                                                         </VBox>
                                                                      </content>
                                                                   </ScrollPane>
-                                                                  <HBox alignment="CENTER_RIGHT">
-                                                                     <children>
-                                                                        <Button mnemonicParsing="false" styleClass="custom-btn" text="Create Task" />
-                                                                     </children>
-                                                                  </HBox>
                                                                </children>
                                                             </VBox>
                                                          </children>

@@ -64,6 +64,18 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TabPane mainTabPane;
 
+    @FXML
+    private Label day;
+
+    @FXML
+    private Label date;
+
+    @FXML
+    private Label username;
+
+    @FXML
+    private Label role;
+
     // profile
 
     @FXML
@@ -250,6 +262,17 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TextField CTTeamName;
 
+    // calendar
+
+    @FXML
+    private VBox CTasksItemHolder;
+
+    @FXML
+    private TextField CTSearchInput;
+
+    @FXML
+    private ComboBox<String> CDCombo;
+
 
     private double xOffset, yOffset;
 
@@ -258,6 +281,16 @@ public class DashboardUIController implements Initializable, GUI {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabPaneHandler(profileTabPane, PROFILE, PROFILE_INFO);
+
+        User user = UserController.getLoggedUser();
+
+        day.setText(LocalDate.now().getDayOfWeek().name());
+        date.setText(LocalDate.now().toString());
+
+        if (user != null) {
+            username.setText(user.getUsername());
+            role.setText(user.getType().name());
+        }
     }
 
     // main menu listeners
@@ -285,6 +318,11 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private void onRequests() {
         tabPaneHandler(null, REQUESTS, 0);
+    }
+
+    @FXML
+    private void onCalendar() {
+        tabPaneHandler(null, CALENDAR, 0);
     }
 
 
@@ -328,6 +366,8 @@ public class DashboardUIController implements Initializable, GUI {
             setNotifications();
         } else if (tab == BOARD_PAGE) {
             setBoard();
+        } else if (tab == CALENDAR) {
+            setUpCalendar();
         }
 
         if (tab != TAB) {
@@ -1511,5 +1551,30 @@ public class DashboardUIController implements Initializable, GUI {
                 TeamMenuController.getInstance().createTeam(teamName);
         showResponse(response);
         save();
+    }
+
+    // Calendar
+
+    private void setUpCalendar() {
+
+        Response response =
+                CalendarMenuController.getInstance().getCalendar("deadlines");
+
+        CTasksItemHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            ArrayList<Task> tasks = (ArrayList<Task>) response.getObject();
+
+            for (Task task : tasks) {
+                CalendarTaskItem calendarTaskItem = new CalendarTaskItem(task);
+                calendarTaskItem.setOnItemClickListener(new CalendarTaskItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(Task task) {
+
+                    }
+                });
+                HBox taskItemBox = calendarTaskItem.draw();
+                CTasksItemHolder.getChildren().add(taskItemBox);
+            }
+        }
     }
 }

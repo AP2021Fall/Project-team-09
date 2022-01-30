@@ -73,3 +73,17 @@
     -fx-cursor: hand;
 }
 
+.deadline-good {
+    -fx-text-fill: #26a8ff;
+}
+
+.deadline-bad {
+    -fx-text-fill: #ff8426;
+}
+
+.deadline-verybad {
+    -fx-text-fill: #ff1c1c;
+}
+
+
+
