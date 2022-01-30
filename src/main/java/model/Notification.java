@@ -1,6 +1,8 @@
 package model;
 
-public class Notification {
+import java.io.Serializable;
+
+public class Notification implements Serializable {
 
     private User user;
     private Team team;

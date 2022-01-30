@@ -56,12 +56,16 @@ public class DashboardUIController implements Initializable, GUI {
     private final int REQUESTS = 4;
     private final int CALENDAR = 5;
 
-    private final int CREATE_REQUEST = 6;
-    private final int ADD_MEMBER = 7;
-    private final int CREATE_BOARD = 8;
-    private final int CREATE_TASK = 9;
-    private final int BOARD_PAGE = 10;
-    private final int CREATE_CATEGORY = 11;
+    private final int USERS = 6;
+    private final int TEAMS = 7;
+    private final int STATISTICS = 8;
+
+    private final int CREATE_REQUEST = 9;
+    private final int ADD_MEMBER = 10;
+    private final int CREATE_BOARD = 11;
+    private final int CREATE_TASK = 12;
+    private final int BOARD_PAGE = 13;
+    private final int CREATE_CATEGORY = 14;
 
     private int TAB = 0;
     private int SUB_TAB = 0;
@@ -80,6 +84,34 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private Label role;
+
+    @FXML
+    private Button ProfileMenu;
+
+    @FXML
+    private Button TeamMenu;
+
+    @FXML
+    private Button TasksMenu;
+
+    @FXML
+    private Button NotificationMenu;
+
+    @FXML
+    private Button RequestsMenu;
+
+    @FXML
+    private Button CalendarMenu;
+
+    @FXML
+    private Button UsersMenu;
+
+    @FXML
+    private Button TeamsMenu;
+
+    @FXML
+    private Button StatisticsMenu;
+
 
     // profile
 
@@ -285,8 +317,6 @@ public class DashboardUIController implements Initializable, GUI {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tabPaneHandler(profileTabPane, PROFILE, PROFILE_INFO);
-
         User user = UserController.getLoggedUser();
 
         day.setText(LocalDate.now().getDayOfWeek().name());
@@ -295,6 +325,30 @@ public class DashboardUIController implements Initializable, GUI {
         if (user != null) {
             username.setText(user.getUsername());
             role.setText(user.getType().name());
+
+            if (user.isAdmin()) {
+                tabPaneHandler(null, USERS, 0);
+                ProfileMenu.setVisible(false);
+                ProfileMenu.setManaged(false);
+                TeamMenu.setVisible(false);
+                TeamMenu.setManaged(false);
+                TasksMenu.setVisible(false);
+                TasksMenu.setManaged(false);
+                NotificationMenu.setVisible(false);
+                NotificationMenu.setManaged(false);
+                RequestsMenu.setVisible(false);
+                RequestsMenu.setManaged(false);
+                CalendarMenu.setVisible(false);
+                CalendarMenu.setManaged(false);
+            } else {
+                tabPaneHandler(profileTabPane, PROFILE, PROFILE_INFO);
+                UsersMenu.setVisible(false);
+                UsersMenu.setManaged(false);
+                TeamsMenu.setVisible(false);
+                TeamsMenu.setManaged(false);
+                StatisticsMenu.setVisible(false);
+                StatisticsMenu.setManaged(false);
+            }
         }
     }
 
@@ -328,6 +382,21 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private void onCalendar() {
         tabPaneHandler(null, CALENDAR, 0);
+    }
+
+    @FXML
+    private void onAUsers() {
+        tabPaneHandler(null, USERS, 0);
+    }
+
+    @FXML
+    private void onATeams() {
+        tabPaneHandler(null, TEAMS, 0);
+    }
+
+    @FXML
+    private void onAStatistics() {
+        tabPaneHandler(null, STATISTICS, 0);
     }
 
 
@@ -802,6 +871,7 @@ public class DashboardUIController implements Initializable, GUI {
         Response response
                 = TeamMenuController.getInstance().addMemberToTeam(team, member.getUsername());
         showResponse(response);
+        save();
     }
 
     // team > roadmap
@@ -1245,7 +1315,6 @@ public class DashboardUIController implements Initializable, GUI {
     private void sortDeadline(String sortedDeadline, ArrayList<Task> tasks) {
         if (sortedDeadline.equalsIgnoreCase("oldest->newest") ||
                 sortedDeadline.equalsIgnoreCase("newest->oldest")) {
-
 
             tasks.sort(new Comparator<Task>() {
                 @Override

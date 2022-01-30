@@ -1,5 +1,6 @@
 package controller;
 
+import model.Notification;
 import model.Task;
 import model.Team;
 import model.User;
@@ -302,6 +303,8 @@ public class TeamMenuController {
             return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.addMember(user);
+        user.sendNotification(new Notification(UserController.getLoggedUser(),
+                team, String.format("You have been added to \"%s\" team!", team.getName())));
         return new Response(SUCCESS_USER_ADDED, true);
     }
 
@@ -318,6 +321,8 @@ public class TeamMenuController {
             return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.deleteMember(user);
+        user.sendNotification(new Notification(UserController.getLoggedUser(),
+                team, String.format("You have been deleted from \"%s\" team!", team.getName())));
         return new Response(SUCCESS_USER_DELETED, true);
     }
 
@@ -336,6 +341,8 @@ public class TeamMenuController {
             return new Response(WARN_USER_TEAM_LEADER, false);
 
         team.suspendMember(user);
+        user.sendNotification(new Notification(UserController.getLoggedUser(),
+                team, String.format("You have been suspended from \"%s\" team!", team.getName())));
         return new Response(SUCCESS_USER_SUSPENDED, true);
     }
 
@@ -356,6 +363,8 @@ public class TeamMenuController {
 
         user.setType("team leader");
         team.setLeader(user);
+        user.sendNotification(new Notification(UserController.getLoggedUser(),
+                team, String.format("You have been promoted to \"%s\" in \"%s\" team!", user.getType().name(), team.getName())));
         return new Response(SUCCESS_PROMOTED, true);
     }
 
