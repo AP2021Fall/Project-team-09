@@ -44,7 +44,7 @@ public class TaskItem {
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
         HBox.setHgrow(pane, Priority.ALWAYS);
-        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.task)));
+        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.team, this.task)));
 
         hBox.getChildren().addAll(label, label1, pane, label2, label3);
 
@@ -53,6 +53,6 @@ public class TaskItem {
 
     public interface OnItemClickListener {
 
-        void onClick(Task task);
+        void onClick(Team team, Task task);
     }
 }

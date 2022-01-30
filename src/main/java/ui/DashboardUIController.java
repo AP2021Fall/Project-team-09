@@ -132,6 +132,9 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private VBox AMMembersItemHolder;
 
+    @FXML
+    private TextField AMSearchInput;
+
     // teams > roadmap
 
     @FXML
@@ -226,6 +229,9 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private Button TTClear;
 
+    @FXML
+    private TextField TTMSearchInput;
+
     // notifications
 
     @FXML
@@ -300,6 +306,10 @@ public class DashboardUIController implements Initializable, GUI {
     }
 
     private void tabPaneHandler(TabPane subTabPane, int tab, int subTab) {
+        clearFields(RSearchInput, AMSearchInput, PTSearchInput, TBSearchInput, RSearchInput, TSearchInput, TTSearchInput,
+                TTMSearchInput, TMSearchInput, TRSearchInput);
+
+        clearFields(CBNameInput, CCNameInput, TTNameInput);
 
         if (tab == TEAM && tab != TAB) {
             teamsSetTeams();
@@ -715,6 +725,29 @@ public class DashboardUIController implements Initializable, GUI {
                 HBox assignMemberBox = assignMemberItem.draw();
                 AMMembersItemHolder.getChildren().add(assignMemberBox);
             }
+            onAMMembersSearchListener(users);
+        }
+    }
+
+    private void onAMMembersSearchListener(ArrayList<User> users) {
+        if (!AMMembersItemHolder.getChildren().isEmpty()) {
+            AMSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                AMMembersItemHolder.getChildren().clear();
+                for (User user : users) {
+                    if (user.getUsername().contains(newValue)) {
+                        AssignMemberItem assignMemberItem = new AssignMemberItem(user);
+                        assignMemberItem.setOnItemClickListener(new AssignMemberItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(User member) {
+                                addMemberToTeam(member);
+                                System.out.println("add");
+                            }
+                        });
+                        HBox assignMemberBox = assignMemberItem.draw();
+                        AMMembersItemHolder.getChildren().add(assignMemberBox);
+                    }
+                }
+            });
         }
     }
 
@@ -746,12 +779,36 @@ public class DashboardUIController implements Initializable, GUI {
                 roadmapItem.setOnItemClickListener(new RoadmapItem.OnItemClickListener() {
                     @Override
                     public void onClick(Task task) {
-
+                        SharedPreferences.add(TASK, task);
+                        tabPaneHandler(null, CREATE_TASK, 0);
                     }
                 });
                 HBox roadmapBox = roadmapItem.draw();
                 TRTasksHolder.getChildren().add(roadmapBox);
             }
+            setTRTaskSearchListener(tasks);
+        }
+    }
+
+    private void setTRTaskSearchListener(ArrayList<Task> tasks) {
+        if (!TRTasksHolder.getChildren().isEmpty()) {
+            TRSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TRTasksHolder.getChildren().clear();
+                for (Task task : tasks) {
+                    if (task.getTitle().contains(newValue)) {
+                        RoadmapItem roadmapItem = new RoadmapItem(task);
+                        roadmapItem.setOnItemClickListener(new RoadmapItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(Task task) {
+                                SharedPreferences.add(TASK, task);
+                                tabPaneHandler(null, CREATE_TASK, 0);
+                            }
+                        });
+                        HBox roadmapBox = roadmapItem.draw();
+                        TRTasksHolder.getChildren().add(roadmapBox);
+                    }
+                }
+            });
         }
     }
 
@@ -830,6 +887,29 @@ public class DashboardUIController implements Initializable, GUI {
                 HBox boardBox = boardItem.draw();
                 TBBoardItemHolder.getChildren().add(boardBox);
             }
+            onTBBoardSearchListener(boards);
+        }
+    }
+
+    private void onTBBoardSearchListener(ArrayList<Board> boards) {
+        if (!TBBoardItemHolder.getChildren().isEmpty()) {
+            TBSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TBBoardItemHolder.getChildren().clear();
+                for (Board board : boards) {
+                    if (board.getName().contains(newValue)) {
+                        BoardItem boardItem = new BoardItem(board);
+                        boardItem.setOnItemClickListener(new BoardItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(Board board) {
+                                SharedPreferences.add(BOARD, board);
+                                tabPaneHandler(null, BOARD_PAGE, 0);
+                            }
+                        });
+                        HBox boardBox = boardItem.draw();
+                        TBBoardItemHolder.getChildren().add(boardBox);
+                    }
+                }
+            });
         }
     }
 
@@ -1062,14 +1142,42 @@ public class DashboardUIController implements Initializable, GUI {
                     TaskItem taskItem = new TaskItem(team, task);
                     taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
                         @Override
-                        public void onClick(Task task) {
-
+                        public void onClick(Team team, Task task) {
+                            SharedPreferences.add(SELECTED_TEAM, team);
+                            SharedPreferences.add(TASK, task);
+                            tabPaneHandler(null, CREATE_TASK, 0);
                         }
                     });
                     HBox taskItemBox = taskItem.draw();
                     TTaskItemHolder.getChildren().add(taskItemBox);
                 }
             }
+            onTTaskSearchListener(teamTasks);
+        }
+    }
+
+    private void onTTaskSearchListener(HashMap<Team, ArrayList<Task>> teamTasks) {
+        if (!TTaskItemHolder.getChildren().isEmpty()) {
+            TSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TTaskItemHolder.getChildren().clear();
+                for (Team team : teamTasks.keySet()) {
+                    for (Task task : team.getTasks()) {
+                        if (task.getTitle().contains(newValue)) {
+                            TaskItem taskItem = new TaskItem(team, task);
+                            taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(Team team, Task task) {
+                                    SharedPreferences.add(SELECTED_TEAM, team);
+                                    SharedPreferences.add(TASK, task);
+                                    tabPaneHandler(null, CREATE_TASK, 0);
+                                }
+                            });
+                            HBox taskItemBox = taskItem.draw();
+                            TTaskItemHolder.getChildren().add(taskItemBox);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -1146,6 +1254,37 @@ public class DashboardUIController implements Initializable, GUI {
                 HBox taskMember = taskMemberItem.draw();
                 TTMemberItemHolder.getChildren().add(taskMember);
             }
+            onTTMemberSearchListener(members);
+        }
+    }
+
+    private void onTTMemberSearchListener(ArrayList<User> members) {
+        if (!TTMemberItemHolder.getChildren().isEmpty()) {
+            TTMSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                TTMemberItemHolder.getChildren().clear();
+                for (User member : members) {
+                    if (member.getUsername().contains(newValue)) {
+                        TaskMemberItem taskMemberItem = new TaskMemberItem(member);
+                        taskMemberItem.setOnItemClickListener(new TaskMemberItem.OnItemClickListener() {
+                            @Override
+                            public void onAdd(User member) {
+                                addMemberToTask(member);
+                                save();
+                                setTaskMembers();
+                            }
+
+                            @Override
+                            public void onRemove(User member) {
+                                removeMemberFromTask(member);
+                                save();
+                                setTaskMembers();
+                            }
+                        });
+                        HBox taskMember = taskMemberItem.draw();
+                        TTMemberItemHolder.getChildren().add(taskMember);
+                    }
+                }
+            });
         }
     }
 
@@ -1338,25 +1477,22 @@ public class DashboardUIController implements Initializable, GUI {
 
     private void onRequestTeamsSearchListener(ArrayList<Team> teams) {
         if (!RTeamsItemHolder.getChildren().isEmpty()) {
-            ArrayList<Team> filteredTeams = new ArrayList<>();
             RSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                RTeamsItemHolder.getChildren().clear();
                 for (Team team : teams) {
                     if (team.getName().contains(newValue)) {
-                        filteredTeams.add(team);
+                        RequestTeamItem teamItem = new RequestTeamItem(team);
+                        teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(Team team) {
+
+                            }
+                        });
+                        HBox teamBox = teamItem.draw();
+                        RTeamsItemHolder.getChildren().add(teamBox);
                     }
                 }
             });
-            for (Team team : filteredTeams) {
-                RequestTeamItem teamItem = new RequestTeamItem(team);
-                teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
-                    @Override
-                    public void onClick(Team team) {
-
-                    }
-                });
-                HBox teamBox = teamItem.draw();
-                RTeamsItemHolder.getChildren().add(teamBox);
-            }
         }
     }
 
