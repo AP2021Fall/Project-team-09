@@ -20,9 +20,11 @@ import utilities.SharedPreferences;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -33,6 +35,9 @@ public class DashboardUIController implements Initializable, GUI {
     private final String BOARD = "board";
     private final String TASK = "task";
     private final String ONLY_MINE = "only_mine";
+    private static final String SORTED_TEAM = "sorted_team";
+    private static final String SORTED_PRIORITY = "sorted_priority";
+    private static final String SORTED_DEADLINE = "sorted_deadline";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -1175,10 +1180,25 @@ public class DashboardUIController implements Initializable, GUI {
 //        showResponse(response);
 
         TTaskItemHolder.getChildren().clear();
+
+        String sortedTeam = (String) SharedPreferences.get(SORTED_TEAM);
+        String sortedPriority = (String) SharedPreferences.get(SORTED_PRIORITY);
+        String sortedDeadline = (String) SharedPreferences.get(SORTED_DEADLINE);
+
+
         if (response.isSuccess()) {
             HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) response.getObject();
+
             for (Team team : teamTasks.keySet()) {
-                for (Task task : team.getTasks()) {
+                if (sortedTeam != null)
+                    if (!team.getName().equalsIgnoreCase(sortedTeam))
+                        continue;
+                ArrayList<Task> tasks = new ArrayList<>(team.getTasks());
+                if (sortedPriority != null)
+                    sortPriority(sortedPriority, tasks);
+                if (sortedDeadline != null)
+                    sortDeadline(sortedDeadline, tasks);
+                for (Task task : tasks) {
                     TaskItem taskItem = new TaskItem(team, task);
                     taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
                         @Override
@@ -1193,6 +1213,49 @@ public class DashboardUIController implements Initializable, GUI {
                 }
             }
             onTTaskSearchListener(teamTasks);
+        }
+    }
+
+    private void sortPriority(String sortedPriority, ArrayList<Task> tasks) {
+
+        if (sortedPriority.equalsIgnoreCase("low->high") ||
+                sortedPriority.equalsIgnoreCase("high->low")) {
+
+
+            tasks.sort(new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    boolean asc = sortedPriority.equalsIgnoreCase("low->high");
+                    System.out.println(asc);
+                    if (asc)
+                        return Integer.compare(o1.getPriorityNumeric(), o2.getPriorityNumeric());
+                    return Integer.compare(o2.getPriorityNumeric(), o1.getPriorityNumeric());
+                }
+            });
+        } else {
+            ArrayList<Task> toBeRemoved = new ArrayList<>();
+            for (Task task : tasks)
+                if (!task.getPriority().equalsIgnoreCase(sortedPriority))
+                    toBeRemoved.add(task);
+
+            tasks.removeAll(toBeRemoved);
+        }
+    }
+
+    private void sortDeadline(String sortedDeadline, ArrayList<Task> tasks) {
+        if (sortedDeadline.equalsIgnoreCase("oldest->newest") ||
+                sortedDeadline.equalsIgnoreCase("newest->oldest")) {
+
+
+            tasks.sort(new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    boolean asc = sortedDeadline.equalsIgnoreCase("oldest->newest");
+                    if (asc)
+                        return o1.getTimeOfDeadline().compareTo(o2.getTimeOfDeadline());
+                    return o2.getTimeOfDeadline().compareTo(o1.getTimeOfDeadline());
+                }
+            });
         }
     }
 
@@ -1248,6 +1311,44 @@ public class DashboardUIController implements Initializable, GUI {
         deadlines.addAll("All", "Oldest->Newest", "Newest->Oldest");
         TDeadlineCombo.setItems(deadlines);
         TDeadlineCombo.getSelectionModel().select(0);
+
+        setUpComboListeners();
+    }
+
+    private void setUpComboListeners() {
+        TTeamCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equalsIgnoreCase("all"))
+                    SharedPreferences.add(SORTED_TEAM, null);
+                else
+                    SharedPreferences.add(SORTED_TEAM, newValue);
+                setTTasks();
+            }
+        });
+
+        TPriorityCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equalsIgnoreCase("all"))
+                    SharedPreferences.add(SORTED_PRIORITY, null);
+                else
+                    SharedPreferences.add(SORTED_PRIORITY, newValue);
+                setTTasks();
+                System.out.println("triggered");
+                System.out.println(SharedPreferences.get(SORTED_PRIORITY));
+            }
+        });
+
+        TDeadlineCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equalsIgnoreCase("all"))
+                    SharedPreferences.add(SORTED_DEADLINE, null);
+                else
+                    SharedPreferences.add(SORTED_DEADLINE, newValue);
+                setTTasks();
+                System.out.println("triggered");
+                System.out.println(SharedPreferences.get(SORTED_DEADLINE));
+            }
+        });
     }
 
     @FXML
