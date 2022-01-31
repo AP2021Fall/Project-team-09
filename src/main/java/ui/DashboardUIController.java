@@ -2156,6 +2156,13 @@ public class DashboardUIController implements Initializable, GUI {
                 setAUsers();
             }
         });
+
+        AUScoreCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                SharedPreferences.add(SORTED_S_USERS, newValue);
+                setAUsers();
+            }
+        });
     }
 
     private void banUser(User user) {
@@ -2272,5 +2279,65 @@ public class DashboardUIController implements Initializable, GUI {
         ASTTotal.setText(String.valueOf(totalTeams));
         ASTDone.setText(String.valueOf(doneTasks));
         ASTFailed.setText(String.valueOf(failedTasks));
+
+        setUpASUItemHolder();
+    }
+
+    private void setUpASUItemHolder() {
+        HashMap<Integer, User> userPoints = new LinkedHashMap<>();
+        for (User user : User.getAllUsers()) {
+            userPoints.put(User.getUserPoints(user), user);
+        }
+
+        Iterator<Integer> iterator = userPoints.keySet().iterator();
+        int index = 0;
+
+        while (iterator.hasNext() && index < 3) {
+            int key = iterator.next();
+            TopUserItem topUserItem = new TopUserItem(userPoints.get(key));
+            topUserItem.setOnItemClickListener(new TopUserItem.OnItemClickListener() {
+                @Override
+                public void onClick(User user) {
+                    SharedPreferences.add(SELECTED_PROFILE, user);
+                    tabPaneHandler(null, USER_PROFILE, 0);
+                }
+            });
+            HBox topBox = topUserItem.draw();
+            ASTUItemHolder.getChildren().add(topBox);
+            index++;
+        }
+    }
+
+    // notification
+
+    @FXML
+    private void onASendNotification() {
+        String body = getValue(NNABody);
+
+        if (body.isEmpty()) {
+            new AlertHandler(Alert.AlertType.ERROR, "body cannot be empty!").ShowAlert();
+            return;
+        }
+
+        Response response =
+                NotificationController.getInstance().sendNotificationToAll(body);
+        showResponse(response);
+        clearFields(NNABody);
+        save();
+    }
+
+    private void setUpUserProfile() {
+        User user = (User) SharedPreferences.get(SELECTED_PROFILE);
+
+        if (user == null)
+            return;
+
+        UPUsername.setText(user.getUsername());
+        UPFirstName.setText(user.getFirstname());
+        UPLastName.setText(user.getLastName());
+        if (user.getBirthday() != null)
+            UPBirthdate.setValue(user.getBirthday());
+        UPEmail.setText(user.getEmail());
+        UPRole.setText(user.getType().name());
     }
 }
