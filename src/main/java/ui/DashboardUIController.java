@@ -33,13 +33,13 @@ public class DashboardUIController implements Initializable, GUI {
     private final String BOARD = "board";
     private final String TASK = "task";
     private final String ONLY_MINE = "only_mine";
-    private static final String SORTED_TEAM = "sorted_team";
-    private static final String SORTED_PRIORITY = "sorted_priority";
-    private static final String SORTED_DEADLINE = "sorted_deadline";
-    private static final String SORTED_A_USERS = "sorted_a_users";
-    private static final String SORTED_S_USERS = "sorted_s_users";
-    private static final String SELECTED_USER = "selected_user";
-    private static final String SELECTED_PROFILE = "selected_profile";
+    private final String SORTED_TEAM = "sorted_team";
+    private final String SORTED_PRIORITY = "sorted_priority";
+    private final String SORTED_DEADLINE = "sorted_deadline";
+    private final String SORTED_A_USERS = "sorted_a_users";
+    private final String SORTED_S_USERS = "sorted_s_users";
+    private final String SELECTED_USER = "selected_user";
+    private final String SELECTED_PROFILE = "selected_profile";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -178,6 +178,9 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TextField PTSearchInput;
 
+    @FXML
+    private Button TCTMenuButton;
+
     // teams > team page
 
     @FXML
@@ -190,6 +193,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private TextField TMSearchInput;
+
+    @FXML
+    private Button TAMButton;
 
     // teams > add member
 
@@ -237,6 +243,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private TextField TBSearchInput;
+
+    @FXML
+    private Button TCBButton;
 
     // boards > board > create board
 
@@ -315,6 +324,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private VBox NNotificationItemHolder;
+
+    @FXML
+    private Button NNNButton;
 
     // new notification
 
@@ -467,6 +479,20 @@ public class DashboardUIController implements Initializable, GUI {
                 if (!user.isTeamLeader()) {
                     RequestsMenu.setVisible(false);
                     RequestsMenu.setManaged(false);
+
+                    TAMButton.setVisible(false);
+                    TAMButton.setManaged(false);
+                    TCBButton.setVisible(false);
+                    TCBButton.setManaged(false);
+                    TCTMenuButton.setVisible(false);
+                    TCTMenuButton.setManaged(false);
+                    NNNButton.setVisible(false);
+                    NNNButton.setManaged(false);
+                    TTCreateTask.setVisible(false);
+                    TTSaveChanges.setVisible(false);
+                    TTSaveChanges.setManaged(false);
+                    TTClear.setVisible(false);
+                    TTClear.setManaged(false);
                 }
             }
         }
@@ -746,8 +772,18 @@ public class DashboardUIController implements Initializable, GUI {
                 teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
                     @Override
                     public void onClick(Team team) {
-                        SharedPreferences.add(SELECTED_TEAM, team);
-                        teamPageTabPaneHandler(MEMBERS);
+                        if (!team.isSuspended(UserController.getLoggedUser())) {
+                            if (!team.isPending()) {
+                                SharedPreferences.add(SELECTED_TEAM, team);
+                                teamPageTabPaneHandler(MEMBERS);
+                            } else {
+                                new AlertHandler(Alert.AlertType.ERROR,
+                                        "Team is waiting for admin confirmation!").ShowAlert();
+                            }
+                        }else {
+                            new AlertHandler(Alert.AlertType.ERROR,
+                                    "You have been suspended from this team!").ShowAlert();
+                        }
                     }
                 });
                 HBox teamBox = teamItem.draw();
@@ -767,8 +803,18 @@ public class DashboardUIController implements Initializable, GUI {
                         teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
                             @Override
                             public void onClick(Team team) {
-                                SharedPreferences.add(SELECTED_TEAM, team);
-                                teamPageTabPaneHandler(MEMBERS);
+                                if (!team.isSuspended(UserController.getLoggedUser())) {
+                                    if (!team.isPending()) {
+                                        SharedPreferences.add(SELECTED_TEAM, team);
+                                        teamPageTabPaneHandler(MEMBERS);
+                                    } else {
+                                        new AlertHandler(Alert.AlertType.ERROR,
+                                                "Team is waiting for admin confirmation!").ShowAlert();
+                                    }
+                                }else {
+                                    new AlertHandler(Alert.AlertType.ERROR,
+                                            "You have been suspended from this team!").ShowAlert();
+                                }
                             }
                         });
                         HBox teamBox = teamItem.draw();
@@ -822,7 +868,6 @@ public class DashboardUIController implements Initializable, GUI {
         save();
     }
 
-
     // teams
 
     private void teamsSetTeams() {
@@ -843,8 +888,18 @@ public class DashboardUIController implements Initializable, GUI {
                 teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
                     @Override
                     public void onClick(Team team) {
-                        SharedPreferences.add(SELECTED_TEAM, team);
-                        teamPageTabPaneHandler(MEMBERS);
+                        if (!team.isSuspended(UserController.getLoggedUser())) {
+                            if (!team.isPending()) {
+                                SharedPreferences.add(SELECTED_TEAM, team);
+                                teamPageTabPaneHandler(MEMBERS);
+                            } else {
+                                new AlertHandler(Alert.AlertType.ERROR,
+                                        "Team is waiting for admin confirmation!").ShowAlert();
+                            }
+                        }else {
+                            new AlertHandler(Alert.AlertType.ERROR,
+                                    "You have been suspended from this team!").ShowAlert();
+                        }
                     }
                 });
                 HBox teamBox = teamItem.draw();
@@ -864,8 +919,18 @@ public class DashboardUIController implements Initializable, GUI {
                         teamItem.setOnItemClickListener(new TeamItem.OnItemClickListener() {
                             @Override
                             public void onClick(Team team) {
-                                SharedPreferences.add(SELECTED_TEAM, team);
-                                teamPageTabPaneHandler(MEMBERS);
+                                if (!team.isSuspended(UserController.getLoggedUser())) {
+                                    if (!team.isPending()) {
+                                        SharedPreferences.add(SELECTED_TEAM, team);
+                                        teamPageTabPaneHandler(MEMBERS);
+                                    } else {
+                                        new AlertHandler(Alert.AlertType.ERROR,
+                                                "Team is waiting for admin confirmation!").ShowAlert();
+                                    }
+                                }else {
+                                    new AlertHandler(Alert.AlertType.ERROR,
+                                            "You have been suspended from this team!").ShowAlert();
+                                }
                             }
                         });
                         HBox teamBox = teamItem.draw();
@@ -875,7 +940,6 @@ public class DashboardUIController implements Initializable, GUI {
             });
         }
     }
-
 
     // teams page
 
@@ -1553,9 +1617,19 @@ public class DashboardUIController implements Initializable, GUI {
                     taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
                         @Override
                         public void onClick(Team team, Task task) {
-                            SharedPreferences.add(SELECTED_TEAM, team);
-                            SharedPreferences.add(TASK, task);
-                            tabPaneHandler(null, CREATE_TASK, 0);
+                            if (!team.isSuspended(UserController.getLoggedUser())) {
+                                if (!team.isPending()) {
+                                    SharedPreferences.add(SELECTED_TEAM, team);
+                                    SharedPreferences.add(TASK, task);
+                                    tabPaneHandler(null, CREATE_TASK, 0);
+                                } else {
+                                    new AlertHandler(Alert.AlertType.ERROR,
+                                            "Team is waiting for admin confirmation!").ShowAlert();
+                                }
+                            }else {
+                                new AlertHandler(Alert.AlertType.ERROR,
+                                        "You have been suspended from this team!").ShowAlert();
+                            }
                         }
                     });
                     HBox taskItemBox = taskItem.draw();
@@ -1619,9 +1693,19 @@ public class DashboardUIController implements Initializable, GUI {
                             taskItem.setOnItemClickListener(new TaskItem.OnItemClickListener() {
                                 @Override
                                 public void onClick(Team team, Task task) {
-                                    SharedPreferences.add(SELECTED_TEAM, team);
-                                    SharedPreferences.add(TASK, task);
-                                    tabPaneHandler(null, CREATE_TASK, 0);
+                                    if (!team.isSuspended(UserController.getLoggedUser())) {
+                                        if (!team.isPending()) {
+                                            SharedPreferences.add(SELECTED_TEAM, team);
+                                            SharedPreferences.add(TASK, task);
+                                            tabPaneHandler(null, CREATE_TASK, 0);
+                                        } else {
+                                            new AlertHandler(Alert.AlertType.ERROR,
+                                                    "Team is waiting for admin confirmation!").ShowAlert();
+                                        }
+                                    }else {
+                                        new AlertHandler(Alert.AlertType.ERROR,
+                                                "You have been suspended from this team!").ShowAlert();
+                                    }
                                 }
                             });
                             HBox taskItemBox = taskItem.draw();
@@ -2379,6 +2463,8 @@ public class DashboardUIController implements Initializable, GUI {
         Iterator<Integer> iterator = userPoints.keySet().iterator();
         int index = 0;
 
+        ASTUItemHolder.getChildren().clear();
+
         while (iterator.hasNext() && index < 3) {
             int key = iterator.next();
             TopUserItem topUserItem = new TopUserItem(userPoints.get(key));
@@ -2426,5 +2512,18 @@ public class DashboardUIController implements Initializable, GUI {
             UPBirthdate.setValue(user.getBirthday());
         UPEmail.setText(user.getEmail());
         UPRole.setText(user.getType().name());
+    }
+
+    @FXML
+    private void onClose() {
+        SharedPreferences.clear();
+        System.exit(0);
+    }
+
+    @FXML
+    private void onSignOut() {
+        SharedPreferences.clear();
+        UserController.logout();
+        logout();
     }
 }

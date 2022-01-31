@@ -38,6 +38,22 @@
     -fx-graphic: url('assets/notification-w-24.png');
 }
 
+.calendar-btn {
+    -fx-graphic: url('assets/calendar.png');
+}
+
+.stat-btn {
+    -fx-graphic: url('assets/stat.png');
+}
+
+.req-btn {
+    -fx-graphic: url('assets/req.png');
+}
+
+.logout-btn {
+    -fx-graphic: url('assets/signout.png');
+}
+
 .tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
 }
@@ -83,6 +99,14 @@
 
 .deadline-verybad {
     -fx-text-fill: #ff1c1c;
+}
+
+.tool-close {
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-graphic: url('assets/close.png');
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
 }
 
 

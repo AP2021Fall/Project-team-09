@@ -29,11 +29,16 @@
          <children>
             <VBox layoutX="358.0" layoutY="158.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
+                  <HBox alignment="CENTER_RIGHT">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onClose" styleClass="tool-close" />
+                     </children>
+                  </HBox>
                   <HBox alignment="CENTER_LEFT">
                      <children>
                         <Label styleClass="custom-title" text="Jira">
                            <font>
-                              <Font name="Roboto" size="21.0" />
+                              <Font name="Roboto" size="20.0" />
                            </font>
                         </Label>
                         <Pane HBox.hgrow="ALWAYS" />
@@ -115,31 +120,31 @@
                               <Button fx:id="RequestsMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="189.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onRequests" text="Requests" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="notif-btn" />
+                                    <String fx:value="req-btn" />
                                  </styleClass>
                               </Button>
                               <Button fx:id="CalendarMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="230.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCalendar" text="Calendar" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="notif-btn" />
+                                    <String fx:value="calendar-btn" />
                                  </styleClass>
                               </Button>
                               <Button fx:id="UsersMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="274.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onAUsers" text="Users" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="notif-btn" />
+                                    <String fx:value="profile-btn" />
                                  </styleClass>
                               </Button>
                               <Button fx:id="TeamsMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="645.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onATeams" text="Teams" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="notif-btn" />
+                                    <String fx:value="team-btn" />
                                  </styleClass>
                               </Button>
                               <Button fx:id="StatisticsMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="645.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onAStatistics" text="Statistics" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="notif-btn" />
+                                    <String fx:value="stat-btn" />
                                  </styleClass>
                               </Button>
                               <Button fx:id="ANotificationMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="406.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onANotification" text="Notification" textAlignment="CENTER">
@@ -149,10 +154,10 @@
                                  </styleClass>
                               </Button>
                               <Pane VBox.vgrow="ALWAYS" />
-                              <Button graphicTextGap="20.0" layoutX="10.0" layoutY="100.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-radius: 0 0 0 20px;" text="Sign out" textAlignment="CENTER">
+                              <Button graphicTextGap="20.0" layoutX="10.0" layoutY="100.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onSignOut" style="-fx-background-radius: 0 0 0 20px;" text="Sign out" textAlignment="CENTER">
                                  <styleClass>
                                     <String fx:value="custom-menu-btn" />
-                                    <String fx:value="profile-btn" />
+                                    <String fx:value="logout-btn" />
                                  </styleClass>
                               </Button>
                            </children>
@@ -190,32 +195,6 @@
                                                                                  <children>
                                                                                     <VBox spacing="10.0" VBox.vgrow="ALWAYS">
                                                                                        <children>
-                                                                                          <VBox VBox.vgrow="NEVER">
-                                                                                             <children>
-                                                                                                <Label text="Profile Picture" />
-                                                                                                <Separator prefWidth="200.0" />
-                                                                                             </children>
-                                                                                             <VBox.margin>
-                                                                                                <Insets />
-                                                                                             </VBox.margin>
-                                                                                          </VBox>
-                                                                                          <HBox prefHeight="100.0" prefWidth="200.0">
-                                                                                             <children>
-                                                                                                <Pane style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
-                                                                                                   <children>
-                                                                                                      <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-5.0" pickOnBounds="true" preserveRatio="true" />
-                                                                                                   </children>
-                                                                                                </Pane>
-                                                                                                <VBox alignment="BOTTOM_LEFT" spacing="10.0">
-                                                                                                   <children>
-                                                                                                      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="custom-btn" text="Select from files" />
-                                                                                                   </children>
-                                                                                                   <padding>
-                                                                                                      <Insets bottom="2.0" left="10.0" right="10.0" />
-                                                                                                   </padding>
-                                                                                                </VBox>
-                                                                                             </children>
-                                                                                          </HBox>
                                                                                           <VBox layoutX="20.0" layoutY="20.0">
                                                                                              <children>
                                                                                                 <Label text="Personal Info" />
@@ -561,7 +540,7 @@
                                                                                                 <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onRoadmapMenu" styleClass="custom-btn" text="Roadmap" HBox.hgrow="ALWAYS" />
                                                                                                 <Button layoutX="328.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onChatroomMenu" styleClass="custom-btn" text="Chatroom" HBox.hgrow="ALWAYS" />
                                                                                                 <Button layoutX="600.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onBoardsMenu" styleClass="custom-btn" text="Boards" HBox.hgrow="ALWAYS" />
-                                                                                                <Button layoutX="831.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onTCTask" styleClass="custom-btn" text="Create Task" />
+                                                                                                <Button fx:id="TCTMenuButton" layoutX="831.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onTCTask" styleClass="custom-btn" text="Create Task" />
                                                                                              </children>
                                                                                              <padding>
                                                                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -651,7 +630,7 @@
                                                                                                                         </ScrollPane>
                                                                                                                         <HBox alignment="CENTER_RIGHT">
                                                                                                                            <children>
-                                                                                                                              <Button mnemonicParsing="false" onAction="#onAddMember" styleClass="custom-btn" text="Add member to team" />
+                                                                                                                              <Button fx:id="TAMButton" mnemonicParsing="false" onAction="#onAddMember" styleClass="custom-btn" text="Add member to team" />
                                                                                                                            </children>
                                                                                                                         </HBox>
                                                                                                                      </children>
@@ -988,7 +967,7 @@
                                                                                                                         </ScrollPane>
                                                                                                                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                                                                                                            <children>
-                                                                                                                              <Button layoutX="704.0" layoutY="10.0" mnemonicParsing="false" onAction="#onTCBoard" styleClass="custom-btn" text="Create board" />
+                                                                                                                              <Button fx:id="TCBButton" layoutX="704.0" layoutY="10.0" mnemonicParsing="false" onAction="#onTCBoard" styleClass="custom-btn" text="Create board" />
                                                                                                                            </children>
                                                                                                                         </HBox>
                                                                                                                      </children>
@@ -1137,7 +1116,7 @@
                                                                   </ScrollPane>
                                                                   <HBox alignment="CENTER_RIGHT">
                                                                      <children>
-                                                                        <Button mnemonicParsing="false" onAction="#onNewNotification" styleClass="custom-btn" text="New Notification" />
+                                                                        <Button fx:id="NNNButton" mnemonicParsing="false" onAction="#onNewNotification" styleClass="custom-btn" text="New Notification" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>

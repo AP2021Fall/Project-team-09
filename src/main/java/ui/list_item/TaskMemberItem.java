@@ -1,5 +1,6 @@
 package ui.list_item;
 
+import controller.UserController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,7 +8,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import model.Task;
-import model.Team;
 import model.User;
 import utilities.SharedPreferences;
 
@@ -41,15 +41,17 @@ public class TaskMemberItem {
         Task task = (Task) SharedPreferences.get("task");
 
         User user = null;
-        if (task != null) {
-            user = task.isInAssignedUsers(this.member.getUsername());
-            if (!task.isDone()) {
-                if (user == null) {
-                    button.setOnMouseClicked(event -> this.onItemClickListener.onAdd(this.member));
-                    hBox.getChildren().add(button);
-                } else {
-                    button1.setOnMouseClicked(event -> this.onItemClickListener.onRemove(this.member));
-                    hBox.getChildren().add(button1);
+        if (UserController.getLoggedUser().isTeamLeader()) {
+            if (task != null) {
+                user = task.isInAssignedUsers(this.member.getUsername());
+                if (!task.isDone()) {
+                    if (user == null) {
+                        button.setOnMouseClicked(event -> this.onItemClickListener.onAdd(this.member));
+                        hBox.getChildren().add(button);
+                    } else {
+                        button1.setOnMouseClicked(event -> this.onItemClickListener.onRemove(this.member));
+                        hBox.getChildren().add(button1);
+                    }
                 }
             }
         }
