@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DashboardUIController implements Initializable, GUI {
 
@@ -39,6 +36,9 @@ public class DashboardUIController implements Initializable, GUI {
     private static final String SORTED_PRIORITY = "sorted_priority";
     private static final String SORTED_DEADLINE = "sorted_deadline";
     private static final String SORTED_A_USERS = "sorted_a_users";
+    private static final String SORTED_S_USERS = "sorted_s_users";
+    private static final String SELECTED_USER = "selected_user";
+    private static final String SELECTED_PROFILE = "selected_profile";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -60,6 +60,7 @@ public class DashboardUIController implements Initializable, GUI {
     private final int USERS = 6;
     private final int TEAMS = 7;
     private final int STATISTICS = 8;
+    private final int A_NOTIFICATION = 17;
 
     private final int CREATE_REQUEST = 9;
     private final int ADD_MEMBER = 10;
@@ -68,6 +69,8 @@ public class DashboardUIController implements Initializable, GUI {
     private final int BOARD_PAGE = 13;
     private final int CREATE_CATEGORY = 14;
     private final int NEW_NOTIFICATION = 15;
+    private final int USER_NOTIFICATION = 16;
+    private final int USER_PROFILE = 18;
 
     private int TAB = 0;
     private int SUB_TAB = 0;
@@ -113,6 +116,9 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private Button StatisticsMenu;
+
+    @FXML
+    private Button ANotificationMenu;
 
 
     // profile
@@ -296,6 +302,15 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TextArea NNBody;
 
+    // new user notification
+
+    @FXML
+    private Label NNUser;
+
+    @FXML
+    private TextArea NNUBody;
+
+
     // requests
 
     @FXML
@@ -361,6 +376,31 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private VBox ASTUItemHolder;
 
+    // admin notification
+
+    @FXML
+    private TextArea NNABody;
+
+    // user profile
+
+    @FXML
+    private TextField UPUsername;
+
+    @FXML
+    private TextField UPFirstName;
+
+    @FXML
+    private TextField UPLastName;
+
+    @FXML
+    private DatePicker UPBirthdate;
+
+    @FXML
+    private TextField UPEmail;
+
+    @FXML
+    private TextField UPRole;
+
 
     private double xOffset, yOffset;
 
@@ -399,6 +439,8 @@ public class DashboardUIController implements Initializable, GUI {
                 TeamsMenu.setManaged(false);
                 StatisticsMenu.setVisible(false);
                 StatisticsMenu.setManaged(false);
+                ANotificationMenu.setVisible(false);
+                ANotificationMenu.setManaged(false);
 
                 if (!user.isTeamLeader()) {
                     RequestsMenu.setVisible(false);
@@ -455,6 +497,11 @@ public class DashboardUIController implements Initializable, GUI {
         tabPaneHandler(null, STATISTICS, 0);
     }
 
+    @FXML
+    private void onANotification() {
+        tabPaneHandler(null, A_NOTIFICATION, 0);
+    }
+
 
     // profile sub section menu listeners
 
@@ -507,6 +554,10 @@ public class DashboardUIController implements Initializable, GUI {
             setAStatistics();
         } else if (tab == NEW_NOTIFICATION) {
             setUpNewNotification();
+        } else if (tab == USER_NOTIFICATION) {
+            setUpNewUserNotification();
+        } else if (tab == USER_PROFILE) {
+            setUpUserProfile();
         }
 
         if (tab != TAB) {
@@ -817,6 +868,12 @@ public class DashboardUIController implements Initializable, GUI {
             TeamMemberItem teamMemberItem = new TeamMemberItem(team, user);
             teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
                 @Override
+                public void onClick(User member) {
+                    SharedPreferences.add(SELECTED_PROFILE, member);
+                    tabPaneHandler(null, USER_PROFILE, 0);
+                }
+
+                @Override
                 public void onRemove(User member) {
                     removeMember(team, member);
                     save();
@@ -825,7 +882,8 @@ public class DashboardUIController implements Initializable, GUI {
 
                 @Override
                 public void onMessage(User member) {
-
+                    SharedPreferences.add(SELECTED_USER, member);
+                    tabPaneHandler(null, USER_NOTIFICATION, 0);
                 }
 
                 @Override
@@ -862,13 +920,20 @@ public class DashboardUIController implements Initializable, GUI {
                         TeamMemberItem teamMemberItem = new TeamMemberItem(team, member);
                         teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
                             @Override
+                            public void onClick(User member) {
+                                SharedPreferences.add(SELECTED_PROFILE, member);
+                                tabPaneHandler(null, USER_PROFILE, 0);
+                            }
+
+                            @Override
                             public void onRemove(User member) {
                                 removeMember(team, member);
                             }
 
                             @Override
                             public void onMessage(User member) {
-
+                                SharedPreferences.add(SELECTED_USER, member);
+                                tabPaneHandler(null, USER_NOTIFICATION, 0);
                             }
 
                             @Override
@@ -1060,7 +1125,8 @@ public class DashboardUIController implements Initializable, GUI {
                 chatItem.setOnItemClickListener(new ChatItem.OnItemClickListener() {
                     @Override
                     public void onClick(Message message) {
-
+                        SharedPreferences.add(SELECTED_PROFILE, message.getSender());
+                        tabPaneHandler(null, USER_PROFILE, 0);
                     }
                 });
                 VBox chatBox = chatItem.draw();
@@ -1839,6 +1905,36 @@ public class DashboardUIController implements Initializable, GUI {
         save();
     }
 
+    private void setUpNewUserNotification() {
+        User user = (User) SharedPreferences.get(SELECTED_USER);
+
+        if (user == null)
+            return;
+
+        NNUser.setText(user.getUsername());
+    }
+
+    @FXML
+    private void onUSendNotification() {
+        User user = (User) SharedPreferences.get(SELECTED_USER);
+
+        if (user == null)
+            return;
+
+        String body = getValue(NNUBody);
+
+        if (body.isEmpty()) {
+            new AlertHandler(Alert.AlertType.ERROR, "body cannot be empty!").ShowAlert();
+            return;
+        }
+
+        Response response =
+                NotificationController.getInstance().sendNotificationToUser(body, user.getUsername());
+        showResponse(response);
+        clearFields(NNUBody);
+        save();
+    }
+
 
     // requests
 
@@ -1941,6 +2037,7 @@ public class DashboardUIController implements Initializable, GUI {
                 User.getAllUsers();
 
         String sortedUsers = (String) SharedPreferences.get(SORTED_A_USERS);
+        String sortedSUsers = (String) SharedPreferences.get(SORTED_S_USERS);
 
         if (sortedUsers != null) {
             users.sort(new Comparator<User>() {
@@ -1955,10 +2052,30 @@ public class DashboardUIController implements Initializable, GUI {
             });
         }
 
+        if (sortedSUsers != null) {
+            users.sort(new Comparator<User>() {
+                @Override
+                public int compare(User o1, User o2) {
+                    boolean asc = sortedSUsers.equalsIgnoreCase("asc");
+
+                    if (asc)
+                        return Integer.compare(User.getUserPoints(o1), User.getUserPoints(o2));
+
+                    return Integer.compare(User.getUserPoints(o2), User.getUserPoints(o1));
+                }
+            });
+        }
+
         AUItemHolder.getChildren().clear();
         for (User user : users) {
             AUserItem aUserItem = new AUserItem(user);
             aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
+                @Override
+                public void onClick(User user) {
+                    SharedPreferences.add(SELECTED_PROFILE, user);
+                    tabPaneHandler(null, USER_PROFILE, 0);
+                }
+
                 @Override
                 public void ban(User user) {
                     banUser(user);
@@ -1990,6 +2107,12 @@ public class DashboardUIController implements Initializable, GUI {
                         AUserItem aUserItem = new AUserItem(user);
                         aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
                             @Override
+                            public void onClick(User user) {
+                                SharedPreferences.add(SELECTED_PROFILE, user);
+                                tabPaneHandler(null, USER_PROFILE, 0);
+                            }
+
+                            @Override
                             public void ban(User user) {
                                 banUser(user);
                             }
@@ -2017,6 +2140,11 @@ public class DashboardUIController implements Initializable, GUI {
         name.addAll("A-Z", "Z-A");
         AUNameCombo.setItems(name);
         AUNameCombo.getSelectionModel().select(0);
+
+        ObservableList<String> score = FXCollections.observableArrayList();
+        score.addAll("ASC", "DSC");
+        AUScoreCombo.setItems(score);
+        AUScoreCombo.getSelectionModel().select(0);
 
         onAUChangeListener();
     }
