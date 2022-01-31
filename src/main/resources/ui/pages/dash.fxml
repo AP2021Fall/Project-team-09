@@ -1067,6 +1067,11 @@
                                                                         </VBox>
                                                                      </content>
                                                                   </ScrollPane>
+                                                                  <HBox alignment="CENTER_RIGHT">
+                                                                     <children>
+                                                                        <Button mnemonicParsing="false" onAction="#onNewNotification" styleClass="custom-btn" text="New Notification" />
+                                                                     </children>
+                                                                  </HBox>
                                                                </children>
                                                             </VBox>
                                                          </children>
@@ -2117,18 +2122,18 @@
                                                             </VBox>
                                                             <HBox>
                                                                <children>
-                                                                  <ComboBox prefWidth="150.0" promptText="Team" />
+                                                                  <ComboBox fx:id="NNTeamCombo" prefWidth="150.0" promptText="Team" />
                                                                </children>
                                                             </HBox>
                                                             <HBox layoutX="20.0" layoutY="52.0">
                                                                <children>
-                                                                  <TextArea promptText="Write notification body here..." HBox.hgrow="ALWAYS" />
+                                                                  <TextArea fx:id="NNBody" promptText="Write notification body here..." HBox.hgrow="ALWAYS" />
                                                                </children>
                                                             </HBox>
                                                             <Pane VBox.vgrow="ALWAYS" />
                                                             <HBox alignment="CENTER_RIGHT">
                                                                <children>
-                                                                  <Button mnemonicParsing="false" styleClass="custom-btn" text="Send notification" />
+                                                                  <Button mnemonicParsing="false" onAction="#onSendNotification" styleClass="custom-btn" text="Send notification" />
                                                                </children>
                                                             </HBox>
                                                          </children>

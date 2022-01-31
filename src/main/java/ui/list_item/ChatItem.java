@@ -8,6 +8,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.Message;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class ChatItem {
 
     private Message message;

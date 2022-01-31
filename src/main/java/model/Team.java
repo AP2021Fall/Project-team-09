@@ -332,6 +332,10 @@ public class Team implements Serializable {
         this.membersStatus.put(user, MemberStatus.SUSPENDED);
     }
 
+    public void activateMember(User user) {
+        this.membersStatus.put(user, MemberStatus.ACTIVE);
+    }
+
     public void sendMessage(User sender, String body) {
         this.chatroom.add(new Message(sender, body));
     }

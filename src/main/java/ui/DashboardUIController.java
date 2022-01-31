@@ -16,11 +16,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.*;
 import ui.list_item.*;
+import utilities.AlertHandler;
 import utilities.SharedPreferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -67,6 +67,7 @@ public class DashboardUIController implements Initializable, GUI {
     private final int CREATE_TASK = 12;
     private final int BOARD_PAGE = 13;
     private final int CREATE_CATEGORY = 14;
+    private final int NEW_NOTIFICATION = 15;
 
     private int TAB = 0;
     private int SUB_TAB = 0;
@@ -287,6 +288,14 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private VBox NNotificationItemHolder;
 
+    // new notification
+
+    @FXML
+    private ComboBox<String> NNTeamCombo;
+
+    @FXML
+    private TextArea NNBody;
+
     // requests
 
     @FXML
@@ -468,7 +477,7 @@ public class DashboardUIController implements Initializable, GUI {
         clearFields(RSearchInput, AMSearchInput, PTSearchInput, TBSearchInput, RSearchInput, TSearchInput, TTSearchInput,
                 TTMSearchInput, TMSearchInput, TRSearchInput);
 
-        clearFields(CBNameInput, CCNameInput, TTNameInput);
+        clearFields(CBNameInput, CCNameInput);
 
         if (tab == TEAM && tab != TAB) {
             teamsSetTeams();
@@ -496,6 +505,8 @@ public class DashboardUIController implements Initializable, GUI {
             setATeams();
         } else if (tab == STATISTICS) {
             setAStatistics();
+        } else if (tab == NEW_NOTIFICATION) {
+            setUpNewNotification();
         }
 
         if (tab != TAB) {
@@ -803,7 +814,7 @@ public class DashboardUIController implements Initializable, GUI {
 
         TMemberItemHolder.getChildren().clear();
         for (User user : members) {
-            TeamMemberItem teamMemberItem = new TeamMemberItem(user);
+            TeamMemberItem teamMemberItem = new TeamMemberItem(team, user);
             teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
                 @Override
                 public void onRemove(User member) {
@@ -815,6 +826,21 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void onMessage(User member) {
 
+                }
+
+                @Override
+                public void onPromote(User member) {
+                    promoteMember(team, member);
+                }
+
+                @Override
+                public void onSuspend(User member) {
+                    suspendUser(team, member);
+                }
+
+                @Override
+                public void onActivate(User member) {
+                    activateUser(team, member);
                 }
             });
             HBox teamMemberBox = teamMemberItem.draw();
@@ -833,18 +859,31 @@ public class DashboardUIController implements Initializable, GUI {
                 TMemberItemHolder.getChildren().clear();
                 for (User member : members) {
                     if (member.getUsername().contains(newValue)) {
-                        TeamMemberItem teamMemberItem = new TeamMemberItem(member);
+                        TeamMemberItem teamMemberItem = new TeamMemberItem(team, member);
                         teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
                             @Override
                             public void onRemove(User member) {
                                 removeMember(team, member);
-                                save();
-                                setMembers();
                             }
 
                             @Override
                             public void onMessage(User member) {
 
+                            }
+
+                            @Override
+                            public void onPromote(User member) {
+                                promoteMember(team, member);
+                            }
+
+                            @Override
+                            public void onSuspend(User member) {
+                                suspendUser(team, member);
+                            }
+
+                            @Override
+                            public void onActivate(User member) {
+                                activateUser(team, member);
                             }
                         });
                         HBox teamMemberBox = teamMemberItem.draw();
@@ -855,17 +894,38 @@ public class DashboardUIController implements Initializable, GUI {
         }
     }
 
+    private void suspendUser(Team team, User member) {
+        team.suspendMember(member);
+        save();
+        setMembers();
+    }
+
+    private void activateUser(Team team, User member) {
+        team.activateMember(member);
+        save();
+        setMembers();
+    }
+
     private void removeMember(Team team, User member) {
         Response response =
                 TeamMenuController.getInstance().deleteMember(team, member.getUsername());
         showResponse(response);
+        save();
+        setMembers();
+    }
+
+    private void promoteMember(Team team, User member) {
+        Response response =
+                TeamMenuController.getInstance().promoteUser(team, member.getUsername(), "teamLeader");
+        showResponse(response);
+        save();
+        setMembers();
     }
 
     @FXML
     private void onAddMember() {
         tabPaneHandler(null, ADD_MEMBER, 0);
     }
-
 
     // team > add member
 
@@ -887,7 +947,6 @@ public class DashboardUIController implements Initializable, GUI {
                     @Override
                     public void onClick(User member) {
                         addMemberToTeam(member);
-                        System.out.println("add");
                     }
                 });
                 HBox assignMemberBox = assignMemberItem.draw();
@@ -908,7 +967,6 @@ public class DashboardUIController implements Initializable, GUI {
                             @Override
                             public void onClick(User member) {
                                 addMemberToTeam(member);
-                                System.out.println("add");
                             }
                         });
                         HBox assignMemberBox = assignMemberItem.draw();
@@ -926,6 +984,7 @@ public class DashboardUIController implements Initializable, GUI {
                 = TeamMenuController.getInstance().addMemberToTeam(team, member.getUsername());
         showResponse(response);
         save();
+        setAMMembers();
     }
 
     // team > roadmap
@@ -1024,6 +1083,7 @@ public class DashboardUIController implements Initializable, GUI {
         if (response.isSuccess()) {
             setChatroom();
         }
+        clearFields(TCMessageInput);
         save();
     }
 
@@ -1469,8 +1529,6 @@ public class DashboardUIController implements Initializable, GUI {
                 else
                     SharedPreferences.add(SORTED_PRIORITY, newValue);
                 setTTasks();
-                System.out.println("triggered");
-                System.out.println(SharedPreferences.get(SORTED_PRIORITY));
             }
         });
 
@@ -1481,8 +1539,6 @@ public class DashboardUIController implements Initializable, GUI {
                 else
                     SharedPreferences.add(SORTED_DEADLINE, newValue);
                 setTTasks();
-                System.out.println("triggered");
-                System.out.println(SharedPreferences.get(SORTED_DEADLINE));
             }
         });
     }
@@ -1727,6 +1783,60 @@ public class DashboardUIController implements Initializable, GUI {
             VBox itemBox = notificationItem.draw();
             NNotificationItemHolder.getChildren().add(itemBox);
         }
+    }
+
+    @FXML
+    private void onNewNotification() {
+        tabPaneHandler(null, NEW_NOTIFICATION, 0);
+    }
+
+    // new notification
+
+    private void setUpNewNotification() {
+        ObservableList<String> teams = FXCollections.observableArrayList();
+        teams.addAll("All");
+        Response response =
+                ProfileMenuController.getInstance().showTeams();
+        if (response.isSuccess()) {
+            ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+
+            for (Team team : allTeams) {
+                teams.add(team.getName());
+            }
+        }
+        NNTeamCombo.setItems(teams);
+        NNTeamCombo.getSelectionModel().select(0);
+    }
+
+    @FXML
+    private void onSendNotification() {
+        String team = getComboValue(NNTeamCombo);
+        String body = getValue(NNBody);
+
+        if (body.isEmpty()) {
+            new AlertHandler(Alert.AlertType.ERROR, "body cannot be empty!").ShowAlert();
+            return;
+        }
+
+        if (team.equalsIgnoreCase("all")) {
+            Response response =
+                    ProfileMenuController.getInstance().showTeams();
+            if (response.isSuccess()) {
+                ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+
+                for (Team t : allTeams) {
+                    t.sendNotification(new Notification(UserController.getLoggedUser(), t, body));
+                }
+            }
+            new AlertHandler(Alert.AlertType.INFORMATION, "Notification sent successfully!").ShowAlert();
+        } else {
+            Response response =
+                    NotificationController.getInstance().sendNotificationToTeam(body, team);
+            showResponse(response);
+            save();
+        }
+        clearFields(NNBody);
+        save();
     }
 
 

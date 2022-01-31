@@ -363,6 +363,7 @@ public class TeamMenuController {
 
         user.setType("team leader");
         team.setLeader(user);
+        UserController.getLoggedUser().setType("teamMember");
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been promoted to \"%s\" in \"%s\" team!", user.getType().name(), team.getName())));
         return new Response(SUCCESS_PROMOTED, true);
