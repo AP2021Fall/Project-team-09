@@ -142,6 +142,12 @@
                                     <String fx:value="notif-btn" />
                                  </styleClass>
                               </Button>
+                              <Button fx:id="ANotificationMenu" graphicTextGap="20.0" layoutX="10.0" layoutY="406.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onANotification" text="Notification" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="custom-menu-btn" />
+                                    <String fx:value="notif-btn" />
+                                 </styleClass>
+                              </Button>
                               <Pane VBox.vgrow="ALWAYS" />
                               <Button graphicTextGap="20.0" layoutX="10.0" layoutY="100.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-radius: 0 0 0 20px;" text="Sign out" textAlignment="CENTER">
                                  <styleClass>
@@ -1466,7 +1472,10 @@
                                                                      <children>
                                                                         <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                                                            <content>
-                                                                              <VBox fx:id="ASTUItemHolder" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                                              <VBox fx:id="ASTUItemHolder" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0">
+                                                                                 <padding>
+                                                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                 </padding></VBox>
                                                                            </content>
                                                                         </ScrollPane>
                                                                      </children>
@@ -2140,6 +2149,149 @@
                                                          <padding>
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                          </padding>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </Tab>
+                                          <Tab style="-fx-opacity: 0;" text="User Send Notification">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <VBox>
+                                                               <children>
+                                                                  <Label text="Send notification" />
+                                                                  <Separator prefWidth="200.0" />
+                                                               </children>
+                                                            </VBox>
+                                                            <HBox spacing="10.0">
+                                                               <children>
+                                                                  <Label text="Sending Notification to:" />
+                                                                  <Label fx:id="NNUser" layoutX="10.0" layoutY="10.0" text="bdb1y" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox layoutX="20.0" layoutY="52.0">
+                                                               <children>
+                                                                  <TextArea fx:id="NNUBody" promptText="Write notification body here..." HBox.hgrow="ALWAYS" />
+                                                               </children>
+                                                            </HBox>
+                                                            <Pane VBox.vgrow="ALWAYS" />
+                                                            <HBox alignment="CENTER_RIGHT">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" onAction="#onUSendNotification" styleClass="custom-btn" text="Send notification" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </Tab>
+                                          <Tab style="-fx-opacity: 0;" text="Admin Send Notif">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <VBox>
+                                                               <children>
+                                                                  <Label text="Send notification" />
+                                                                  <Separator prefWidth="200.0" />
+                                                               </children>
+                                                            </VBox>
+                                                            <HBox spacing="10.0">
+                                                               <children>
+                                                                  <Label text="Sending Notification to:" />
+                                                                  <Label layoutX="10.0" layoutY="10.0" text="All Users" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox layoutX="20.0" layoutY="52.0">
+                                                               <children>
+                                                                  <TextArea fx:id="NNABody" promptText="Write notification body here..." HBox.hgrow="ALWAYS" />
+                                                               </children>
+                                                            </HBox>
+                                                            <Pane VBox.vgrow="ALWAYS" />
+                                                            <HBox alignment="CENTER_RIGHT">
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" onAction="#onASendNotification" styleClass="custom-btn" text="Send notification" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </Tab>
+                                          <Tab style="-fx-opacity: 0;" text="User profile">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                               <children>
+                                                                  <VBox VBox.vgrow="NEVER">
+                                                                     <children>
+                                                                        <Label text="Profile Picture" />
+                                                                        <Separator prefWidth="200.0" />
+                                                                     </children>
+                                                                     <VBox.margin>
+                                                                        <Insets />
+                                                                     </VBox.margin>
+                                                                  </VBox>
+                                                                  <HBox prefHeight="100.0" prefWidth="200.0">
+                                                                     <children>
+                                                                        <Pane style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
+                                                                           <children>
+                                                                              <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-5.0" pickOnBounds="true" preserveRatio="true" />
+                                                                           </children>
+                                                                        </Pane>
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <VBox layoutX="20.0" layoutY="20.0">
+                                                                     <children>
+                                                                        <Label text="Personal Info" />
+                                                                        <Separator prefWidth="200.0" />
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <HBox spacing="20.0">
+                                                                     <children>
+                                                                        <TextField fx:id="UPUsername" layoutX="10.0" layoutY="10.0" promptText="Username" />
+                                                                        <TextField fx:id="UPFirstName" promptText="First name" />
+                                                                        <TextField fx:id="UPLastName" layoutX="10.0" layoutY="10.0" promptText="Last name" />
+                                                                        <DatePicker fx:id="UPBirthdate" promptText="Birth date" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <HBox layoutX="20.0" layoutY="206.0" spacing="20.0">
+                                                                     <children>
+                                                                        <TextField fx:id="UPRole" layoutX="10.0" layoutY="10.0" promptText="Role" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <VBox layoutX="20.0" layoutY="20.0">
+                                                                     <children>
+                                                                        <Label text="Email" />
+                                                                        <Separator prefWidth="200.0" />
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <HBox layoutX="20.0" layoutY="193.0" spacing="20.0">
+                                                                     <children>
+                                                                        <TextField fx:id="UPEmail" editable="false" minHeight="26.0" minWidth="242.0" prefHeight="35.0" prefWidth="396.0" promptText="Email" text="bandar3eda021@gmail.com" />
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                               </padding>
+                                                            </VBox>
+                                                         </children>
                                                       </VBox>
                                                    </children>
                                                 </AnchorPane>

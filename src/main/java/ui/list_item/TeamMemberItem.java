@@ -1,6 +1,5 @@
 package ui.list_item;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -79,15 +78,16 @@ public class TeamMemberItem {
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
         HBox.setHgrow(pane, Priority.ALWAYS);
-//        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
+        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.member)));
 
         hBox.getChildren().addAll(vBox, pane, vBox1, vBox2);
-        hBox.setSpacing(10);
+        hBox.setSpacing(5);
 
         return hBox;
     }
 
     public interface OnItemClickListener {
+        void onClick(User member);
 
         void onRemove(User member);
 

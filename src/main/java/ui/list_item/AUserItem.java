@@ -24,7 +24,9 @@ public class AUserItem {
         HBox hBox = new HBox();
 
         Label label;
+        Label label1;
         label = new Label(user.getUsername());
+        label1 = new Label(String.valueOf(User.getUserPoints(this.user)));
 
         Pane pane = new Pane();
 
@@ -44,9 +46,9 @@ public class AUserItem {
         hBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(hBox, Priority.ALWAYS);
         HBox.setHgrow(pane, Priority.ALWAYS);
-//        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.user)));
+        hBox.setOnMouseClicked((event -> onItemClickListener.onClick(this.user)));
 
-        hBox.getChildren().addAll(label, pane);
+        hBox.getChildren().addAll(label, label1, pane);
         hBox.setSpacing(10);
 
         if (this.user.isTeamLeader())
@@ -60,6 +62,8 @@ public class AUserItem {
     }
 
     public interface OnItemClickListener {
+
+        void onClick(User user);
 
         void ban(User user);
 

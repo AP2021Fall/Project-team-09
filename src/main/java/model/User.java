@@ -207,6 +207,14 @@ public class User implements Serializable {
         return false;
     }
 
+    public static int getUserPoints(User user) {
+        int total = 0;
+
+        for (Team team : user.getTeams())
+            total += team.getMemberScore(user);
+        return total;
+    }
+
     public boolean passwordIntHistory(String newPassword) {
         return oldPasswords.contains(newPassword);
     }
