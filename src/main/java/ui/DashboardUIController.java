@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -44,6 +45,7 @@ public class DashboardUIController implements Initializable, GUI {
     private final int PROFILE_INFO = 0;
     private final int PROFILE_TEAMS = 1;
     private final int PROFILE_AUTH = 2;
+    private final int PROFILE_USERNAME = 3;
 
     private final int TEAM = 1;
     private final int TEAMS_PAGE = 1;
@@ -199,6 +201,21 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private TextField TRSearchInput;
+
+    @FXML
+    private PieChart TRChart;
+
+    @FXML
+    private Label TRAll;
+
+    @FXML
+    private Label TRInProgress;
+
+    @FXML
+    private Label TRDone;
+
+    @FXML
+    private Label TRFailed;
 
     // teams > chatroom
 
@@ -502,7 +519,6 @@ public class DashboardUIController implements Initializable, GUI {
         tabPaneHandler(null, A_NOTIFICATION, 0);
     }
 
-
     // profile sub section menu listeners
 
     @FXML
@@ -613,6 +629,7 @@ public class DashboardUIController implements Initializable, GUI {
                 break;
             case ROADMAP:
                 setRoadMap();
+                setUpChart();
                 break;
             case CHATROOM:
                 setChatroom();
@@ -1103,6 +1120,44 @@ public class DashboardUIController implements Initializable, GUI {
                 }
             });
         }
+    }
+
+    private void setUpChart() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        ArrayList<Task> tasks = team.getTasks();
+
+        int totalTasks = team.getTasks().size();
+        int totalInProgress = 0;
+        int totalDone = 0;
+        int totalFailed = 0;
+
+        for (Task task : tasks) {
+            if (task.isDone()) {
+                totalDone++;
+                continue;
+            }
+            if (task.isFailed()) {
+                totalFailed++;
+                continue;
+            }
+            totalInProgress++;
+        }
+
+        TRChart.getData().clear();
+
+        TRChart.getData().add(new PieChart.Data("All", totalTasks));
+        TRChart.getData().add(new PieChart.Data("In progress", totalInProgress));
+        TRChart.getData().add(new PieChart.Data("Done", totalDone));
+        TRChart.getData().add(new PieChart.Data("Failed", totalFailed));
+
+        TRAll.setText(String.valueOf(totalTasks));
+        TRInProgress.setText(String.valueOf(totalInProgress));
+        TRDone.setText(String.valueOf(totalDone));
+        TRFailed.setText(String.valueOf(totalFailed));
     }
 
     // team > chatroom

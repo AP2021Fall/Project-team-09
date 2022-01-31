@@ -174,6 +174,7 @@
                                                                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onProfileInfoSection" styleClass="custom-btn" text="Info" HBox.hgrow="ALWAYS" />
                                                                   <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onProfileTeamsSection" styleClass="custom-btn" text="Teams" HBox.hgrow="ALWAYS" />
                                                                   <Button layoutX="328.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onProfileAuthSection" styleClass="custom-btn" text="Auth" HBox.hgrow="ALWAYS" />
+                                                                  <Button layoutX="20.0" layoutY="20.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onProfileUserSection" styleClass="custom-btn" text="Username" HBox.hgrow="ALWAYS" />
                                                                </children>
                                                                <padding>
                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -223,7 +224,7 @@
                                                                                           </VBox>
                                                                                           <HBox spacing="20.0">
                                                                                              <children>
-                                                                                                <TextField fx:id="PIUsername" layoutX="10.0" layoutY="10.0" promptText="Username" />
+                                                                                                <TextField fx:id="PIUsername" editable="false" layoutX="10.0" layoutY="10.0" promptText="Username" />
                                                                                                 <TextField fx:id="PIFirstName" promptText="First name" />
                                                                                                 <TextField fx:id="PILastName" layoutX="10.0" layoutY="10.0" promptText="Last name" />
                                                                                                 <DatePicker fx:id="PIBirthDate" promptText="Birth date" />
@@ -382,6 +383,47 @@
                                                                                           <HBox alignment="CENTER_RIGHT">
                                                                                              <children>
                                                                                                 <Button mnemonicParsing="false" onAction="#onPASaveChanges" styleClass="custom-btn" text="SAVE CHANGES" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                       </children>
+                                                                                       <padding>
+                                                                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                       </padding>
+                                                                                    </VBox>
+                                                                                 </children>
+                                                                              </VBox>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab style="-fx-opacity: 0;" text="Info">
+                                                                     <content>
+                                                                        <AnchorPane>
+                                                                           <children>
+                                                                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                 <children>
+                                                                                    <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                                                                       <children>
+                                                                                          <VBox VBox.vgrow="NEVER">
+                                                                                             <VBox.margin>
+                                                                                                <Insets />
+                                                                                             </VBox.margin>
+                                                                                          </VBox>
+                                                                                          <VBox layoutX="20.0" layoutY="20.0">
+                                                                                             <children>
+                                                                                                <Label text="Change Username" />
+                                                                                                <Separator prefWidth="200.0" />
+                                                                                             </children>
+                                                                                          </VBox>
+                                                                                          <HBox spacing="20.0">
+                                                                                             <children>
+                                                                                                <TextField fx:id="PUUsername" layoutX="10.0" layoutY="10.0" promptText="Username" />
+                                                                                             </children>
+                                                                                          </HBox>
+                                                                                          <Pane VBox.vgrow="ALWAYS" />
+                                                                                          <HBox alignment="CENTER_RIGHT">
+                                                                                             <children>
+                                                                                                <Button mnemonicParsing="false" onAction="#onPUUpdate" styleClass="custom-btn" text="UPDATE USERNAME" />
                                                                                              </children>
                                                                                           </HBox>
                                                                                        </children>
@@ -740,10 +782,30 @@
                                                                                                                      <children>
                                                                                                                         <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                                                                                                            <children>
-                                                                                                                              <Label layoutX="20.0" layoutY="20.0" text="All: 0" />
-                                                                                                                              <Label text="In progress: 0" />
-                                                                                                                              <Label layoutX="10.0" layoutY="10.0" text="Done: 0" />
-                                                                                                                              <Label layoutX="10.0" layoutY="28.0" text="Failed: 0" />
+                                                                                                                              <HBox spacing="10.0">
+                                                                                                                                 <children>
+                                                                                                                                    <Label text="All:" />
+                                                                                                                                    <Label fx:id="TRAll" layoutX="10.0" layoutY="10.0" text="0" />
+                                                                                                                                 </children>
+                                                                                                                              </HBox>
+                                                                                                                              <HBox spacing="10.0">
+                                                                                                                                 <children>
+                                                                                                                                    <Label text="In progress:" />
+                                                                                                                                    <Label fx:id="TRInProgress" layoutX="10.0" layoutY="10.0" text="0" />
+                                                                                                                                 </children>
+                                                                                                                              </HBox>
+                                                                                                                              <HBox spacing="10.0">
+                                                                                                                                 <children>
+                                                                                                                                    <Label text="Done:" />
+                                                                                                                                    <Label fx:id="TRDone" layoutX="10.0" layoutY="10.0" text="0" />
+                                                                                                                                 </children>
+                                                                                                                              </HBox>
+                                                                                                                              <HBox spacing="10.0">
+                                                                                                                                 <children>
+                                                                                                                                    <Label text="Failed:" />
+                                                                                                                                    <Label fx:id="TRFailed" layoutX="10.0" layoutY="10.0" text="0" />
+                                                                                                                                 </children>
+                                                                                                                              </HBox>
                                                                                                                            </children>
                                                                                                                            <HBox.margin>
                                                                                                                               <Insets />
@@ -754,7 +816,7 @@
                                                                                                                         </VBox>
                                                                                                                         <VBox HBox.hgrow="ALWAYS">
                                                                                                                            <children>
-                                                                                                                              <PieChart animated="false" legendVisible="false" />
+                                                                                                                              <PieChart fx:id="TRChart" animated="false" legendVisible="false" />
                                                                                                                            </children>
                                                                                                                         </VBox>
                                                                                                                      </children>
@@ -2264,15 +2326,15 @@
                                                                   </VBox>
                                                                   <HBox spacing="20.0">
                                                                      <children>
-                                                                        <TextField fx:id="UPUsername" layoutX="10.0" layoutY="10.0" promptText="Username" />
-                                                                        <TextField fx:id="UPFirstName" promptText="First name" />
-                                                                        <TextField fx:id="UPLastName" layoutX="10.0" layoutY="10.0" promptText="Last name" />
-                                                                        <DatePicker fx:id="UPBirthdate" promptText="Birth date" />
+                                                                        <TextField fx:id="UPUsername" editable="false" layoutX="10.0" layoutY="10.0" promptText="Username" />
+                                                                        <TextField fx:id="UPFirstName" editable="false" promptText="First name" />
+                                                                        <TextField fx:id="UPLastName" editable="false" layoutX="10.0" layoutY="10.0" promptText="Last name" />
+                                                                        <DatePicker fx:id="UPBirthdate" editable="false" promptText="Birth date" />
                                                                      </children>
                                                                   </HBox>
                                                                   <HBox layoutX="20.0" layoutY="206.0" spacing="20.0">
                                                                      <children>
-                                                                        <TextField fx:id="UPRole" layoutX="10.0" layoutY="10.0" promptText="Role" />
+                                                                        <TextField fx:id="UPRole" editable="false" layoutX="10.0" layoutY="10.0" promptText="Role" />
                                                                      </children>
                                                                   </HBox>
                                                                   <VBox layoutX="20.0" layoutY="20.0">
