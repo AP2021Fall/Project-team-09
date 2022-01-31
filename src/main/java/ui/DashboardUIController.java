@@ -154,6 +154,11 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private PasswordField PANewPass;
 
+    // username
+
+    @FXML
+    private TextField PUUsername;
+
     // team
 
     @FXML
@@ -536,6 +541,11 @@ public class DashboardUIController implements Initializable, GUI {
         tabPaneHandler(profileTabPane, PROFILE, PROFILE_AUTH);
     }
 
+    @FXML
+    private void onProfileUserSection() {
+        tabPaneHandler(profileTabPane, PROFILE, PROFILE_USERNAME);
+    }
+
     private void tabPaneHandler(TabPane subTabPane, int tab, int subTab) {
         clearFields(RSearchInput, AMSearchInput, PTSearchInput, TBSearchInput, RSearchInput, TSearchInput, TTSearchInput,
                 TTMSearchInput, TMSearchInput, TRSearchInput);
@@ -596,6 +606,8 @@ public class DashboardUIController implements Initializable, GUI {
                 case PROFILE_TEAMS:
                     setTeams();
                     break;
+                case PROFILE_USERNAME:
+                    setUsername();
             }
         }
 //        else if (tab == TEAM && tab != TAB) {
@@ -765,6 +777,26 @@ public class DashboardUIController implements Initializable, GUI {
                 }
             });
         }
+    }
+
+    private void setUsername() {
+        User user = UserController.getLoggedUser();
+
+        PUUsername.setText(user.getUsername());
+    }
+
+    @FXML
+    private void onPUUpdate() {
+        String username = getValue(PUUsername);
+
+        Response response =
+                ProfileMenuController.getInstance().changeUsername(username);
+        showResponse(response);
+        if (response.isSuccess()) {
+            UserController.logout();
+            logout();
+        }
+        save();
     }
 
 
