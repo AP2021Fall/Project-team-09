@@ -170,6 +170,11 @@ public class User implements Serializable {
 
     public static void removeUser(User user) {
         allUsers.remove(user);
+        for (Team team : Team.getTeams())
+            team.deleteMember(user);
+
+        for (Task task : Task.getAllTask())
+            task.removeFromAssignedUsers(user);
     }
 
     public static boolean checkAdmin(String username, String password) {

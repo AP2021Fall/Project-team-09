@@ -38,6 +38,7 @@ public class DashboardUIController implements Initializable, GUI {
     private static final String SORTED_TEAM = "sorted_team";
     private static final String SORTED_PRIORITY = "sorted_priority";
     private static final String SORTED_DEADLINE = "sorted_deadline";
+    private static final String SORTED_A_USERS = "sorted_a_users";
 
     private final int PROFILE = 0;
     private final int PROFILE_INFO = 0;
@@ -310,6 +311,47 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private ComboBox<String> CDCombo;
 
+    // admin
+
+    // users
+
+    @FXML
+    private TextField AUSearchInput;
+
+    @FXML
+    private ComboBox<String> AUNameCombo;
+
+    @FXML
+    private ComboBox<String> AUScoreCombo;
+
+    @FXML
+    private VBox AUItemHolder;
+
+    // teams
+
+    @FXML
+    private TextField ATSearchInput;
+
+    @FXML
+    private VBox ATItemHolder;
+
+    // statistics
+
+    @FXML
+    private Label ASUTotal;
+
+    @FXML
+    private Label ASTTotal;
+
+    @FXML
+    private Label ASTDone;
+
+    @FXML
+    private Label ASTFailed;
+
+    @FXML
+    private VBox ASTUItemHolder;
+
 
     private double xOffset, yOffset;
 
@@ -348,6 +390,11 @@ public class DashboardUIController implements Initializable, GUI {
                 TeamsMenu.setManaged(false);
                 StatisticsMenu.setVisible(false);
                 StatisticsMenu.setManaged(false);
+
+                if (!user.isTeamLeader()) {
+                    RequestsMenu.setVisible(false);
+                    RequestsMenu.setManaged(false);
+                }
             }
         }
     }
@@ -442,6 +489,13 @@ public class DashboardUIController implements Initializable, GUI {
             setBoard();
         } else if (tab == CALENDAR) {
             setUpCalendar();
+        } else if (tab == USERS) {
+            setAUsers();
+            setUpAUCombos();
+        } else if (tab == TEAMS) {
+            setATeams();
+        } else if (tab == STATISTICS) {
+            setAStatistics();
         }
 
         if (tab != TAB) {
@@ -1626,12 +1680,19 @@ public class DashboardUIController implements Initializable, GUI {
                     task.getTimeOfDeadline().getMinute()));
             TTDescription.setText(task.getDescription());
 
-            TTSaveChanges.setDisable(false);
-            TTCreateTask.setDisable(true);
+            if (!task.isDone()) {
+                TTSaveChanges.setDisable(false);
+                TTCreateTask.setDisable(true);
+            } else {
+                TTSaveChanges.setDisable(true);
+                TTCreateTask.setDisable(true);
+            }
         } else {
             TTSaveChanges.setDisable(true);
             TTCreateTask.setDisable(false);
         }
+
+
     }
 
     //  notifications
@@ -1746,5 +1807,219 @@ public class DashboardUIController implements Initializable, GUI {
                 CTasksItemHolder.getChildren().add(taskItemBox);
             }
         }
+    }
+
+    // admin
+
+    // users
+
+    private void setAUsers() {
+        ArrayList<User> users =
+                User.getAllUsers();
+
+        String sortedUsers = (String) SharedPreferences.get(SORTED_A_USERS);
+
+        if (sortedUsers != null) {
+            users.sort(new Comparator<User>() {
+                @Override
+                public int compare(User o1, User o2) {
+                    boolean asc = sortedUsers.equalsIgnoreCase("a-z");
+
+                    if (asc)
+                        return o1.getUsername().compareTo(o2.getUsername());
+                    return o2.getUsername().compareTo(o1.getUsername());
+                }
+            });
+        }
+
+        AUItemHolder.getChildren().clear();
+        for (User user : users) {
+            AUserItem aUserItem = new AUserItem(user);
+            aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
+                @Override
+                public void ban(User user) {
+                    banUser(user);
+                }
+
+                @Override
+                public void setMember(User user) {
+                    changeRoleToMember(user);
+                }
+
+                @Override
+                public void setLeader(User user) {
+                    changeRoleToLeader(user);
+                }
+            });
+            HBox userBox = aUserItem.draw();
+            AUItemHolder.getChildren().add(userBox);
+        }
+
+        onAdminUserSearchListener(users);
+    }
+
+    private void onAdminUserSearchListener(ArrayList<User> users) {
+        if (!AUItemHolder.getChildren().isEmpty()) {
+            AUSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                AUItemHolder.getChildren().clear();
+                for (User user : users) {
+                    if (user.getUsername().contains(newValue)) {
+                        AUserItem aUserItem = new AUserItem(user);
+                        aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
+                            @Override
+                            public void ban(User user) {
+                                banUser(user);
+                            }
+
+                            @Override
+                            public void setMember(User user) {
+                                changeRoleToMember(user);
+                            }
+
+                            @Override
+                            public void setLeader(User user) {
+                                changeRoleToLeader(user);
+                            }
+                        });
+                        HBox userBox = aUserItem.draw();
+                        AUItemHolder.getChildren().add(userBox);
+                    }
+                }
+            });
+        }
+    }
+
+    private void setUpAUCombos() {
+        ObservableList<String> name = FXCollections.observableArrayList();
+        name.addAll("A-Z", "Z-A");
+        AUNameCombo.setItems(name);
+        AUNameCombo.getSelectionModel().select(0);
+
+        onAUChangeListener();
+    }
+
+    private void onAUChangeListener() {
+        AUNameCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                SharedPreferences.add(SORTED_A_USERS, newValue);
+                setAUsers();
+            }
+        });
+    }
+
+    private void banUser(User user) {
+        Response response =
+                AdminController.getInstance().banUser(user.getUsername());
+        showResponse(response);
+        setAUsers();
+        save();
+    }
+
+    private void changeRoleToMember(User user) {
+        Response response =
+                AdminController.getInstance().changeRole(user.getUsername(), "teamMember");
+        showResponse(response);
+        setAUsers();
+        save();
+    }
+
+    private void changeRoleToLeader(User user) {
+        Response response =
+                AdminController.getInstance().changeRole(user.getUsername(), "teamLeader");
+        showResponse(response);
+        setAUsers();
+        save();
+    }
+
+    // teams
+
+    private void setATeams() {
+        Response response =
+                AdminController.getInstance().getPendingTeams();
+
+        ATItemHolder.getChildren().clear();
+        if (response.isSuccess()) {
+            ArrayList<Team> teams = (ArrayList<Team>) response.getObject();
+
+            for (Team team : teams) {
+                ATeamItem aTeamItem = new ATeamItem(team);
+                aTeamItem.setOnItemClickListener(new ATeamItem.OnItemClickListener() {
+                    @Override
+                    public void accept(Team team) {
+                        acceptTeam(team);
+                    }
+
+                    @Override
+                    public void reject(Team team) {
+                        rejectTeam(team);
+                    }
+                });
+                HBox teamBox = aTeamItem.draw();
+                ATItemHolder.getChildren().add(teamBox);
+            }
+            onATeamsSearchListener(teams);
+        }
+    }
+
+    private void onATeamsSearchListener(ArrayList<Team> teams) {
+        if (!ATItemHolder.getChildren().isEmpty()) {
+            ATSearchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                ATItemHolder.getChildren().clear();
+                for (Team team : teams) {
+                    if (team.getName().contains(newValue)) {
+                        ATeamItem aTeamItem = new ATeamItem(team);
+                        aTeamItem.setOnItemClickListener(new ATeamItem.OnItemClickListener() {
+                            @Override
+                            public void accept(Team team) {
+                                acceptTeam(team);
+                            }
+
+                            @Override
+                            public void reject(Team team) {
+                                rejectTeam(team);
+                            }
+                        });
+                        HBox teamBox = aTeamItem.draw();
+                        ATItemHolder.getChildren().add(teamBox);
+                    }
+                }
+            });
+        }
+    }
+
+    private void acceptTeam(Team team) {
+        Response response =
+                AdminController.getInstance().acceptPendingTeams(new String[]{team.getName()});
+        showResponse(response);
+        save();
+        setATeams();
+    }
+
+    private void rejectTeam(Team team) {
+        Response response =
+                AdminController.getInstance().rejectPendingTeams(new String[]{team.getName()});
+        showResponse(response);
+        save();
+        setATeams();
+    }
+
+    // statistics
+
+    private void setAStatistics() {
+        int totalUsers = User.getAllUsers().size();
+        int totalTeams = Team.getTeams().size();
+        int doneTasks = 0;
+        int failedTasks = 0;
+
+        for (Task task : Task.getAllTask())
+            if (task.isDone())
+                doneTasks++;
+            else if (task.isFailed())
+                failedTasks++;
+
+        ASUTotal.setText(String.valueOf(totalUsers));
+        ASTTotal.setText(String.valueOf(totalTeams));
+        ASTDone.setText(String.valueOf(doneTasks));
+        ASTFailed.setText(String.valueOf(failedTasks));
     }
 }

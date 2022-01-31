@@ -1418,7 +1418,7 @@
                                                                   <HBox spacing="10.0">
                                                                      <children>
                                                                         <Label text="Total Users:" />
-                                                                        <Label fx:id="ASUTotal1" layoutX="10.0" layoutY="10.0" text="200" />
+                                                                        <Label fx:id="ASUTotal" layoutX="10.0" layoutY="10.0" text="200" />
                                                                      </children>
                                                                   </HBox>
                                                                   <VBox layoutX="20.0" layoutY="20.0">
@@ -1430,7 +1430,7 @@
                                                                   <HBox layoutX="20.0" layoutY="58.0" spacing="10.0">
                                                                      <children>
                                                                         <Label text="Total Teams" />
-                                                                        <Label fx:id="ASTTotal1" layoutX="10.0" layoutY="10.0" text="200" />
+                                                                        <Label fx:id="ASTTotal" layoutX="10.0" layoutY="10.0" text="200" />
                                                                      </children>
                                                                   </HBox>
                                                                   <VBox layoutX="20.0" layoutY="93.0">
@@ -1442,13 +1442,13 @@
                                                                   <HBox layoutX="20.0" layoutY="131.0" spacing="10.0">
                                                                      <children>
                                                                         <Label text="Done:" />
-                                                                        <Label fx:id="ASTDone1" layoutX="10.0" layoutY="10.0" text="2" />
+                                                                        <Label fx:id="ASTDone" layoutX="10.0" layoutY="10.0" text="2" />
                                                                      </children>
                                                                   </HBox>
                                                                   <HBox layoutX="20.0" layoutY="204.0" spacing="10.0">
                                                                      <children>
                                                                         <Label text="Failed" />
-                                                                        <Label fx:id="ASTFailed1" layoutX="10.0" layoutY="10.0" text="1" />
+                                                                        <Label fx:id="ASTFailed" layoutX="10.0" layoutY="10.0" text="1" />
                                                                      </children>
                                                                   </HBox>
                                                                   <VBox layoutX="20.0" layoutY="166.0">
@@ -1461,7 +1461,7 @@
                                                                      <children>
                                                                         <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                                                            <content>
-                                                                              <VBox fx:id="ASTUItemHolder1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                                              <VBox fx:id="ASTUItemHolder" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                                                                            </content>
                                                                         </ScrollPane>
                                                                      </children>

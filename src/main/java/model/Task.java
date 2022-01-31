@@ -266,10 +266,14 @@ public class Task implements Serializable {
     }
 
     public boolean isDone() {
+        if (this.category == null)
+            return false;
         return this.category.equalsIgnoreCase("done");
     }
 
     public boolean isFailed() {
+        if (this.category == null)
+            return false;
         return this.category.equalsIgnoreCase("failed");
     }
 
