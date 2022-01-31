@@ -127,6 +127,10 @@ public class Team implements Serializable {
 
     public void removeBoard(Board board) {
         this.boards.remove(board);
+
+        for (Task task : Task.getAllTask())
+            if (task.getBoard() != null)
+                task.removeBoard();
     }
 
     public boolean isPending() {

@@ -72,11 +72,6 @@ public class BoardCategoryItem {
                 }
 
                 @Override
-                public void onPre(Task task) {
-                    onItemClickListener.onPre(task);
-                }
-
-                @Override
                 public void addToBoard(Task task) {
                     onItemClickListener.addToBoard(task);
                 }
@@ -100,8 +95,6 @@ public class BoardCategoryItem {
         void onDone(Task task);
 
         void onNext(Task task);
-
-        void onPre(Task task);
 
         void addToBoard(Task task);
     }

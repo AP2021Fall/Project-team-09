@@ -258,6 +258,11 @@ public class Task implements Serializable {
         this.category = board.getFirstCategory();
     }
 
+    public void removeBoard() {
+        this.board = null;
+        this.category = null;
+    }
+
     public boolean moveToNextCategory() {
         if (this.category.equalsIgnoreCase("done"))
             return false;

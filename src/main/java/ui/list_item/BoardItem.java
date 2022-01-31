@@ -34,6 +34,8 @@ public class BoardItem {
         button = new Button("Remove");
         button.getStyleClass().add("custom-btn");
 
+        button.setOnMouseClicked(event -> onItemClickListener.onRemove(this.board));
+
         hBox.getStyleClass().add("list-item");
         HBox.setHgrow(hBox, Priority.ALWAYS);
         hBox.setAlignment(Pos.CENTER_LEFT);
@@ -49,5 +51,7 @@ public class BoardItem {
     public interface OnItemClickListener {
 
         void onClick(Board board);
+
+        void onRemove(Board board);
     }
 }

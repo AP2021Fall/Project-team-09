@@ -32,19 +32,16 @@ public class BoardTaskItem {
         Label label1;
         Label label2;
 
-        Button pre = new Button("<");
         Button done = new Button("DONE");
         Button next = new Button(">");
 
         Button addToBoard = new Button("ADD");
 
-        pre.setMaxWidth(Double.MAX_VALUE);
         done.setMaxWidth(Double.MAX_VALUE);
         next.setMaxWidth(Double.MAX_VALUE);
 
         addToBoard.setMaxWidth(Double.MAX_VALUE);
 
-        pre.getStyleClass().add("custom-btn");
         done.getStyleClass().add("custom-btn");
         next.getStyleClass().add("custom-btn");
 
@@ -55,10 +52,9 @@ public class BoardTaskItem {
             addToBoard.setOnMouseClicked(event -> this.onItemClickListener.addToBoard(this.task));
             HBox.setHgrow(addToBoard, Priority.ALWAYS);
         } else if (task.getBoard() != null) {
-            pre.setOnMouseClicked(event -> this.onItemClickListener.onPre(this.task));
             done.setOnMouseClicked(event -> this.onItemClickListener.onDone(this.task));
             next.setOnMouseClicked(event -> this.onItemClickListener.onNext(this.task));
-            hBox1.getChildren().addAll(pre, done, next);
+            hBox1.getChildren().addAll(done, next);
         }
 
         if (task.getBoard() != null && task.getCategory().equalsIgnoreCase("done")) {
@@ -101,8 +97,6 @@ public class BoardTaskItem {
         void onDone(Task task);
 
         void onNext(Task task);
-
-        void onPre(Task task);
 
         void addToBoard(Task task);
     }

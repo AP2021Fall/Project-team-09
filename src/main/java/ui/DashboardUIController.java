@@ -1052,6 +1052,11 @@ public class DashboardUIController implements Initializable, GUI {
                         SharedPreferences.add(BOARD, board);
                         tabPaneHandler(null, BOARD_PAGE, 0);
                     }
+
+                    @Override
+                    public void onRemove(Board board) {
+                        removeBoard(board);
+                    }
                 });
                 HBox boardBox = boardItem.draw();
                 TBBoardItemHolder.getChildren().add(boardBox);
@@ -1073,6 +1078,11 @@ public class DashboardUIController implements Initializable, GUI {
                                 SharedPreferences.add(BOARD, board);
                                 tabPaneHandler(null, BOARD_PAGE, 0);
                             }
+
+                            @Override
+                            public void onRemove(Board board) {
+                                removeBoard(board);
+                            }
                         });
                         HBox boardBox = boardItem.draw();
                         TBBoardItemHolder.getChildren().add(boardBox);
@@ -1080,6 +1090,19 @@ public class DashboardUIController implements Initializable, GUI {
                 }
             });
         }
+    }
+
+    private void removeBoard(Board board) {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Response response =
+                BoardMenuController.getInstance().removeBoard(team, board.getName());
+        showResponse(response);
+        save();
+        setBoards();
     }
 
     @FXML
@@ -1160,11 +1183,6 @@ public class DashboardUIController implements Initializable, GUI {
             }
 
             @Override
-            public void onPre(Task task) {
-                System.out.println(task.getTitle());
-            }
-
-            @Override
             public void addToBoard(Task task) {
                 if (!board.isDone()) {
                     Response res =
@@ -1239,11 +1257,6 @@ public class DashboardUIController implements Initializable, GUI {
                     }
                     save();
                     setBoard();
-                }
-
-                @Override
-                public void onPre(Task task) {
-
                 }
 
                 @Override
