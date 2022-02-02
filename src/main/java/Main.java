@@ -16,7 +16,7 @@ public class Main extends Application {
     private double xOffset, yOffset;
 
     public static void main(String[] args) {
-        SaveAndLoadController.load();
+//        SaveAndLoadController.load();
         launch(args);
 
         new LoginMenu().show();

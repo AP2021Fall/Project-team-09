@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.MRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,6 +128,7 @@ public class AuthenticationUIController implements Initializable, GUI {
 
         MResponse MResponse =
                 LoginController.getInstance().userLogin(username, password);
+
         if (MResponse.isSuccess())
             showPage(DashboardUIController.DASH_PAGE);
         else showResponse(MResponse);
