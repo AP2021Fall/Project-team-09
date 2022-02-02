@@ -2,6 +2,7 @@ package model;
 
 import com.google.gson.Gson;
 import controller.MResponse;
+import kotlin.jvm.Transient;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -12,23 +13,25 @@ import java.util.LinkedHashMap;
 public class MRequest implements Serializable {
 
     private final String BASE_URL = "http://localhost:5678";
+    private final String BASE = "localhost";
 
+    @Transient
     private String path;
     private String token;
-    private HashMap<String, String> arguments;
+    private HashMap<String, Object> arguments;
     private Object object;
 
     public MRequest() {
         arguments = new LinkedHashMap<>();
     }
 
-    public MRequest(String path, HashMap<String, String> arguments, Object object) {
+    public MRequest(String path, HashMap<String, Object> arguments, Object object) {
         this.path = path;
         this.arguments = arguments;
         this.object = object;
     }
 
-    public MRequest(String path, String token, HashMap<String, String> arguments, Object object) {
+    public MRequest(String path, String token, HashMap<String, Object> arguments, Object object) {
         this.path = path;
         this.token = token;
         this.arguments = arguments;
@@ -53,20 +56,20 @@ public class MRequest implements Serializable {
         return this;
     }
 
-    public MRequest addArg(String key, String value) {
+    public MRequest addArg(String key, Object value) {
         this.arguments.put(key, value);
         return this;
     }
 
-    public String getArg(String key) {
+    public Object getArg(String key) {
         return arguments.get(key);
     }
 
-    public HashMap<String, String> getArguments() {
+    public HashMap<String, Object> getArguments() {
         return arguments;
     }
 
-    public MRequest setArguments(HashMap<String, String> arguments) {
+    public MRequest setArguments(HashMap<String, Object> arguments) {
         this.arguments = arguments;
         return this;
     }
@@ -184,12 +187,17 @@ public class MRequest implements Serializable {
             HttpUrl.Builder url = new HttpUrl
                     .Builder()
                     .scheme("http")
-                    .host(BASE_URL)
-                    .addPathSegment(path);
+                    .host(BASE)
+                    .port(5678);
+
+            for (String segment : path.split("/"))
+                url.addPathSegment(segment);
+
+            System.out.println(url);
 
 
             for (String arg : arguments.keySet())
-                url.addQueryParameter(arg, arguments.get(arg));
+                url.addQueryParameter(arg, (String) arguments.get(arg));
 
             Request request = new Request.Builder()
                     .url(url.build())

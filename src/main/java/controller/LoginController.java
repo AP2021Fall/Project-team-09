@@ -6,6 +6,14 @@ import model.User;
 
 public class LoginController {
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "username";
+    private static final String PASSWORD1 = "password1";
+    private static final String PASSWORD2 = "password2";
+    private static final String EMAIL = "email";
+    private static final String ROLE = "role";
+    private static final String PENDING_TEAMS = "pending-teams";
+
     private final String LOGIN_PATH = "/auth/signIn";
     private final String SIGNUP_PATH = "/auth/signUp";
 
@@ -23,18 +31,18 @@ public class LoginController {
     public MResponse userCreate(String username, String password1, String password2, String email) {
         return new MRequest()
                 .setPath(SIGNUP_PATH)
-                .addArg("username", username)
-                .addArg("password1", password1)
-                .addArg("password2", password2)
-                .addArg("email", email)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD1, password1)
+                .addArg(PASSWORD2, password2)
+                .addArg(EMAIL, email)
                 .post();
     }
 
     public MResponse userLogin(String username, String password) {
         MResponse response = new MRequest()
                 .setPath(LOGIN_PATH)
-                .addArg("username", username)
-                .addArg("password", password)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD, password)
                 .post();
         if (response.isSuccess()) {
             System.out.println(response);
@@ -52,8 +60,8 @@ public class LoginController {
     public MResponse adminLogin(String username, String password) {
         return new MRequest()
                 .setPath(LOGIN_PATH)
-                .addArg("username", username)
-                .addArg("password", password)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD, password)
                 .post();
     }
 }
