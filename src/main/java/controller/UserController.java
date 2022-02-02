@@ -14,16 +14,16 @@ public class UserController {
         loggedUser = null;
     }
 
-    public static Response clearNotifications() {
+    public static MResponse clearNotifications() {
         loggedUser.clearNotifications();
-        return new Response("Notifications cleared!",true);
+        return new MResponse("Notifications cleared!",true);
     }
 
-    public static Response getNotifications() {
+    public static MResponse getNotifications() {
         String answer = "";
         for(Notification notification : loggedUser.getNotifications()){
             answer += notification + "\n";
         }
-        return new Response(answer,true, loggedUser.getNotifications());
+        return new MResponse(answer,true, loggedUser.getNotifications());
     }
 }

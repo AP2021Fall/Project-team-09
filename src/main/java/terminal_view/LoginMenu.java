@@ -2,7 +2,7 @@ package terminal_view;
 
 import controller.EnvironmentVariables;
 import controller.LoginController;
-import controller.Response;
+import controller.MResponse;
 import exceptions.IllegalCommandException;
 import model.User;
 import utilities.ConsoleHelper;
@@ -52,12 +52,12 @@ public class LoginMenu implements TerminalView {
 
     private void adminLogin(ArgumentManager input) {
         try {
-            Response response = LoginController.getInstance().adminLogin(
+            MResponse MResponse = LoginController.getInstance().adminLogin(
                     input.get(USERNAME),
                     input.get(PASSWORD)
             );
 
-            if (response.isSuccess()) {
+            if (MResponse.isSuccess()) {
                 enterAdminMenu();
             }
         } catch (IllegalCommandException e) {
@@ -67,13 +67,13 @@ public class LoginMenu implements TerminalView {
 
     private void userLogin(ArgumentManager input) {
         try {
-            Response response = LoginController.getInstance().userLogin(
+            MResponse MResponse = LoginController.getInstance().userLogin(
                     input.get(USERNAME),
                     input.get(PASSWORD)
             );
-            ConsoleHelper.getInstance().println(response.getMessage());
-            if (response.isSuccess()) {
-                User user = (User) response.getObject();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
+            if (MResponse.isSuccess()) {
+                User user = (User) MResponse.getObject();
                 if (user.isAdmin()) {
                     enterAdminMenu();
                 } else {
@@ -96,13 +96,13 @@ public class LoginMenu implements TerminalView {
 
     private void createUser(ArgumentManager input) {
         try {
-            Response response = LoginController.getInstance().userCreate(
+            MResponse MResponse = LoginController.getInstance().userCreate(
                     input.get(USERNAME),
                     input.get(PASSWORD_1),
                     input.get(PASSWORD_2),
                     input.get(EMAIL)
             );
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

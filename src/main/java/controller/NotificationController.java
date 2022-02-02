@@ -24,39 +24,39 @@ public class NotificationController {
         return notificationController;
     }
 
-    public Response sendNotificationToUser(String body, String username) {
+    public MResponse sendNotificationToUser(String body, String username) {
         User user = User.getUser(username);
 
         if(user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if(body.isEmpty())
-            return new Response(WARN_404_BODY, false);
+            return new MResponse(WARN_404_BODY, false);
 
         Notification notification = new Notification(UserController.getLoggedUser(), null, body);
         user.sendNotification(notification);
-        return new Response(SUCCESS_NOTIFICATION_SENT, true);
+        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
     }
 
-    public Response sendNotificationToTeam(String body, String teamName) {
+    public MResponse sendNotificationToTeam(String body, String teamName) {
         Team team = Team.getTeamByName(teamName);
 
         if(team == null)
-            return new Response(WARN_404_TEAM, false);
+            return new MResponse(WARN_404_TEAM, false);
 
         if(body.isEmpty())
-            return new Response(WARN_404_BODY, false);
+            return new MResponse(WARN_404_BODY, false);
 
         Notification notification = new Notification(UserController.getLoggedUser(), team, body);
         team.sendNotification(notification);
-        return new Response(SUCCESS_NOTIFICATION_SENT, true);
+        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
     }
 
-    public Response sendNotificationToAll(String body) {
+    public MResponse sendNotificationToAll(String body) {
         Notification notification = new Notification(UserController.getLoggedUser(), null, body);
         for (User user : User.getAllUsers()) {
             user.sendNotification(notification);
         }
-        return new Response(SUCCESS_NOTIFICATION_SENT, true);
+        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
     }
 }

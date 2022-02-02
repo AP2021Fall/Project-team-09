@@ -34,43 +34,43 @@ public class AdminController {
         return controller;
     }
 
-    public Response getProfile(String username) {
+    public MResponse getProfile(String username) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
-        return new Response(user.toString(), true, user);
+        return new MResponse(user.toString(), true, user);
     }
 
-    public Response banUser(String username) {
+    public MResponse banUser(String username) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         User.removeUser(user);
-        return new Response(SUCCESS_USER_BANED, true);
+        return new MResponse(SUCCESS_USER_BANED, true);
     }
 
-    public Response changeRole(String username, String role) {
+    public MResponse changeRole(String username, String role) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (user.setType(role)) {
-            return new Response(String.format(SUCCESS_ROLE_CHANGED, role), true);
+            return new MResponse(String.format(SUCCESS_ROLE_CHANGED, role), true);
         } else {
-            return new Response(WARN_WRONG_ROLE, false);
+            return new MResponse(WARN_WRONG_ROLE, false);
         }
     }
 
-    public Response getPendingTeams() {
+    public MResponse getPendingTeams() {
         ArrayList<Team> pending = Team.getPendingTeams();
 
         if (pending.isEmpty())
-            return new Response(WARN_404_PENDING, false);
+            return new MResponse(WARN_404_PENDING, false);
 
         pending.sort(new Comparator<Team>() {
             @Override
@@ -83,37 +83,37 @@ public class AdminController {
 
         for (Team team : pending)
             result.append(team.getName()).append("\n");
-        return new Response(result.toString(), true, pending);
+        return new MResponse(result.toString(), true, pending);
     }
 
 
-    public Response acceptPendingTeams(String[] teams) {
+    public MResponse acceptPendingTeams(String[] teams) {
         ArrayList<Team> acceptedTeams = new ArrayList<>();
         for (String team : teams) {
             Team theTeam = Team.getTeamByName(team);
             if (theTeam == null)
-                return new Response(String.format(WARN_404_TEAM, team), false);
+                return new MResponse(String.format(WARN_404_TEAM, team), false);
             if (!theTeam.isPending())
-                return new Response(WARN_NOT_PENDING, false);
+                return new MResponse(WARN_NOT_PENDING, false);
             acceptedTeams.add(theTeam);
         }
         for (Team team : acceptedTeams)
             team.accept();
-        return new Response(SUCCESS_SET_ACCEPTED, true);
+        return new MResponse(SUCCESS_SET_ACCEPTED, true);
     }
 
-    public Response rejectPendingTeams(String[] teams) {
+    public MResponse rejectPendingTeams(String[] teams) {
         ArrayList<Team> rejectedTeams = new ArrayList<>();
         for (String team : teams) {
             Team theTeam = Team.getTeamByName(team);
             if (theTeam == null)
-                return new Response(String.format(WARN_404_TEAM, team), false);
+                return new MResponse(String.format(WARN_404_TEAM, team), false);
             if (!theTeam.isPending())
-                return new Response(WARN_NOT_PENDING, false);
+                return new MResponse(WARN_NOT_PENDING, false);
             rejectedTeams.add(theTeam);
         }
         for (Team team : rejectedTeams)
             team.reject();
-        return new Response(SUCCESS_SET_ACCEPTED, true);
+        return new MResponse(SUCCESS_SET_ACCEPTED, true);
     }
 }

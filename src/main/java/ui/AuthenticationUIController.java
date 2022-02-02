@@ -1,8 +1,7 @@
 package ui;
 
 import controller.LoginController;
-import controller.Response;
-import controller.SaveAndLoadController;
+import controller.MResponse;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -126,11 +125,11 @@ public class AuthenticationUIController implements Initializable, GUI {
         String username = getValue(SIUsername);
         String password = getValue(SIPassword);
 
-        Response response =
+        MResponse MResponse =
                 LoginController.getInstance().userLogin(username, password);
-        if (response.isSuccess())
+        if (MResponse.isSuccess())
             showPage(DashboardUIController.DASH_PAGE);
-        else showResponse(response);
+        else showResponse(MResponse);
     }
 
     // sign up
@@ -142,12 +141,12 @@ public class AuthenticationUIController implements Initializable, GUI {
         String confirmPass = getValue(SUCPassword);
         String email = getValue(SUEmail);
 
-        Response response =
+        MResponse MResponse =
                 LoginController.getInstance()
                         .userCreate(username, password, confirmPass, email);
-        if (response.isSuccess())
+        if (MResponse.isSuccess())
             tabPaneHandler(SIGN_IN);
-        else showResponse(response);
+        else showResponse(MResponse);
         save();
     }
 }

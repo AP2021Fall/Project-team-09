@@ -1,7 +1,7 @@
 package terminal_view;
 
 import controller.ProfileMenuController;
-import controller.Response;
+import controller.MResponse;
 import controller.TeamMenuController;
 import controller.UserController;
 import exceptions.IllegalCommandException;
@@ -207,9 +207,9 @@ public class TeamMenu implements TerminalView {
 
     private void showAllTasks() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getAllTasks(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -217,9 +217,9 @@ public class TeamMenu implements TerminalView {
 
     private void createTask(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .createTask(team, input.get(TITLE), input.get(START_TIME), input.get(DEADLINE));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -227,9 +227,9 @@ public class TeamMenu implements TerminalView {
 
     private void showMembers() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getMembers(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -237,9 +237,9 @@ public class TeamMenu implements TerminalView {
 
     private void addMemberToTeam(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .addMemberToTeam(team, input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -247,9 +247,9 @@ public class TeamMenu implements TerminalView {
 
     private void deleteMember(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .deleteMember(team, input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -257,9 +257,9 @@ public class TeamMenu implements TerminalView {
 
     private void suspendMember(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .suspendMember(team, input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -267,7 +267,7 @@ public class TeamMenu implements TerminalView {
 
     private void promoteMember(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .promoteUser(team, input.get(USERNAME), input.get(RATE));
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
@@ -276,9 +276,9 @@ public class TeamMenu implements TerminalView {
 
     private void assignUserToTask(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .assignToTask(team, input.get(TASK), input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -286,11 +286,11 @@ public class TeamMenu implements TerminalView {
 
     private void enterTeamPage(String teamName) {
         try {
-            Response response = TeamMenuController.getInstance().getTeam(teamName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = TeamMenuController.getInstance().getTeam(teamName);
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
 
-            if (response.isSuccess())
-                this.team = (Team) response.getObject();
+            if (MResponse.isSuccess())
+                this.team = (Team) MResponse.getObject();
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -298,9 +298,9 @@ public class TeamMenu implements TerminalView {
 
     private void showScoreboard() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getScoreboard(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -308,9 +308,9 @@ public class TeamMenu implements TerminalView {
 
     private void showRoadMap() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getRoadmapFormatted(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -318,9 +318,9 @@ public class TeamMenu implements TerminalView {
 
     private void showChatRoom() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getMessagesFormatted(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -337,9 +337,9 @@ public class TeamMenu implements TerminalView {
 
     private void showTasks() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .showTasks(team);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -347,9 +347,9 @@ public class TeamMenu implements TerminalView {
 
     private void showTask(ArgumentManager input) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .showTask(team, input.get(ID));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -357,9 +357,9 @@ public class TeamMenu implements TerminalView {
 
     private void showTeams() {
         try {
-            Response response = ProfileMenuController.getInstance()
+            MResponse MResponse = ProfileMenuController.getInstance()
                     .showTeams();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -367,9 +367,9 @@ public class TeamMenu implements TerminalView {
 
     public void showLeaderTeams() {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getLeaderTeams();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -377,11 +377,11 @@ public class TeamMenu implements TerminalView {
 
     public void showTheTeam(String teamName) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .getLeaderTeam(teamName);
-            ConsoleHelper.getInstance().println(response.getMessage());
-            if (response.isSuccess()) {
-                this.team = (Team) response.getObject();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
+            if (MResponse.isSuccess()) {
+                this.team = (Team) MResponse.getObject();
                 show();
             }
         } catch (IllegalCommandException e) {
@@ -391,9 +391,9 @@ public class TeamMenu implements TerminalView {
 
     public void createTeam(String teamName) {
         try {
-            Response response = TeamMenuController.getInstance()
+            MResponse MResponse = TeamMenuController.getInstance()
                     .createTeam(teamName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

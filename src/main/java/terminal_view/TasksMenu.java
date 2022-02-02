@@ -1,6 +1,6 @@
 package terminal_view;
 
-import controller.Response;
+import controller.MResponse;
 import controller.TasksMenuController;
 import controller.UserController;
 import exceptions.IllegalCommandException;
@@ -87,9 +87,9 @@ public class TasksMenu implements TerminalView {
 
     private void editTaskTitle(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .editTaskTitle(input.get(ID), input.get(TITLE));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -97,10 +97,10 @@ public class TasksMenu implements TerminalView {
 
     private void editTaskDescription(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .editTaskDescription(input.get(ID),
                             input.get(DESCRIPTION));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -108,10 +108,10 @@ public class TasksMenu implements TerminalView {
 
     private void editTaskPriority(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .editTaskPriority(input.get(ID),
                             input.get(PRIORITY));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -119,10 +119,10 @@ public class TasksMenu implements TerminalView {
 
     private void editTaskDeadline(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .editTaskDeadline(input.get(ID),
                             input.get(DEADLINE));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -130,10 +130,10 @@ public class TasksMenu implements TerminalView {
 
     private void addToAssignedUsers(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .addToAssignedUsers(input.get(ID),
                             input.get(ASSIGNED_USERS));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -141,10 +141,10 @@ public class TasksMenu implements TerminalView {
 
     private void removeFromAssignedUsers(ArgumentManager input) {
         try {
-            Response response = TasksMenuController.getInstance()
+            MResponse MResponse = TasksMenuController.getInstance()
                     .removeAssignedUsers(input.get(ID),
                             input.get(ASSIGNED_USERS));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

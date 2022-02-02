@@ -1,7 +1,7 @@
 package terminal_view;
 
 import controller.NotificationController;
-import controller.Response;
+import controller.MResponse;
 import controller.UserController;
 import exceptions.IllegalCommandException;
 import model.User;
@@ -64,9 +64,9 @@ public class NotificationsMenu implements TerminalView {
 
     private void sendNotificationToUser(ArgumentManager input) {
         try {
-            Response response = NotificationController.getInstance()
+            MResponse MResponse = NotificationController.getInstance()
                     .sendNotificationToUser(input.get(NOTIFICATION), input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -74,9 +74,9 @@ public class NotificationsMenu implements TerminalView {
 
     private void sendNotificationToTeam(ArgumentManager input) {
         try {
-            Response response = NotificationController.getInstance()
+            MResponse MResponse = NotificationController.getInstance()
                     .sendNotificationToTeam(input.get(NOTIFICATION), input.get(TEAM));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -84,8 +84,8 @@ public class NotificationsMenu implements TerminalView {
 
     private void clearNotifications() {
         try {
-            Response response = UserController.clearNotifications();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = UserController.clearNotifications();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -93,8 +93,8 @@ public class NotificationsMenu implements TerminalView {
 
     private void readNotifications() {
         try {
-            Response response = UserController.getNotifications();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = UserController.getNotifications();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

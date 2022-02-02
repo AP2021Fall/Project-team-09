@@ -86,74 +86,74 @@ public class TeamMenuController {
         return teamMenuController;
     }
 
-    public Response getScoreboard(Team team) {
-        return new Response(team.getScoreboard(), true);
+    public MResponse getScoreboard(Team team) {
+        return new MResponse(team.getScoreboard(), true);
     }
 
-    public Response getRoadmapFormatted(Team team) {
-        return new Response(team.getRoadmapFormatted(), true);
+    public MResponse getRoadmapFormatted(Team team) {
+        return new MResponse(team.getRoadmapFormatted(), true);
     }
 
-    public Response getRoadmap(Team team) {
-        return new Response(SUCCESS, true, team.getRoadmap());
+    public MResponse getRoadmap(Team team) {
+        return new MResponse(SUCCESS, true, team.getRoadmap());
     }
 
-    public Response getMessagesFormatted(Team team) {
-        return new Response(team.getMessagesFormatted(), true);
+    public MResponse getMessagesFormatted(Team team) {
+        return new MResponse(team.getMessagesFormatted(), true);
     }
 
-    public Response getMessages(Team team) {
-        return new Response(SUCCESS, true, team.getMessages());
+    public MResponse getMessages(Team team) {
+        return new MResponse(SUCCESS, true, team.getMessages());
     }
 
-    public Response getTeam(String teamName) {
+    public MResponse getTeam(String teamName) {
         Team team = UserController.getLoggedUser().getMyTeam(teamName);
 
         if (team == null)
-            return new Response(String.format(WARN_404_TEAM, teamName), false);
+            return new MResponse(String.format(WARN_404_TEAM, teamName), false);
 
         if (team.isPending())
-            return new Response(WARN_WAIT_CONFIRM, false);
+            return new MResponse(WARN_WAIT_CONFIRM, false);
 
-        return new Response(SUCCESS_FOUND_TEAM, true, team);
+        return new MResponse(SUCCESS_FOUND_TEAM, true, team);
     }
 
-    public Response sendMessage(Team team, String body) {
+    public MResponse sendMessage(Team team, String body) {
         User user = UserController.getLoggedUser();
 
         if (body.isEmpty())
-            return new Response(WARN_EMPTY_MESSAGE, false);
+            return new MResponse(WARN_EMPTY_MESSAGE, false);
         team.sendMessage(user, body);
-        return new Response(SUCCESS, true);
+        return new MResponse(SUCCESS, true);
     }
 
-    public Response showTasks(Team team) {
-        return new Response(team.getTasksFormatted(), true);
+    public MResponse showTasks(Team team) {
+        return new MResponse(team.getTasksFormatted(), true);
     }
 
-    public Response showTask(Team team, String taskId) {
+    public MResponse showTask(Team team, String taskId) {
         int id;
         try {
             id = Integer.parseInt(taskId);
         } catch (Exception e) {
-            return new Response(WARN_TASK_ID_INVALID, false);
+            return new MResponse(WARN_TASK_ID_INVALID, false);
         }
 
         Task task = team.getTaskById(id);
 
         if (task == null)
-            return new Response(WARN_TASK_ID_INVALID, false);
+            return new MResponse(WARN_TASK_ID_INVALID, false);
 
-        return new Response(task.toString(), true);
+        return new MResponse(task.toString(), true);
     }
 
-    public Response getLeaderTeams() {
+    public MResponse getLeaderTeams() {
         User leader = UserController.getLoggedUser();
 
         ArrayList<Team> teams = leader.getMyTeams();
 
         if (teams.isEmpty())
-            return new Response(WARN_404_TEAM_FOR_YOU, false);
+            return new MResponse(WARN_404_TEAM_FOR_YOU, false);
 
         teams.sort(new Comparator<Team>() {
             @Override
@@ -172,91 +172,91 @@ public class TeamMenuController {
         for (Team team : teams)
             result.append(String.format("%d- %s", index++, team.getName()));
 
-        return new Response(result.toString(), true);
+        return new MResponse(result.toString(), true);
     }
 
-    public Response getLeaderTeam(String teamName) {
+    public MResponse getLeaderTeam(String teamName) {
         User leader = UserController.getLoggedUser();
         Team team = leader.getMyTeam(teamName);
 
         if (team == null)
-            return new Response(WARN_404_LEADER_TEAM, false);
-        return new Response(SUCCESS_FOUND_TEAM, true, team);
+            return new MResponse(WARN_404_LEADER_TEAM, false);
+        return new MResponse(SUCCESS_FOUND_TEAM, true, team);
     }
 
-    public Response createTeam(String teamName) {
+    public MResponse createTeam(String teamName) {
         Team team = Team.getTeamByName(teamName);
 
         if (!UserController.getLoggedUser().isTeamLeader())
-            return new Response(WARN_NOT_TEAM_LEADER, false);
+            return new MResponse(WARN_NOT_TEAM_LEADER, false);
 
         if (team != null)
-            return new Response(WARN_TEAM_EXISTS, false);
+            return new MResponse(WARN_TEAM_EXISTS, false);
 
         if (teamName.matches(TEAM_NAME_REGEXP))
-            return new Response(WARN_INVALID_NAME, false);
+            return new MResponse(WARN_INVALID_NAME, false);
 
         Team.createTeam(teamName, UserController.getLoggedUser());
 
-        return new Response(SUCCESS_TEAM_CREATED, true);
+        return new MResponse(SUCCESS_TEAM_CREATED, true);
     }
 
-    public Response getAllTasks(Team team) {
-        return new Response(team.getTasksFullInfoFormatted(), true);
+    public MResponse getAllTasks(Team team) {
+        return new MResponse(team.getTasksFullInfoFormatted(), true);
     }
 
-    public Response createTask(Team team, String title,
-                               String startTime, String deadline) {
+    public MResponse createTask(Team team, String title,
+                                String startTime, String deadline) {
 
         if (title.isEmpty())
-            return new Response(WARN_TITLE_INVALID, false);
+            return new MResponse(WARN_TITLE_INVALID, false);
 
         Task task = team.getTaskByTitle(title);
 
         if (task != null)
-            return new Response(WARN_DUPLICATE_TITLE, false);
+            return new MResponse(WARN_DUPLICATE_TITLE, false);
 
         LocalDateTime start = isTimeValid(startTime);
         LocalDateTime dead = isTimeValid(deadline);
 
         if (start == null)
-            return new Response(WARN_START_TIME_INVALID, false);
+            return new MResponse(WARN_START_TIME_INVALID, false);
 
         if (dead == null)
-            return new Response(WARN_DEADLINE_INVALID, false);
+            return new MResponse(WARN_DEADLINE_INVALID, false);
 
         if (dead.isBefore(start))
-            return new Response(WARN_DEADLINE_INVALID, false);
+            return new MResponse(WARN_DEADLINE_INVALID, false);
 
         team.createTask(title, start, dead);
-        return new Response(SUCCESS_TASK_CREATED, true);
+        return new MResponse(SUCCESS_TASK_CREATED, true);
     }
 
-    public Response createTask(Team team, String title,
-                               String priority, String startTime, String deadline, String description) {
+    public MResponse createTask(Team team, String title,
+                                String priority, String startTime, String deadline, String description) {
 
         if (title.isEmpty())
-            return new Response(WARN_TITLE_INVALID, false);
+            return new MResponse(WARN_TITLE_INVALID, false);
 
         Task task = team.getTaskByTitle(title);
 
         if (task != null)
-            return new Response(WARN_DUPLICATE_TITLE, false);
+            return new MResponse(WARN_DUPLICATE_TITLE, false);
 
         LocalDateTime start = isTimeValid(startTime);
         LocalDateTime dead = isTimeValid(deadline);
 
         if (start == null)
-            return new Response(WARN_START_TIME_INVALID, false);
+            return new MResponse(WARN_START_TIME_INVALID, false);
 
         if (dead == null)
-            return new Response(WARN_DEADLINE_INVALID, false);
+            return new MResponse(WARN_DEADLINE_INVALID, false);
 
         if (dead.isBefore(start))
-            return new Response(WARN_DEADLINE_INVALID, false);
+            return new MResponse(WARN_DEADLINE_INVALID, false);
 
         Task t = team.createTask(title, priority, start, dead, description);
-        return new Response(SUCCESS_TASK_CREATED, true, t);
+        return new MResponse(SUCCESS_TASK_CREATED, true, t);
     }
 
     private LocalDateTime isTimeValid(String time) {
@@ -274,11 +274,11 @@ public class TeamMenuController {
         }
     }
 
-    public Response getMembers(Team team) {
+    public MResponse getMembers(Team team) {
         ArrayList<User> teamMembers = team.getMembers();
 
         if (teamMembers.isEmpty())
-            return new Response(WARN_404_TEAM_MEMBER, false);
+            return new MResponse(WARN_404_TEAM_MEMBER, false);
 
         StringBuilder result = new StringBuilder();
 
@@ -287,123 +287,123 @@ public class TeamMenuController {
         for (User user : teamMembers)
             result.append(String.format("%d- %s", index++, user.getUsername())).append("\n");
 
-        return new Response(result.toString(), true, teamMembers);
+        return new MResponse(result.toString(), true, teamMembers);
     }
 
-    public Response addMemberToTeam(Team team, String username) {
+    public MResponse addMemberToTeam(Team team, String username) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (team.hasMember(user))
-            return new Response(WARN_USER_EXISTS, false);
+            return new MResponse(WARN_USER_EXISTS, false);
 
         if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new Response(WARN_USER_TEAM_LEADER, false);
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         team.addMember(user);
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been added to \"%s\" team!", team.getName())));
-        return new Response(SUCCESS_USER_ADDED, true);
+        return new MResponse(SUCCESS_USER_ADDED, true);
     }
 
-    public Response deleteMember(Team team, String username) {
+    public MResponse deleteMember(Team team, String username) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (!team.hasMember(user))
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new Response(WARN_USER_TEAM_LEADER, false);
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         team.deleteMember(user);
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been deleted from \"%s\" team!", team.getName())));
-        return new Response(SUCCESS_USER_DELETED, true);
+        return new MResponse(SUCCESS_USER_DELETED, true);
     }
 
-    public Response suspendMember(Team team, String username) {
+    public MResponse suspendMember(Team team, String username) {
         User user = User.getUser(username);
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (!team.hasMember(user))
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (team.isSuspended(user))
-            return new Response(WARN_ALREADY_SUSPENDED, false);
+            return new MResponse(WARN_ALREADY_SUSPENDED, false);
 
         if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new Response(WARN_USER_TEAM_LEADER, false);
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         team.suspendMember(user);
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been suspended from \"%s\" team!", team.getName())));
-        return new Response(SUCCESS_USER_SUSPENDED, true);
+        return new MResponse(SUCCESS_USER_SUSPENDED, true);
     }
 
-    public Response promoteUser(Team team, String username, String rate) {
+    public MResponse promoteUser(Team team, String username, String rate) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (!team.hasMember(user))
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (team.isSuspended(user))
-            return new Response(WARN_USER_SUSPENDED, false);
+            return new MResponse(WARN_USER_SUSPENDED, false);
 
         if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new Response(WARN_USER_TEAM_LEADER, false);
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         user.setType("team leader");
         team.setLeader(user);
         UserController.getLoggedUser().setType("teamMember");
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been promoted to \"%s\" in \"%s\" team!", user.getType().name(), team.getName())));
-        return new Response(SUCCESS_PROMOTED, true);
+        return new MResponse(SUCCESS_PROMOTED, true);
     }
 
-    public Response assignToTask(Team team, String taskId, String username) {
+    public MResponse assignToTask(Team team, String taskId, String username) {
         User user = User.getUser(username);
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (!team.hasMember(user))
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (team.isSuspended(user))
-            return new Response(WARN_USER_SUSPENDED, false);
+            return new MResponse(WARN_USER_SUSPENDED, false);
 
         if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new Response(WARN_USER_TEAM_LEADER, false);
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         int tId;
         try {
             tId = Integer.parseInt(taskId);
         } catch (Exception exception) {
-            return new Response(WARN_TASK_ID_INVALID, false);
+            return new MResponse(WARN_TASK_ID_INVALID, false);
         }
 
         Task task = team.getTaskById(tId);
 
         if (task == null)
-            return new Response(WARN_TASK_ID_INVALID, false);
+            return new MResponse(WARN_TASK_ID_INVALID, false);
 
         if (task.isInAssignedUsers(username) != null)
-            return new Response(WARN_ALREADY_ASSIGNED, false);
+            return new MResponse(WARN_ALREADY_ASSIGNED, false);
 
         task.assignUser(user);
-        return new Response(SUCCESS_MEMBER_ASSIGNED, true);
+        return new MResponse(SUCCESS_MEMBER_ASSIGNED, true);
     }
 
-    public Response getAllUsers(Team team) {
+    public MResponse getAllUsers(Team team) {
 
         ArrayList<User> users = new ArrayList<>();
 
@@ -413,6 +413,6 @@ public class TeamMenuController {
                     users.add(user);
         }
 
-        return new Response(SUCCESS_USERS_RECEIVED, true, users);
+        return new MResponse(SUCCESS_USERS_RECEIVED, true, users);
     }
 }

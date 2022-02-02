@@ -2,7 +2,7 @@ package terminal_view;
 
 import controller.LoginController;
 import controller.ProfileMenuController;
-import controller.Response;
+import controller.MResponse;
 import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
@@ -81,10 +81,10 @@ public class ProfileMenu implements TerminalView {
 
     private void changePassword(ArgumentManager input) {
         try {
-            Response response = ProfileMenuController.getInstance()
+            MResponse MResponse = ProfileMenuController.getInstance()
                     .changePassword(input.get(OLD_PASSWORD), input.get(NEW_PASSWORD));
-            ConsoleHelper.getInstance().println(response.getMessage());
-            if (response.isSuccess()) {
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
+            if (MResponse.isSuccess()) {
                 LoginController.getInstance().logout();
                 ConsoleHelper.getInstance().println(SUCCESS_LOG_OUT);
             }
@@ -95,9 +95,9 @@ public class ProfileMenu implements TerminalView {
 
     private void changeUsername(ArgumentManager input) {
         try {
-            Response response = ProfileMenuController.getInstance()
+            MResponse MResponse = ProfileMenuController.getInstance()
                     .changeUsername(input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -105,8 +105,8 @@ public class ProfileMenu implements TerminalView {
 
     private void showTeams() {
         try {
-            Response response = ProfileMenuController.getInstance().showTeams();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = ProfileMenuController.getInstance().showTeams();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
             ;
@@ -115,9 +115,9 @@ public class ProfileMenu implements TerminalView {
 
     private void showTeam(ArgumentManager input) {
         try {
-            Response response = ProfileMenuController.getInstance()
+            MResponse MResponse = ProfileMenuController.getInstance()
                     .showTeam(input.get(SHOW_TEAM));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
             ;
@@ -126,8 +126,8 @@ public class ProfileMenu implements TerminalView {
 
     private void showMyProfile() {
         try {
-            Response response = ProfileMenuController.getInstance().getMyProfile();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = ProfileMenuController.getInstance().getMyProfile();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
             ;
@@ -136,8 +136,8 @@ public class ProfileMenu implements TerminalView {
 
     private void showLogs() {
         try {
-            Response response = ProfileMenuController.getInstance().getLogs();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = ProfileMenuController.getInstance().getLogs();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
             ;
@@ -146,8 +146,8 @@ public class ProfileMenu implements TerminalView {
 
     private void showNotifications() {
         try {
-            Response response = ProfileMenuController.getInstance().getNotifications();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = ProfileMenuController.getInstance().getNotifications();
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
             ;

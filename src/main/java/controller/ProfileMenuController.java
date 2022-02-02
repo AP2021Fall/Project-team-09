@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 public class ProfileMenuController {
@@ -72,55 +71,55 @@ public class ProfileMenuController {
         return controller;
     }
 
-    public Response changePassword(String oldPassword, String newPassword) {
+    public MResponse changePassword(String oldPassword, String newPassword) {
         User user = UserController.loggedUser;
         if (tries == 1) {
             LoginController.getInstance().logout();
-            return new Response(WARN_TOO_MANY, false);
+            return new MResponse(WARN_TOO_MANY, false);
         }
 
         if (user.getPassword().equals(newPassword))
-            return new Response(WARN_SAME_PASS, false);
+            return new MResponse(WARN_SAME_PASS, false);
 
 
         if (user.getPassword().equals(oldPassword)) {
             if (user.passwordIntHistory(newPassword)) {
-                return new Response(WARN_PASS_IN_HISTORY, false);
+                return new MResponse(WARN_PASS_IN_HISTORY, false);
             }
 
             if (!isHard(newPassword)) {
-                return new Response(WARN_WEAK_PASS, false);
+                return new MResponse(WARN_WEAK_PASS, false);
             }
         } else {
             tries++;
-            return new Response(WARN_WRONG_PASS, false);
+            return new MResponse(WARN_WRONG_PASS, false);
         }
 
         tries = 0;
         user.setPassword(newPassword);
-        return new Response(SUCCESS_PASS_CHANGED, true);
+        return new MResponse(SUCCESS_PASS_CHANGED, true);
     }
 
-    public Response changeUsername(String newUsername) {
+    public MResponse changeUsername(String newUsername) {
         tries = 0;
         if (newUsername.length() < 4) {
-            return new Response(WARN_LENGTH, false);
+            return new MResponse(WARN_LENGTH, false);
         }
         if (User.usernameExists(newUsername)) {
-            return new Response(WARN_USER_TAKEN, false);
+            return new MResponse(WARN_USER_TAKEN, false);
         }
         if (!newUsername.matches(USERNAME_REGEXP)) {
-            return new Response(WARN_SPECIAL_CHAR, false);
+            return new MResponse(WARN_SPECIAL_CHAR, false);
         }
         if (newUsername.equalsIgnoreCase(UserController.loggedUser.getUsername())) {
-            return new Response(WARN_SAME_USERNAME, false);
+            return new MResponse(WARN_SAME_USERNAME, false);
         }
 
         UserController.loggedUser.setUsername(newUsername);
-        return new Response(SUCCESS_USERNAME_CHANGED, true);
+        return new MResponse(SUCCESS_USERNAME_CHANGED, true);
     }
 
-    public Response showTeams() {
+    public MResponse showTeams() {
         tries = 0;
 
         User user = UserController.getLoggedUser();
@@ -132,7 +131,7 @@ public class ProfileMenuController {
         }
 
         if (teams.isEmpty())
-            return new Response(WARN_404_TEAMS, false);
+            return new MResponse(WARN_404_TEAMS, false);
 
         teams.sort(new Comparator<Team>() {
             @Override
@@ -151,15 +150,15 @@ public class ProfileMenuController {
             response.append(String.format("%d- %s", index++, team.getName())).append("\n");
         }
 
-        return new Response(response.toString(), true, teams);
+        return new MResponse(response.toString(), true, teams);
     }
 
-    public Response showTeam(String teamName) {
+    public MResponse showTeam(String teamName) {
         tries = 0;
 
         Team team = UserController.getLoggedUser().getMyTeam(teamName);
         if (team == null) {
-            return new Response(WARN_404_TEAM, false);
+            return new MResponse(WARN_404_TEAM, false);
         }
         String response = "";
         response += team.getName() + "\n";
@@ -182,7 +181,7 @@ public class ProfileMenuController {
         for (User user : members) {
             response += user.getUsername() + "\n";
         }
-        return new Response(response, true, team);
+        return new MResponse(response, true, team);
     }
 
     private boolean isHard(String newPassword) {
@@ -190,7 +189,7 @@ public class ProfileMenuController {
                 && newPassword.matches(".*[a-z].*") && newPassword.matches(".*[0-9].*");
     }
 
-    public Response getMyProfile() {
+    public MResponse getMyProfile() {
         User user = UserController.getLoggedUser();
 
         String answer = UserController.getLoggedUser().toString();
@@ -204,10 +203,10 @@ public class ProfileMenuController {
                 score += team.getMemberScore(user);
         answer += String.format("Score: %d\n", score);
 
-        return new Response(answer, true, UserController.getLoggedUser());
+        return new MResponse(answer, true, UserController.getLoggedUser());
     }
 
-    public Response getLogs() {
+    public MResponse getLogs() {
         ArrayList<LocalDateTime> dates = UserController.getLoggedUser().getLogs();
 
         dates.sort(new Comparator<LocalDateTime>() {
@@ -222,42 +221,42 @@ public class ProfileMenuController {
         for (LocalDateTime date : dates) {
             answer += date.format(formatter) + "\n";
         }
-        return new Response(answer, true, dates);
+        return new MResponse(answer, true, dates);
     }
 
-    public Response getNotifications() {
+    public MResponse getNotifications() {
         ArrayList<Notification> notifications = UserController.getLoggedUser().getNotifications();
         if (notifications.isEmpty())
-            return new Response(WARN_404_NOTIFICATIONS, false);
+            return new MResponse(WARN_404_NOTIFICATIONS, false);
 
         StringBuilder answer = new StringBuilder();
         for (Notification notification : notifications)
             answer.append(notification).append("\n");
-        return new Response(answer.toString(), true, notifications);
+        return new MResponse(answer.toString(), true, notifications);
     }
 
-    public Response updateProfile(String firstName, String lastName, LocalDate birthDate) {
+    public MResponse updateProfile(String firstName, String lastName, LocalDate birthDate) {
         User user = UserController.getLoggedUser();
 
         if (user == null)
-            return new Response(WARN_404_USER, false);
+            return new MResponse(WARN_404_USER, false);
 
         if (firstName.isEmpty())
-            return new Response(WARN_404_FN, false);
+            return new MResponse(WARN_404_FN, false);
 
         if (!firstName.matches(NAME_REGEXP) || !lastName.matches(NAME_REGEXP))
-            return new Response(WARN_NAME_INVALID, false);
+            return new MResponse(WARN_NAME_INVALID, false);
 
         if (lastName.isEmpty())
-            return new Response(WARN_404_LN, false);
+            return new MResponse(WARN_404_LN, false);
 
         if (birthDate == null)
-            return new Response(WARN_404_BD, false);
+            return new MResponse(WARN_404_BD, false);
 
         user.setFirstname(firstName);
         user.setLastName(lastName);
         user.setBirthday(birthDate);
-        return new Response(SUCCESS_PROFILE_UPDATED, true);
+        return new MResponse(SUCCESS_PROFILE_UPDATED, true);
     }
 
     public void resetTries() {

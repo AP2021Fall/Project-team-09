@@ -19,12 +19,12 @@ public class CalendarMenuController {
         return calendarMenuController;
     }
 
-    public Response getCalendar(String calendar) {
+    public MResponse getCalendar(String calendar) {
         if (!calendar.equalsIgnoreCase(DEADLINES))
-            return new Response(WARN_INVALID_OPERATION, false);
+            return new MResponse(WARN_INVALID_OPERATION, false);
 
         User user = UserController.getLoggedUser();
 
-        return new Response(Task.getDeadlinesFormatted(user), true, Task.getDeadlines(user));
+        return new MResponse(Task.getDeadlinesFormatted(user), true, Task.getDeadlines(user));
     }
 }

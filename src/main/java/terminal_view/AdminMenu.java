@@ -2,7 +2,7 @@ package terminal_view;
 
 import controller.AdminController;
 import controller.NotificationController;
-import controller.Response;
+import controller.MResponse;
 import exceptions.IllegalCommandException;
 import utilities.ConsoleHelper;
 
@@ -106,9 +106,9 @@ public class AdminMenu implements TerminalView {
 
     private void sendNotification(ArgumentManager input) {
         try {
-            Response response = NotificationController.getInstance()
+            MResponse MResponse = NotificationController.getInstance()
                     .sendNotificationToUser(input.get(NOTIFICATION), input.get(USER));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -116,9 +116,9 @@ public class AdminMenu implements TerminalView {
 
     private void sendNotificationAll(ArgumentManager input) {
         try {
-            Response response = NotificationController.getInstance()
+            MResponse MResponse = NotificationController.getInstance()
                     .sendNotificationToAll(input.get(NOTIFICATION));
-            System.out.println(response.getMessage());
+            System.out.println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -126,9 +126,9 @@ public class AdminMenu implements TerminalView {
 
     private void sendNotificationToTeam(ArgumentManager input) {
         try {
-            Response response = NotificationController.getInstance()
+            MResponse MResponse = NotificationController.getInstance()
                     .sendNotificationToTeam(input.get(NOTIFICATION), input.get(TEAM));
-            System.out.println(response.getMessage());
+            System.out.println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -136,9 +136,9 @@ public class AdminMenu implements TerminalView {
 
     private void banUser(ArgumentManager input) {
         try {
-            Response response = AdminController.getInstance()
+            MResponse MResponse = AdminController.getInstance()
                     .banUser(input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -146,8 +146,8 @@ public class AdminMenu implements TerminalView {
 
     private void showUserProfile(ArgumentManager input) {
         try {
-            Response response = AdminController.getInstance().getProfile(input.get(USERNAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            MResponse MResponse = AdminController.getInstance().getProfile(input.get(USERNAME));
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -155,9 +155,9 @@ public class AdminMenu implements TerminalView {
 
     private void changeRole(ArgumentManager input) {
         try {
-            Response response = AdminController.getInstance()
+            MResponse MResponse = AdminController.getInstance()
                     .changeRole(input.get(USERNAME), input.get(ROLE));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -165,9 +165,9 @@ public class AdminMenu implements TerminalView {
 
     private void showPendingTeams() {
         try {
-            Response response = AdminController.getInstance()
+            MResponse MResponse = AdminController.getInstance()
                     .getPendingTeams();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -175,9 +175,9 @@ public class AdminMenu implements TerminalView {
 
     private void acceptPendingTeams(ArgumentManager input) {
         try {
-            Response response = AdminController.getInstance()
+            MResponse MResponse = AdminController.getInstance()
                     .acceptPendingTeams(input.get(TEAMS).split(" "));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -185,9 +185,9 @@ public class AdminMenu implements TerminalView {
 
     private void rejectPendingTeams(ArgumentManager input) {
         try {
-            Response response = AdminController.getInstance()
+            MResponse MResponse = AdminController.getInstance()
                     .rejectPendingTeams(input.get(TEAMS).split(" "));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

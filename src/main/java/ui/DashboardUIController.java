@@ -745,9 +745,9 @@ public class DashboardUIController implements Initializable, GUI {
         String lastName = getValue(PILastName);
         LocalDate birthDate = PIBirthDate.getValue();
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().updateProfile(firstName, lastName, birthDate);
-        showResponse(response);
+        showResponse(MResponse);
         save();
     }
 
@@ -756,13 +756,13 @@ public class DashboardUIController implements Initializable, GUI {
     private void setTeams() {
         ArrayList<Team> teams = null;
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
 
 //        showResponse(response);
 
-        if (response.isSuccess()) {
-            teams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            teams = (ArrayList<Team>) MResponse.getObject();
         }
 
         PTeamsItemHolder.getChildren().clear();
@@ -835,10 +835,10 @@ public class DashboardUIController implements Initializable, GUI {
     private void onPUUpdate() {
         String username = getValue(PUUsername);
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().changeUsername(username);
-        showResponse(response);
-        if (response.isSuccess()) {
+        showResponse(MResponse);
+        if (MResponse.isSuccess()) {
             UserController.logout();
             logout();
         }
@@ -852,11 +852,11 @@ public class DashboardUIController implements Initializable, GUI {
         String oldPassword = getValue(PAOldPass);
         String newPassword = getValue(PANewPass);
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().changePassword(oldPassword, newPassword);
-        showResponse(response);
+        showResponse(MResponse);
 
-        if (response.isSuccess()) {
+        if (MResponse.isSuccess()) {
             logout();
             ProfileMenuController.getInstance().resetTries();
         }
@@ -873,12 +873,12 @@ public class DashboardUIController implements Initializable, GUI {
     private void teamsSetTeams() {
         ArrayList<Team> teams = null;
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
 
 //        showResponse(response);
-        if (response.isSuccess()) {
-            teams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            teams = (ArrayList<Team>) MResponse.getObject();
         }
 
         TTeamsItemHolder.getChildren().clear();
@@ -1085,17 +1085,17 @@ public class DashboardUIController implements Initializable, GUI {
     }
 
     private void removeMember(Team team, User member) {
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().deleteMember(team, member.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setMembers();
     }
 
     private void promoteMember(Team team, User member) {
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().promoteUser(team, member.getUsername(), "teamLeader");
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setMembers();
     }
@@ -1113,11 +1113,11 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().getAllUsers(team);
         AMMembersItemHolder.getChildren().clear();
-        if (response.isSuccess()) {
-            ArrayList<User> users = (ArrayList<User>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<User> users = (ArrayList<User>) MResponse.getObject();
 
             for (User user : users) {
                 AssignMemberItem assignMemberItem = new AssignMemberItem(user);
@@ -1158,9 +1158,9 @@ public class DashboardUIController implements Initializable, GUI {
     private void addMemberToTeam(User member) {
         Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
 
-        Response response
+        MResponse MResponse
                 = TeamMenuController.getInstance().addMemberToTeam(team, member.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setAMMembers();
     }
@@ -1173,12 +1173,12 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().getRoadmap(team);
 
         TRTasksHolder.getChildren().clear();
-        if (response.isSuccess()) {
-            ArrayList<Task> tasks = (ArrayList<Task>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Task> tasks = (ArrayList<Task>) MResponse.getObject();
 
             for (Task task : tasks) {
                 RoadmapItem roadmapItem = new RoadmapItem(task);
@@ -1264,12 +1264,12 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().getMessages(team);
         TCChatItemHolder.getChildren().clear();
 
-        if (response.isSuccess()) {
-            ArrayList<Message> messages = (ArrayList<Message>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Message> messages = (ArrayList<Message>) MResponse.getObject();
 
             for (Message message : messages) {
                 ChatItem chatItem = new ChatItem(message);
@@ -1295,9 +1295,9 @@ public class DashboardUIController implements Initializable, GUI {
 
         String message = getValue(TCMessageInput);
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().sendMessage(team, message);
-        if (response.isSuccess()) {
+        if (MResponse.isSuccess()) {
             setChatroom();
         }
         clearFields(TCMessageInput);
@@ -1313,13 +1313,13 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 BoardMenuController.getInstance().getBoards(team);
 
         TBBoardItemHolder.getChildren().clear();
 
-        if (response.isSuccess()) {
-            ArrayList<Board> boards = (ArrayList<Board>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Board> boards = (ArrayList<Board>) MResponse.getObject();
 
             for (Board board : boards) {
                 BoardItem boardItem = new BoardItem(board);
@@ -1375,9 +1375,9 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 BoardMenuController.getInstance().removeBoard(team, board.getName());
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setBoards();
     }
@@ -1397,9 +1397,9 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 BoardMenuController.getInstance().createNewBoard(team, boardName);
-        showResponse(response);
+        showResponse(MResponse);
         save();
     }
 
@@ -1428,13 +1428,13 @@ public class DashboardUIController implements Initializable, GUI {
             @Override
             public void onDone(Task task) {
                 if (task.getBoard() == null) {
-                    Response response =
+                    MResponse MResponse =
                             BoardMenuController.getInstance()
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                    showResponse(response);
+                    showResponse(MResponse);
                 }
                 if (task.getBoard() != null) {
-                    Response res = BoardMenuController.getInstance()
+                    MResponse res = BoardMenuController.getInstance()
                             .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                     showResponse(res);
                 }
@@ -1445,13 +1445,13 @@ public class DashboardUIController implements Initializable, GUI {
             @Override
             public void onNext(Task task) {
                 if (task.getBoard() == null) {
-                    Response response =
+                    MResponse MResponse =
                             BoardMenuController.getInstance()
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                    showResponse(response);
+                    showResponse(MResponse);
                 }
                 if (task.getBoard() != null) {
-                    Response res = BoardMenuController.getInstance()
+                    MResponse res = BoardMenuController.getInstance()
                             .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                     showResponse(res);
                 }
@@ -1462,14 +1462,14 @@ public class DashboardUIController implements Initializable, GUI {
             @Override
             public void addToBoard(Task task) {
                 if (!board.isDone()) {
-                    Response res =
+                    MResponse res =
                             BoardMenuController.getInstance().setBoardToDone(team, board.getName());
                     showResponse(res);
                 } else if (task.getBoard() == null) {
-                    Response response =
+                    MResponse MResponse =
                             BoardMenuController.getInstance()
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                    showResponse(response);
+                    showResponse(MResponse);
                 }
                 save();
                 setBoard();
@@ -1484,15 +1484,15 @@ public class DashboardUIController implements Initializable, GUI {
 
         for (String category : categories) {
             System.out.println(category);
-            Response response = null;
+            MResponse MResponse = null;
             if (category.equalsIgnoreCase("done") || category.equalsIgnoreCase("failed"))
-                response = BoardMenuController.getInstance().getSpecificCategoryTasks(team, category, board.getName());
+                MResponse = BoardMenuController.getInstance().getSpecificCategoryTasks(team, category, board.getName());
             else
-                response = BoardMenuController.getInstance().showCategoryTasks(team, category, board.getName());
+                MResponse = BoardMenuController.getInstance().showCategoryTasks(team, category, board.getName());
 
             ArrayList<Task> tasks = new ArrayList<>();
-            if (response.isSuccess())
-                tasks = (ArrayList<Task>) response.getObject();
+            if (MResponse.isSuccess())
+                tasks = (ArrayList<Task>) MResponse.getObject();
             System.out.println(tasks);
             BoardCategoryItem bciBox = new BoardCategoryItem(team, board, category, tasks);
             bciBox.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
@@ -1505,13 +1505,13 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void onDone(Task task) {
                     if (task.getBoard() == null) {
-                        Response response =
+                        MResponse MResponse =
                                 BoardMenuController.getInstance()
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                        showResponse(response);
+                        showResponse(MResponse);
                     }
                     if (task.getBoard() != null) {
-                        Response res = BoardMenuController.getInstance()
+                        MResponse res = BoardMenuController.getInstance()
                                 .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                         showResponse(res);
                     }
@@ -1522,13 +1522,13 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void onNext(Task task) {
                     if (task.getBoard() == null) {
-                        Response response =
+                        MResponse MResponse =
                                 BoardMenuController.getInstance()
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                        showResponse(response);
+                        showResponse(MResponse);
                     }
                     if (task.getBoard() != null) {
-                        Response res = BoardMenuController.getInstance()
+                        MResponse res = BoardMenuController.getInstance()
                                 .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                         showResponse(res);
                     }
@@ -1539,14 +1539,14 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void addToBoard(Task task) {
                     if (!board.isDone()) {
-                        Response res =
+                        MResponse res =
                                 BoardMenuController.getInstance().setBoardToDone(team, board.getName());
                         showResponse(res);
                     } else if (task.getBoard() == null) {
-                        Response response =
+                        MResponse MResponse =
                                 BoardMenuController.getInstance()
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
-                        showResponse(response);
+                        showResponse(MResponse);
                     }
                     save();
                     setBoard();
@@ -1571,9 +1571,9 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 BoardMenuController.getInstance().createNewCategory(team, categoryName, board.getName());
-        showResponse(response);
+        showResponse(MResponse);
         save();
     }
 
@@ -1588,7 +1588,7 @@ public class DashboardUIController implements Initializable, GUI {
     // tasks
     private void setTTasks() {
 
-        Response response =
+        MResponse MResponse =
                 TasksMenuController.getInstance().getAllTasks();
 //
 //        showResponse(response);
@@ -1600,8 +1600,8 @@ public class DashboardUIController implements Initializable, GUI {
         String sortedDeadline = (String) SharedPreferences.get(SORTED_DEADLINE);
 
 
-        if (response.isSuccess()) {
-            HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) response.getObject();
+        if (MResponse.isSuccess()) {
+            HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) MResponse.getObject();
 
             for (Team team : teamTasks.keySet()) {
                 if (sortedTeam != null)
@@ -1721,10 +1721,10 @@ public class DashboardUIController implements Initializable, GUI {
         // teams
         ObservableList<String> teams = FXCollections.observableArrayList();
         teams.addAll("All");
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
-        if (response.isSuccess()) {
-            ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
 
             for (Team team : allTeams) {
                 teams.add(team.getName());
@@ -1798,12 +1798,12 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().getMembers(team);
 
         TTMemberItemHolder.getChildren().clear();
-        if (response.isSuccess()) {
-            ArrayList<User> members = (ArrayList<User>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<User> members = (ArrayList<User>) MResponse.getObject();
             for (User user : members) {
                 TaskMemberItem taskMemberItem = new TaskMemberItem(user);
                 taskMemberItem.setOnItemClickListener(new TaskMemberItem.OnItemClickListener() {
@@ -1861,19 +1861,19 @@ public class DashboardUIController implements Initializable, GUI {
     private void addMemberToTask(User member) {
         Task task = (Task) SharedPreferences.get(TASK);
 
-        Response response
+        MResponse MResponse
                 = TasksMenuController.getInstance()
                 .addToAssignedUsers(String.valueOf(task.getId()), member.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
     }
 
     private void removeMemberFromTask(User member) {
         Task task = (Task) SharedPreferences.get(TASK);
 
-        Response response
+        MResponse MResponse
                 = TasksMenuController.getInstance()
                 .removeAssignedUsers(String.valueOf(task.getId()), member.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
     }
 
     @FXML
@@ -1901,11 +1901,11 @@ public class DashboardUIController implements Initializable, GUI {
         } catch (Exception e) {
 
         }
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().createTask(team, name, priority, startDateTime, deadDateTime, description);
-        showResponse(response);
-        if (response.isSuccess()) {
-            Task task = (Task) response.getObject();
+        showResponse(MResponse);
+        if (MResponse.isSuccess()) {
+            Task task = (Task) MResponse.getObject();
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
@@ -1943,12 +1943,12 @@ public class DashboardUIController implements Initializable, GUI {
 
         }
 
-        Response response =
+        MResponse MResponse =
                 TasksMenuController.getInstance().editTask(team, String.valueOf(task.getId()),
                         name, priority, startDateTime, deadDateTime, description);
-        showResponse(response);
-        if (response.isSuccess()) {
-            task = (Task) response.getObject();
+        showResponse(MResponse);
+        if (MResponse.isSuccess()) {
+            task = (Task) MResponse.getObject();
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
@@ -2032,10 +2032,10 @@ public class DashboardUIController implements Initializable, GUI {
     private void setUpNewNotification() {
         ObservableList<String> teams = FXCollections.observableArrayList();
         teams.addAll("All");
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
-        if (response.isSuccess()) {
-            ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
 
             for (Team team : allTeams) {
                 teams.add(team.getName());
@@ -2056,10 +2056,10 @@ public class DashboardUIController implements Initializable, GUI {
         }
 
         if (team.equalsIgnoreCase("all")) {
-            Response response =
+            MResponse MResponse =
                     ProfileMenuController.getInstance().showTeams();
-            if (response.isSuccess()) {
-                ArrayList<Team> allTeams = (ArrayList<Team>) response.getObject();
+            if (MResponse.isSuccess()) {
+                ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
 
                 for (Team t : allTeams) {
                     t.sendNotification(new Notification(UserController.getLoggedUser(), t, body));
@@ -2067,9 +2067,9 @@ public class DashboardUIController implements Initializable, GUI {
             }
             new AlertHandler(Alert.AlertType.INFORMATION, "Notification sent successfully!").ShowAlert();
         } else {
-            Response response =
+            MResponse MResponse =
                     NotificationController.getInstance().sendNotificationToTeam(body, team);
-            showResponse(response);
+            showResponse(MResponse);
             save();
         }
         clearFields(NNBody);
@@ -2099,9 +2099,9 @@ public class DashboardUIController implements Initializable, GUI {
             return;
         }
 
-        Response response =
+        MResponse MResponse =
                 NotificationController.getInstance().sendNotificationToUser(body, user.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
         clearFields(NNUBody);
         save();
     }
@@ -2112,11 +2112,11 @@ public class DashboardUIController implements Initializable, GUI {
     private void requestsSetTeams() {
         ArrayList<Team> teams = null;
 
-        Response response =
+        MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
 
-        if (response.isSuccess()) {
-            teams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            teams = (ArrayList<Team>) MResponse.getObject();
         }
 
         RTeamsItemHolder.getChildren().clear();
@@ -2168,9 +2168,9 @@ public class DashboardUIController implements Initializable, GUI {
     private void onCTSubmitRequest() {
         String teamName = getValue(CTTeamName);
 
-        Response response =
+        MResponse MResponse =
                 TeamMenuController.getInstance().createTeam(teamName);
-        showResponse(response);
+        showResponse(MResponse);
         save();
     }
 
@@ -2178,12 +2178,12 @@ public class DashboardUIController implements Initializable, GUI {
 
     private void setUpCalendar() {
 
-        Response response =
+        MResponse MResponse =
                 CalendarMenuController.getInstance().getCalendar("deadlines");
 
         CTasksItemHolder.getChildren().clear();
-        if (response.isSuccess()) {
-            ArrayList<Task> tasks = (ArrayList<Task>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Task> tasks = (ArrayList<Task>) MResponse.getObject();
 
             for (Task task : tasks) {
                 CalendarTaskItem calendarTaskItem = new CalendarTaskItem(task);
@@ -2337,25 +2337,25 @@ public class DashboardUIController implements Initializable, GUI {
     }
 
     private void banUser(User user) {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().banUser(user.getUsername());
-        showResponse(response);
+        showResponse(MResponse);
         setAUsers();
         save();
     }
 
     private void changeRoleToMember(User user) {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().changeRole(user.getUsername(), "teamMember");
-        showResponse(response);
+        showResponse(MResponse);
         setAUsers();
         save();
     }
 
     private void changeRoleToLeader(User user) {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().changeRole(user.getUsername(), "teamLeader");
-        showResponse(response);
+        showResponse(MResponse);
         setAUsers();
         save();
     }
@@ -2363,12 +2363,12 @@ public class DashboardUIController implements Initializable, GUI {
     // teams
 
     private void setATeams() {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().getPendingTeams();
 
         ATItemHolder.getChildren().clear();
-        if (response.isSuccess()) {
-            ArrayList<Team> teams = (ArrayList<Team>) response.getObject();
+        if (MResponse.isSuccess()) {
+            ArrayList<Team> teams = (ArrayList<Team>) MResponse.getObject();
 
             for (Team team : teams) {
                 ATeamItem aTeamItem = new ATeamItem(team);
@@ -2417,17 +2417,17 @@ public class DashboardUIController implements Initializable, GUI {
     }
 
     private void acceptTeam(Team team) {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().acceptPendingTeams(new String[]{team.getName()});
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setATeams();
     }
 
     private void rejectTeam(Team team) {
-        Response response =
+        MResponse MResponse =
                 AdminController.getInstance().rejectPendingTeams(new String[]{team.getName()});
-        showResponse(response);
+        showResponse(MResponse);
         save();
         setATeams();
     }
@@ -2492,9 +2492,9 @@ public class DashboardUIController implements Initializable, GUI {
             return;
         }
 
-        Response response =
+        MResponse MResponse =
                 NotificationController.getInstance().sendNotificationToAll(body);
-        showResponse(response);
+        showResponse(MResponse);
         clearFields(NNABody);
         save();
     }

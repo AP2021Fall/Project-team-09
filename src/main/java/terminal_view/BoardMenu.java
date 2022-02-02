@@ -1,7 +1,7 @@
 package terminal_view;
 
 import controller.BoardMenuController;
-import controller.Response;
+import controller.MResponse;
 import exceptions.IllegalCommandException;
 import model.Board;
 import model.Team;
@@ -166,9 +166,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .showBoard(team, boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -177,9 +177,9 @@ public class BoardMenu implements TerminalView {
     private void showDoneFailed(ArgumentManager input) {
         try {
             Team team = (Team) SharedPreferences.get(TEAM);
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .getSpecificCategoryTasks(team, input.get(SHOW), input.get(BOARD));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -199,12 +199,12 @@ public class BoardMenu implements TerminalView {
                 category = input.get(CATEGORY);
             } catch (IllegalCommandException e) {
             }
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .openFailedTask(team, input.get(TASK),
                             input.get(DEADLINE),
                             input.get(NAME), teamMate, category);
 
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -213,9 +213,9 @@ public class BoardMenu implements TerminalView {
     private void createBoard(ArgumentManager input) {
         try {
             Team team = (Team) SharedPreferences.get(TEAM);
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .createNewBoard(team, input.get(NAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -224,9 +224,9 @@ public class BoardMenu implements TerminalView {
     private void removeBoard(ArgumentManager input) {
         try {
             Team team = (Team) SharedPreferences.get(TEAM);
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .removeBoard(team, input.get(NAME));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -235,12 +235,12 @@ public class BoardMenu implements TerminalView {
     private void selectBoard(ArgumentManager input) {
         try {
             Team team = (Team) SharedPreferences.get(TEAM);
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .selectBoard(team, input.get(NAME));
-            if (response.isSuccess()) {
-                Board board = (Board) response.getObject();
+            if (MResponse.isSuccess()) {
+                Board board = (Board) MResponse.getObject();
                 SharedPreferences.add(BOARD, board);
-                ConsoleHelper.getInstance().println(response.getMessage());
+                ConsoleHelper.getInstance().println(MResponse.getMessage());
             }
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
@@ -249,9 +249,9 @@ public class BoardMenu implements TerminalView {
 
     private void deselectBoard() {
         try {
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .deselectBoard();
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -270,10 +270,10 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .createNewCategory(team, categoryName, boardName);
 
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -293,9 +293,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .createNewCategoryAt(team, categoryName, column, boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -313,9 +313,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .setBoardToDone(team, boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -333,9 +333,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .addTaskToBoard(team, input.get(ADD), boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -353,9 +353,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .assignTaskToMember(team, input.get(ASSIGN), input.get(TASK), boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -373,9 +373,9 @@ public class BoardMenu implements TerminalView {
 
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .forceMoveTaskToCategory(team, input.get(CATEGORY), input.get(TASK), boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -398,9 +398,9 @@ public class BoardMenu implements TerminalView {
                 return;
             }
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .moveTaskToNextCategory(team, input.get(TASK), boardName);
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }
@@ -410,9 +410,9 @@ public class BoardMenu implements TerminalView {
         try {
             Team team = (Team) SharedPreferences.get(TEAM);
 
-            Response response = BoardMenuController.getInstance()
+            MResponse MResponse = BoardMenuController.getInstance()
                     .showCategoryTasks(team, input.get(CATEGORY), input.get(BOARD));
-            ConsoleHelper.getInstance().println(response.getMessage());
+            ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
         }

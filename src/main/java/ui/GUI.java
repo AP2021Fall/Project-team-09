@@ -1,6 +1,6 @@
 package ui;
 
-import controller.Response;
+import controller.MResponse;
 import controller.SaveAndLoadController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -9,7 +9,6 @@ import javafx.scene.control.TextInputControl;
 import utilities.AlertHandler;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public interface GUI {
 
@@ -58,11 +57,11 @@ public interface GUI {
         new AlertHandler(Alert.AlertType.ERROR, message.trim()).ShowAlert();
     }
 
-    default void showResponse(Response response) {
-        if (response.isSuccess())
-            showSuccessAlert(response.getMessage());
+    default void showResponse(MResponse MResponse) {
+        if (MResponse.isSuccess())
+            showSuccessAlert(MResponse.getMessage());
         else
-            showWarning(response.getMessage());
+            showWarning(MResponse.getMessage());
     }
 
     default void save() {
