@@ -11,8 +11,6 @@ public class LoginController {
     private static final String PASSWORD1 = "password1";
     private static final String PASSWORD2 = "password2";
     private static final String EMAIL = "email";
-    private static final String ROLE = "role";
-    private static final String PENDING_TEAMS = "pending-teams";
 
     private final String LOGIN_PATH = "/auth/signIn";
     private final String SIGNUP_PATH = "/auth/signUp";

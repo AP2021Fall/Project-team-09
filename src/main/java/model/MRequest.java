@@ -178,6 +178,30 @@ public class MRequest implements Serializable {
         }
     }
 
+    public MResponse delete() {
+        try {
+            Gson gson = new Gson();
+
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody body = RequestBody.create(
+                    MediaType.parse("application/json"), gson.toJson(this));
+
+            Request request = new Request.Builder()
+                    .url(BASE_URL + path)
+                    .delete(body)
+                    .build();
+
+            Call call = client.newCall(request);
+            Response response = call.execute();
+            String res = response.body().string();
+            System.out.println(res);
+            return gson.fromJson(res, MResponse.class);
+        } catch (IOException ioException) {
+            return null;
+        }
+    }
+
     public MResponse get() {
         try {
             Gson gson = new Gson();

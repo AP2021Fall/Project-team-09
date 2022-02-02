@@ -41,6 +41,11 @@ public class Server {
     private static final String ACCEPT_PENDING_TEAMS = "admin/accept-pending";
     private static final String REJECT_PENDING_TEAMS = "admin/reject-pending";
 
+    // calendar
+
+    private static final String GET_CALENDAR_PATH = "calendar";
+
+
     private static final int PORT = 5678;
     private static final String BASE_URL = "http://localhost";
 
@@ -82,7 +87,6 @@ public class Server {
 
         get(GET_PROFILE_PATH, JSON, (request, response) -> {
             String username = request.queryParams("username");
-            System.out.println(username);
             return AdminController.getInstance()
                     .getProfile(username);
         }, new JsonTransformer());
@@ -122,9 +126,15 @@ public class Server {
                     .rejectPendingTeams(pendingTeams.toArray(new String[0]));
         }, new JsonTransformer());
 
-        after((request, response) -> {
-            System.out.println(response);
-        });
+        // calendar
+
+        get(GET_CALENDAR_PATH, JSON, (request, response) -> {
+            String calendar = request.queryParams("calendar");
+            return controller.CalendarMenuController.getInstance()
+                    .getCalendar(calendar);
+        }, new JsonTransformer());
+
+
     }
 
     public static class JsonTransformer implements ResponseTransformer {
