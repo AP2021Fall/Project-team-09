@@ -46,6 +46,12 @@ public class Server {
     private static final String FIRST_NAME = "first_name";
     private static final String LAST_NAME = "last_name";
     private static final String BIRTH_DATE = "birth_date";
+    private static final String ID = "id";
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String PRIORITY = "priority";
+    private static final String START_TIME = "start_time";
+    private static final String CALENDAR = "calendar";
 
     // auth
 
@@ -101,6 +107,17 @@ public class Server {
     private static final String GET_NOTIFICATIONS_PATH = "profile/get-notifications";
     private static final String UPDATE_PROFILE_PATH = "profile/update-profile";
 
+    // task
+
+    private static final String ALL_TASKS_PATH = "tasks/all";
+    private static final String EDIT_TASK_TITLE_PATH = "tasks/edit-title";
+    private static final String EDIT_TASK_DESCRIPTION_PATH = "tasks/edit-description";
+    private static final String EDIT_TASK_PRIORITY_PATH = "tasks/edit-priority";
+    private static final String EDIT_TASK_DEADLINE_PATH = "tasks/edit-priority";
+    private static final String ASSIGN_USER_PATH = "tasks/assign-user";
+    private static final String REMOVE_USER_PATH = "tasks/remove-user";
+    private static final String EDIT_TASK_PATH = "tasks/edit-task";
+
 
     private static final int PORT = 5678;
     private static final String BASE_URL = "http://localhost";
@@ -142,7 +159,7 @@ public class Server {
         // admin
 
         get(GET_PROFILE_PATH, JSON, (request, response) -> {
-            String username = request.queryParams("username");
+            String username = request.queryParams(USERNAME);
             return AdminController.getInstance()
                     .getProfile(username);
         }, new JsonTransformer());
@@ -185,7 +202,7 @@ public class Server {
         // calendar
 
         get(GET_CALENDAR_PATH, JSON, (request, response) -> {
-            String calendar = request.queryParams("calendar");
+            String calendar = request.queryParams(CALENDAR);
             return controller.CalendarMenuController.getInstance()
                     .getCalendar(calendar);
         }, new JsonTransformer());
@@ -352,7 +369,7 @@ public class Server {
                     .changePassword((String) req.getArg(OLD_PASS), (String) req.getArg(NEW_PASS));
         }, new JsonTransformer());
 
-        patch(CHANGE_USER_PATH, JSON, (request, response) -> {
+        post(CHANGE_USER_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return ProfileMenuController.getInstance()
@@ -388,6 +405,64 @@ public class Server {
             return ProfileMenuController.getInstance()
                     .updateProfile((String) req.getArg(FIRST_NAME), (String) req.getArg(LAST_NAME),
                             birthDate);
+        }, new JsonTransformer());
+
+        // tasks
+
+        get(ALL_TASKS_PATH, JSON, (request, response) -> {
+            return TasksMenuController.getInstance().getAllTasks();
+        }, new JsonTransformer());
+
+        patch(EDIT_TASK_TITLE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(TITLE));
+        }, new JsonTransformer());
+
+        patch(EDIT_TASK_DESCRIPTION_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(DESCRIPTION));
+        }, new JsonTransformer());
+
+        patch(EDIT_TASK_PRIORITY_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(PRIORITY));
+        }, new JsonTransformer());
+
+        patch(EDIT_TASK_DEADLINE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(DEADLINE));
+        }, new JsonTransformer());
+
+        patch(ASSIGN_USER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        patch(REMOVE_USER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TasksMenuController.getInstance()
+                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        patch(EDIT_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TasksMenuController.getInstance()
+                    .editTask(team, (String) req.getArg(ID), (String) req.getArg(TITLE),
+                            (String) req.getArg(PRIORITY), (String) req.getArg(START_TIME),
+                            (String) req.getArg(DEADLINE), (String) req.getArg(DESCRIPTION));
         }, new JsonTransformer());
     }
 

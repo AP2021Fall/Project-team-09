@@ -1,15 +1,8 @@
 package controller;
 
 import model.MRequest;
-import model.Notification;
-import model.Team;
-import model.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
 
 public class ProfileMenuController {
 
@@ -43,7 +36,7 @@ public class ProfileMenuController {
                 .setPath(CHANGE_PASS_PATH)
                 .addArg(OLD_PASS, oldPassword)
                 .addArg(NEW_PASS, newPassword)
-                .patch();
+                .post();
     }
 
     public MResponse changeUsername(String newUsername) {
