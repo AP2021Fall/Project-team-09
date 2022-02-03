@@ -5,22 +5,22 @@ import model.Team;
 
 public class BoardMenuController {
 
-    private static final String CREATE_BOARD_PATH = "board/create";
-    private static final String REMOVE_BOARD_PATH = "board/remove";
-    private static final String SELECT_BOARD_PATH = "board/select";
-    private static final String DESELECT_BOARD_PATH = "board/deselect";
-    private static final String CREATE_CATEGORY_PATH = "board/category";
-    private static final String CREATE_CATEGORY_AT_PATH = "board/category-at";
-    private static final String SET_BOARD_DONE_PATH = "board/set-done";
-    private static final String ADD_TASK_PATH = "board/add-task";
-    private static final String ASSIGN_TASK_PATH = "board/assign-task";
-    private static final String FORCE_MOVE_PATH = "board/force-move";
-    private static final String MOVE_TASK_PATH = "board/move-task";
-    private static final String SHOW_CATEGORY_TASKS_PATH = "board/show-category-tasks";
-    private static final String GET_SPECIFIED_CATEGORY_PATH = "board/get-specified-category";
-    private static final String OPEN_FAILED_TASK_PATH = "board/open-failed-task";
-    private static final String SHOW_BOARD_PATH = "board/show-board";
-    private static final String GET_BOARDS_PATH = "board/get-boards";
+    private static final String CREATE_BOARD_PATH = "/board/create";
+    private static final String REMOVE_BOARD_PATH = "/board/remove";
+    private static final String SELECT_BOARD_PATH = "/board/select";
+    private static final String DESELECT_BOARD_PATH = "/board/deselect";
+    private static final String CREATE_CATEGORY_PATH = "/board/category";
+    private static final String CREATE_CATEGORY_AT_PATH = "/board/category-at";
+    private static final String SET_BOARD_DONE_PATH = "/board/set-done";
+    private static final String ADD_TASK_PATH = "/board/add-task";
+    private static final String ASSIGN_TASK_PATH = "/board/assign-task";
+    private static final String FORCE_MOVE_PATH = "/board/force-move";
+    private static final String MOVE_TASK_PATH = "/board/move-task";
+    private static final String SHOW_CATEGORY_TASKS_PATH = "/board/show-category-tasks";
+    private static final String GET_SPECIFIED_CATEGORY_PATH = "/board/get-specified-category";
+    private static final String OPEN_FAILED_TASK_PATH = "/board/open-failed-task";
+    private static final String SHOW_BOARD_PATH = "/board/show-board";
+    private static final String GET_BOARDS_PATH = "/board/get-boards";
 
     private static final String TEAM = "team";
     private static final String BOARD_NAME = "board_name";

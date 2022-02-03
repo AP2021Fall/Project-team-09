@@ -14,12 +14,12 @@ public class AdminController {
     private static final String ROLE = "role";
     private static final String PENDING_TEAMS = "pending-teams";
 
-    private static final String GET_PROFILE_PATH = "admin/profile";
-    private static final String BAN_USER_PATH = "admin/ban";
-    private static final String CHANGE_ROLE_PATH = "admin/change-role";
-    private static final String GET_PENDING_TEAMS = "admin/pending-teams";
-    private static final String ACCEPT_PENDING_TEAMS = "admin/accept-pending";
-    private static final String REJECT_PENDING_TEAMS = "admin/reject-pending";
+    private static final String GET_PROFILE_PATH = "/admin/profile";
+    private static final String BAN_USER_PATH = "/admin/ban";
+    private static final String CHANGE_ROLE_PATH = "/admin/change-role";
+    private static final String GET_PENDING_TEAMS = "/admin/pending-teams";
+    private static final String ACCEPT_PENDING_TEAMS = "/admin/accept-pending";
+    private static final String REJECT_PENDING_TEAMS = "/admin/reject-pending";
 
     private static AdminController controller = null;
 

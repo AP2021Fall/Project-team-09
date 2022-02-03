@@ -6,8 +6,11 @@ import model.MRequest;
 import model.Team;
 import server.controller.*;
 import spark.ResponseTransformer;
+import sun.java2d.cmm.Profile;
 import utilities.ConsoleHelper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static spark.Spark.*;
@@ -37,6 +40,12 @@ public class Server {
     private static final String TEAM_MATE = "task_mate";
     private static final String BODY = "body";
     private static final String TEAM_NAME = "team_name";
+    private static final String OLD_PASS = "old_pass";
+    private static final String NEW_PASS = "new_pass";
+    private static final String NEW_USERNAME = "new_username";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
+    private static final String BIRTH_DATE = "birth_date";
 
     // auth
 
@@ -80,6 +89,17 @@ public class Server {
     private static final String NOTIFICATION_USER_PATH = "notification/user";
     private static final String NOTIFICATION_TEAM_PATH = "notification/team";
     private static final String NOTIFICATION_ALL_PATH = "notification/all";
+
+    // profile
+
+    private static final String CHANGE_PASS_PATH = "profile/change-pass";
+    private static final String CHANGE_USER_PATH = "profile/change-user";
+    private static final String SHOW_TEAMS_PATH = "profile/show-teams";
+    private static final String SHOW_TEAM_PATH = "profile/show-team";
+    private static final String MY_PROFILE_PATH = "profile";
+    private static final String MY_LOGS_PATH = "profile/logs";
+    private static final String GET_NOTIFICATIONS_PATH = "profile/get-notifications";
+    private static final String UPDATE_PROFILE_PATH = "profile/update-profile";
 
 
     private static final int PORT = 5678;
@@ -323,7 +343,52 @@ public class Server {
             return NotificationController.getInstance().sendNotificationToAll((String) req.getArg(BODY));
         }, new JsonTransformer());
 
+        // profile
 
+        patch(CHANGE_PASS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return ProfileMenuController.getInstance()
+                    .changePassword((String) req.getArg(OLD_PASS), (String) req.getArg(NEW_PASS));
+        }, new JsonTransformer());
+
+        patch(CHANGE_USER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return ProfileMenuController.getInstance()
+                    .changeUsername((String) req.getArg(NEW_USERNAME));
+        }, new JsonTransformer());
+
+        get(SHOW_TEAMS_PATH, JSON, (request, response) -> {
+            return ProfileMenuController.getInstance().showTeams();
+        }, new JsonTransformer());
+
+        get(SHOW_TEAM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return ProfileMenuController.getInstance().showTeam((String) req.getArg(TEAM_NAME));
+        }, new JsonTransformer());
+
+        get(MY_PROFILE_PATH, JSON, (request, response) -> {
+            return ProfileMenuController.getInstance().getMyProfile();
+        }, new JsonTransformer());
+
+        get(MY_LOGS_PATH, JSON, (request, response) -> {
+            return ProfileMenuController.getInstance().getLogs();
+        }, new JsonTransformer());
+
+        get(GET_NOTIFICATIONS_PATH, JSON, (request, response) -> {
+            return ProfileMenuController.getInstance().getNotifications();
+        }, new JsonTransformer());
+
+        patch(UPDATE_PROFILE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            LocalDate birthDate = new Gson().fromJson((String) req.getArg(BIRTH_DATE), LocalDate.class);
+            return ProfileMenuController.getInstance()
+                    .updateProfile((String) req.getArg(FIRST_NAME), (String) req.getArg(LAST_NAME),
+                            birthDate);
+        }, new JsonTransformer());
     }
 
     public static class JsonTransformer implements ResponseTransformer {

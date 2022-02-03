@@ -7,7 +7,7 @@ import model.User;
 public class CalendarMenuController {
 
     private final String GET_CALENDAR_PATH =
-            "calendar";
+            "/calendar";
 
     private static CalendarMenuController calendarMenuController = null;
 

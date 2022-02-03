@@ -7,9 +7,9 @@ import model.User;
 
 public class NotificationController {
 
-    private static final String NOTIFICATION_USER_PATH = "notification/user";
-    private static final String NOTIFICATION_TEAM_PATH = "notification/team";
-    private static final String NOTIFICATION_ALL_PATH = "notification/all";
+    private static final String NOTIFICATION_USER_PATH = "/notification/user";
+    private static final String NOTIFICATION_TEAM_PATH = "/notification/team";
+    private static final String NOTIFICATION_ALL_PATH = "/notification/all";
 
     private static final String BODY = "body";
     private static final String USERNAME = "username";
