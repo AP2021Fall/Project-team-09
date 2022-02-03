@@ -1,20 +1,19 @@
 package controller;
 
+import model.MRequest;
 import model.Notification;
 import model.Team;
 import model.User;
 
 public class NotificationController {
 
-    private final String SUCCESS_NOTIFICATION_SENT =
-            "Notification sent successfully!";
+    private static final String NOTIFICATION_USER_PATH = "notification/user";
+    private static final String NOTIFICATION_TEAM_PATH = "notification/team";
+    private static final String NOTIFICATION_ALL_PATH = "notification/all";
 
-    private final String WARN_404_USER =
-            "No user exists with this username!";
-    private final String WARN_404_TEAM =
-            "No team exists with this name!";
-    private final String WARN_404_BODY =
-            "Notification body cannot be empty!";
+    private static final String BODY = "body";
+    private static final String USERNAME = "username";
+    private static final String TEAM_NAME = "team_name";
 
     private static NotificationController notificationController;
 
@@ -25,38 +24,25 @@ public class NotificationController {
     }
 
     public MResponse sendNotificationToUser(String body, String username) {
-        User user = User.getUser(username);
-
-        if(user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if(body.isEmpty())
-            return new MResponse(WARN_404_BODY, false);
-
-        Notification notification = new Notification(UserController.getLoggedUser(), null, body);
-        user.sendNotification(notification);
-        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
+        return new MRequest()
+                .setPath(NOTIFICATION_USER_PATH)
+                .addArg(BODY, body)
+                .addArg(USERNAME, username)
+                .put();
     }
 
     public MResponse sendNotificationToTeam(String body, String teamName) {
-        Team team = Team.getTeamByName(teamName);
-
-        if(team == null)
-            return new MResponse(WARN_404_TEAM, false);
-
-        if(body.isEmpty())
-            return new MResponse(WARN_404_BODY, false);
-
-        Notification notification = new Notification(UserController.getLoggedUser(), team, body);
-        team.sendNotification(notification);
-        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
+        return new MRequest()
+                .setPath(NOTIFICATION_TEAM_PATH)
+                .addArg(BODY, body)
+                .addArg(TEAM_NAME, teamName)
+                .put();
     }
 
     public MResponse sendNotificationToAll(String body) {
-        Notification notification = new Notification(UserController.getLoggedUser(), null, body);
-        for (User user : User.getAllUsers()) {
-            user.sendNotification(notification);
-        }
-        return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
+        return new MRequest()
+                .setPath(NOTIFICATION_ALL_PATH)
+                .addArg(BODY, body)
+                .put();
     }
 }

@@ -26,7 +26,6 @@ public class Server {
     private static final String PASSWORD2 = "password2";
     private static final String EMAIL = "email";
     private static final String ROLE = "role";
-    private static final String PENDING_TEAMS = "pending-teams";
     private static final String TEAM = "team";
     private static final String BOARD_NAME = "board_name";
     private static final String CATEGORY_NAME = "category_name";
@@ -36,6 +35,8 @@ public class Server {
     private static final String CATEGORY = "category";
     private static final String DEADLINE = "deadline";
     private static final String TEAM_MATE = "task_mate";
+    private static final String BODY = "body";
+    private static final String TEAM_NAME = "team_name";
 
     // auth
 
@@ -73,6 +74,12 @@ public class Server {
     private static final String OPEN_FAILED_TASK_PATH = "board/open-failed-task";
     private static final String SHOW_BOARD_PATH = "board/show-board";
     private static final String GET_BOARDS_PATH = "board/get-boards";
+
+    // notification
+
+    private static final String NOTIFICATION_USER_PATH = "notification/user";
+    private static final String NOTIFICATION_TEAM_PATH = "notification/team";
+    private static final String NOTIFICATION_ALL_PATH = "notification/all";
 
 
     private static final int PORT = 5678;
@@ -295,6 +302,26 @@ public class Server {
         }, new JsonTransformer());
 
         // notification
+
+        put(NOTIFICATION_USER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return NotificationController.getInstance()
+                    .sendNotificationToUser((String) req.getArg(BODY), (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        put(NOTIFICATION_TEAM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return NotificationController.getInstance()
+                    .sendNotificationToTeam((String) req.getArg(BODY), (String) req.getArg(TEAM_NAME));
+        }, new JsonTransformer());
+
+        put(NOTIFICATION_ALL_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return NotificationController.getInstance().sendNotificationToAll((String) req.getArg(BODY));
+        }, new JsonTransformer());
 
 
     }
