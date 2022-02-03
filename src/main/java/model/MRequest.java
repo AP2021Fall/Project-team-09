@@ -2,7 +2,6 @@ package model;
 
 import com.google.gson.Gson;
 import controller.MResponse;
-import kotlin.jvm.Transient;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ public class MRequest implements Serializable {
     private final String BASE_URL = "http://localhost:5678";
     private final String BASE = "localhost";
 
-    @Transient
     private String path;
     private String token;
     private HashMap<String, Object> arguments;

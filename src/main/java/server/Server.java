@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 
 import model.MRequest;
+import model.Team;
 import server.controller.*;
 import spark.ResponseTransformer;
 import utilities.ConsoleHelper;
@@ -26,6 +27,15 @@ public class Server {
     private static final String EMAIL = "email";
     private static final String ROLE = "role";
     private static final String PENDING_TEAMS = "pending-teams";
+    private static final String TEAM = "team";
+    private static final String BOARD_NAME = "board_name";
+    private static final String CATEGORY_NAME = "category_name";
+    private static final String COLUMN = "column";
+    private static final String TASK_ID = "task_id";
+    private static final String TASK_TITLE = "task_title";
+    private static final String CATEGORY = "category";
+    private static final String DEADLINE = "deadline";
+    private static final String TEAM_MATE = "task_mate";
 
     // auth
 
@@ -44,6 +54,25 @@ public class Server {
     // calendar
 
     private static final String GET_CALENDAR_PATH = "calendar";
+
+    // board
+
+    private static final String CREATE_BOARD_PATH = "board/create";
+    private static final String REMOVE_BOARD_PATH = "board/remove";
+    private static final String SELECT_BOARD_PATH = "board/select";
+    private static final String DESELECT_BOARD_PATH = "board/deselect";
+    private static final String CREATE_CATEGORY_PATH = "board/category";
+    private static final String CREATE_CATEGORY_AT_PATH = "board/category-at";
+    private static final String SET_BOARD_DONE_PATH = "board/set-done";
+    private static final String ADD_TASK_PATH = "board/add-task";
+    private static final String ASSIGN_TASK_PATH = "board/assign-task";
+    private static final String FORCE_MOVE_PATH = "board/force-move";
+    private static final String MOVE_TASK_PATH = "board/move-task";
+    private static final String SHOW_CATEGORY_TASKS_PATH = "board/show-category-tasks";
+    private static final String GET_SPECIFIED_CATEGORY_PATH = "board/get-specified-category";
+    private static final String OPEN_FAILED_TASK_PATH = "board/open-failed-task";
+    private static final String SHOW_BOARD_PATH = "board/show-board";
+    private static final String GET_BOARDS_PATH = "board/get-boards";
 
 
     private static final int PORT = 5678;
@@ -133,6 +162,139 @@ public class Server {
             return controller.CalendarMenuController.getInstance()
                     .getCalendar(calendar);
         }, new JsonTransformer());
+
+        // board
+
+        put(CREATE_BOARD_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .createNewBoard(team, (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        delete(REMOVE_BOARD_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .removeBoard(team, (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        patch(SELECT_BOARD_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .selectBoard(team, (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        patch(DESELECT_BOARD_PATH, JSON, (request, response) -> {
+            return BoardMenuController.getInstance()
+                    .deselectBoard();
+        }, new JsonTransformer());
+
+        put(CREATE_CATEGORY_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .createNewCategory(team, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(CREATE_CATEGORY_AT_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .createNewCategoryAt(team, (String) req.getArg(CATEGORY_NAME),
+                            Integer.parseInt((String) req.getArg(COLUMN)), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(SET_BOARD_DONE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .setBoardToDone(team, (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(ADD_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .addTaskToBoard(team, (String) req.getArg(TASK_ID), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(ASSIGN_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .assignTaskToMember(team, (String) req.getArg(USERNAME),
+                            (String) req.getArg(TASK_ID), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(FORCE_MOVE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .forceMoveTaskToCategory(team, (String) req.getArg(CATEGORY_NAME),
+                            (String) req.getArg(TASK_TITLE), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(MOVE_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .moveTaskToNextCategory(team, (String) req.getArg(TASK_TITLE), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(SHOW_CATEGORY_TASKS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .showCategoryTasks(team, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        get(GET_SPECIFIED_CATEGORY_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .getSpecificCategoryTasks(team, (String) req.getArg(CATEGORY), (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        put(OPEN_FAILED_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .openFailedTask(team, (String) req.getArg(TASK_TITLE), (String) req.getArg(DEADLINE),
+                            (String) req.getArg(BOARD_NAME), (String) req.getArg(TEAM_MATE),
+                            (String) req.getArg(CATEGORY));
+        }, new JsonTransformer());
+
+        get(SHOW_BOARD_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance()
+                    .showBoard(team, (String) req.getArg(BOARD_NAME));
+        }, new JsonTransformer());
+
+        get(GET_BOARDS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return BoardMenuController.getInstance().getBoards(team);
+        }, new JsonTransformer());
+
+        // notification
 
 
     }
