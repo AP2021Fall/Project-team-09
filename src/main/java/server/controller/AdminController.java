@@ -14,6 +14,8 @@ public class AdminController {
             "User role changed to %s successfully";
     private final String SUCCESS_SET_ACCEPTED =
             "All teams status set to accepted!";
+    private final String SUCCESS =
+            "Success!";
 
     private final String WARN_404_USER =
             "There is no user with this username!";
@@ -115,5 +117,9 @@ public class AdminController {
         for (Team team : rejectedTeams)
             team.reject();
         return new MResponse(SUCCESS_SET_ACCEPTED, true);
+    }
+
+    public MResponse getAllUsers() {
+        return new MResponse(SUCCESS, true, User.getAllUsers());
     }
 }

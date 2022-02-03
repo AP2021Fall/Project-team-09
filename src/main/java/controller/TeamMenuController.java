@@ -1,82 +1,44 @@
 package controller;
 
-import model.Notification;
-import model.Task;
+import model.MRequest;
 import model.Team;
-import model.User;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
 
 public class TeamMenuController {
 
-    private final String SUCCESS_FOUND_TEAM =
-            "Entering team page...";
-    private final String SUCCESS_TEAM_CREATED =
-            "Team created successfully! Waiting For Admin’s confirmation…";
-    private final String SUCCESS_TASK_CREATED =
-            "Task created successfully!";
-    private final String SUCCESS_USER_ADDED =
-            "User added to the team successfully!";
-    private final String SUCCESS_USER_DELETED =
-            "User deleted successfully!";
-    private final String SUCCESS_USER_SUSPENDED =
-            "User suspended successfully!";
-    private final String SUCCESS_MEMBER_ASSIGNED =
-            "Member assigned successfully!";
-    private final String SUCCESS_PROMOTED =
-            "User promoted to team leader successfully!";
-    private final String SUCCESS_USERS_RECEIVED =
-            "Users received!";
-    private final String SUCCESS =
-            "Success!";
+    private static final String GET_SCOREBOARD_PATH = "/team/scoreboard";
+    private static final String GET_ROADMAP_FRM_PATH = "/team/roadmap-frm";
+    private static final String GET_ROADMAP_PATH = "/team/roadmap";
+    private static final String GET_MESSAGES_FRM_PATH = "/team/messages-frm";
+    private static final String GET_MESSAGES_PATH = "/team/messages";
+    private static final String GET_TEAM_PATH = "/team/get-team";
+    private static final String SEND_MESSAGE_PATH = "/team/send-message";
+    private static final String SHOW_TASKS_PATH = "/team/show-tasks";
+    private static final String SHOW_TASK_PATH = "/team/show-task";
+    private static final String GET_LEADER_TEAMS_PATH = "/team/get-leader-teams";
+    private static final String GET_LEADER_TEAM_PATH = "/team/get-leader-team";
+    private static final String CREATE_TEAM_PATH = "/team/create-team";
+    private static final String GET_ALL_TASKS_PATH = "/team/get-all-tasks";
+    private static final String CREATE_TASK_PATH = "/team/create-task";
+    private static final String CREATE_TASK_EXT_PATH = "/team/create-task-ext";
+    private static final String GET_MEMBERS_PATH = "/team/get-members";
+    private static final String ADD_MEMBER_PATH = "/team/add-member";
+    private static final String DELETE_MEMBER_PATH = "/team/delete-member";
+    private static final String SUSPEND_MEMBER_PATH = "/team/suspend-member";
+    private static final String PROMOTE_USER_PATH = "/team/promote-user";
+    private static final String ASSIGN_T0_TASK_PATH = "/team/assign-to-task";
+    private static final String GET_ALL_USERS_PATH = "/team/get-all-users";
 
-    private final String WARN_404_TEAM =
-            "Team with name %s not found!";
-    private final String WARN_404_TEAM_FOR_YOU =
-            "There is no team for you!";
-    private final String WARN_404_LEADER_TEAM =
-            "Team not found!";
-    private final String WARN_TEAM_EXISTS =
-            "There is another team with this name!";
-    private final String WARN_INVALID_NAME =
-            "Team name is invalid!";
-    private final String WARN_TITLE_INVALID =
-            "Title is invalid!";
-    private final String WARN_DUPLICATE_TITLE =
-            "There is another task with this name!";
-    private final String WARN_START_TIME_INVALID =
-            "Invalid start time!";
-    private final String WARN_DEADLINE_INVALID =
-            "Invalid deadline!";
-    private final String WARN_404_TEAM_MEMBER =
-            "No team member yet";
-    private final String WARN_404_USER =
-            "No user exists with this username!";
-    private final String WARN_USER_EXISTS =
-            "User is already a member!";
-    private final String WARN_ALREADY_SUSPENDED =
-            "User is already suspended";
-    private final String WARN_TASK_ID_INVALID =
-            "No task exists with this id!";
-    private final String WARN_ALREADY_ASSIGNED =
-            "Task is already assigned to this user!";
-    private final String WARN_WAIT_CONFIRM =
-            "Team is waiting for sysadmin confirmation!";
-    private final String WARN_USER_SUSPENDED =
-            "User is suspended!";
-    private final String WARN_USER_TEAM_LEADER =
-            "User is team leader!";
-    private final String WARN_NOT_TEAM_LEADER =
-            "You're not a team leader";
-    private final String WARN_EMPTY_MESSAGE =
-            "You cannot send empty message!";
-
-    private final String TEAM_NAME_REGEXP =
-            "^(?=.{5,12}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$";
+    private static final String TEAM = "team";
+    private static final String TASK_ID = "task_id";
+    private static final String BODY = "body";
+    private static final String TEAM_NAME = "team_name";
+    private static final String TITLE = "title";
+    private static final String START_TIME = "start_time";
+    private static final String DEADLINE = "deadline";
+    private static final String PRIORITY = "priority";
+    private static final String DESCRIPTION = "description";
+    private static final String USERNAME = "username";
+    private static final String RATE = "rate";
 
     private static TeamMenuController teamMenuController = null;
 
@@ -87,332 +49,174 @@ public class TeamMenuController {
     }
 
     public MResponse getScoreboard(Team team) {
-        return new MResponse(team.getScoreboard(), true);
+        return new MRequest()
+                .setPath(GET_SCOREBOARD_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse getRoadmapFormatted(Team team) {
-        return new MResponse(team.getRoadmapFormatted(), true);
+        return new MRequest()
+                .setPath(GET_ROADMAP_FRM_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse getRoadmap(Team team) {
-        return new MResponse(SUCCESS, true, team.getRoadmap());
+        return new MRequest()
+                .setPath(GET_ROADMAP_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse getMessagesFormatted(Team team) {
-        return new MResponse(team.getMessagesFormatted(), true);
+        return new MRequest()
+                .setPath(GET_MESSAGES_FRM_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse getMessages(Team team) {
-        return new MResponse(SUCCESS, true, team.getMessages());
+        return new MRequest()
+                .setPath(GET_MESSAGES_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse getTeam(String teamName) {
-        Team team = UserController.getLoggedUser().getMyTeam(teamName);
-
-        if (team == null)
-            return new MResponse(String.format(WARN_404_TEAM, teamName), false);
-
-        if (team.isPending())
-            return new MResponse(WARN_WAIT_CONFIRM, false);
-
-        return new MResponse(SUCCESS_FOUND_TEAM, true, team);
+        return new MRequest()
+                .setPath(GET_TEAM_PATH)
+                .addArg(TEAM_NAME, teamName)
+                .get();
     }
 
     public MResponse sendMessage(Team team, String body) {
-        User user = UserController.getLoggedUser();
-
-        if (body.isEmpty())
-            return new MResponse(WARN_EMPTY_MESSAGE, false);
-        team.sendMessage(user, body);
-        return new MResponse(SUCCESS, true);
+        return new MRequest()
+                .setPath(SEND_MESSAGE_PATH)
+                .addArg(TEAM, team)
+                .addArg(BODY, body)
+                .put();
     }
 
     public MResponse showTasks(Team team) {
-        return new MResponse(team.getTasksFormatted(), true);
+        return new MRequest()
+                .setPath(SHOW_TASKS_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse showTask(Team team, String taskId) {
-        int id;
-        try {
-            id = Integer.parseInt(taskId);
-        } catch (Exception e) {
-            return new MResponse(WARN_TASK_ID_INVALID, false);
-        }
-
-        Task task = team.getTaskById(id);
-
-        if (task == null)
-            return new MResponse(WARN_TASK_ID_INVALID, false);
-
-        return new MResponse(task.toString(), true);
+        return new MRequest()
+                .setPath(SHOW_TASK_PATH)
+                .addArg(TEAM, team)
+                .addArg(TASK_ID, taskId)
+                .get();
     }
 
     public MResponse getLeaderTeams() {
-        User leader = UserController.getLoggedUser();
-
-        ArrayList<Team> teams = leader.getMyTeams();
-
-        if (teams.isEmpty())
-            return new MResponse(WARN_404_TEAM_FOR_YOU, false);
-
-        teams.sort(new Comparator<Team>() {
-            @Override
-            public int compare(Team o1, Team o2) {
-                LocalDateTime date1 = o1.getTimeOfCreation();
-                LocalDateTime date2 = o2.getTimeOfCreation();
-
-                return date1.compareTo(date2);
-            }
-        });
-
-        StringBuilder result = new StringBuilder();
-
-        int index = 1;
-
-        for (Team team : teams)
-            result.append(String.format("%d- %s", index++, team.getName()));
-
-        return new MResponse(result.toString(), true);
+        return new MRequest()
+                .setPath(GET_LEADER_TEAMS_PATH)
+                .get();
     }
 
     public MResponse getLeaderTeam(String teamName) {
-        User leader = UserController.getLoggedUser();
-        Team team = leader.getMyTeam(teamName);
-
-        if (team == null)
-            return new MResponse(WARN_404_LEADER_TEAM, false);
-        return new MResponse(SUCCESS_FOUND_TEAM, true, team);
+        return new MRequest()
+                .setPath(GET_LEADER_TEAM_PATH)
+                .addArg(TEAM_NAME, teamName)
+                .get();
     }
 
     public MResponse createTeam(String teamName) {
-        Team team = Team.getTeamByName(teamName);
-
-        if (!UserController.getLoggedUser().isTeamLeader())
-            return new MResponse(WARN_NOT_TEAM_LEADER, false);
-
-        if (team != null)
-            return new MResponse(WARN_TEAM_EXISTS, false);
-
-        if (teamName.matches(TEAM_NAME_REGEXP))
-            return new MResponse(WARN_INVALID_NAME, false);
-
-        Team.createTeam(teamName, UserController.getLoggedUser());
-
-        return new MResponse(SUCCESS_TEAM_CREATED, true);
+        return new MRequest()
+                .setPath(CREATE_TEAM_PATH)
+                .addArg(TEAM_NAME, teamName)
+                .put();
     }
 
     public MResponse getAllTasks(Team team) {
-        return new MResponse(team.getTasksFullInfoFormatted(), true);
+        return new MRequest()
+                .setPath(GET_ALL_TASKS_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse createTask(Team team, String title,
                                 String startTime, String deadline) {
-
-        if (title.isEmpty())
-            return new MResponse(WARN_TITLE_INVALID, false);
-
-        Task task = team.getTaskByTitle(title);
-
-        if (task != null)
-            return new MResponse(WARN_DUPLICATE_TITLE, false);
-
-        LocalDateTime start = isTimeValid(startTime);
-        LocalDateTime dead = isTimeValid(deadline);
-
-        if (start == null)
-            return new MResponse(WARN_START_TIME_INVALID, false);
-
-        if (dead == null)
-            return new MResponse(WARN_DEADLINE_INVALID, false);
-
-        if (dead.isBefore(start))
-            return new MResponse(WARN_DEADLINE_INVALID, false);
-
-        team.createTask(title, start, dead);
-        return new MResponse(SUCCESS_TASK_CREATED, true);
+        return new MRequest()
+                .setPath(CREATE_TASK_PATH)
+                .addArg(TEAM, team)
+                .addArg(TITLE, title)
+                .addArg(START_TIME, startTime)
+                .addArg(DEADLINE, deadline)
+                .put();
     }
 
     public MResponse createTask(Team team, String title,
                                 String priority, String startTime, String deadline, String description) {
-
-        if (title.isEmpty())
-            return new MResponse(WARN_TITLE_INVALID, false);
-
-        Task task = team.getTaskByTitle(title);
-
-        if (task != null)
-            return new MResponse(WARN_DUPLICATE_TITLE, false);
-
-        LocalDateTime start = isTimeValid(startTime);
-        LocalDateTime dead = isTimeValid(deadline);
-
-        if (start == null)
-            return new MResponse(WARN_START_TIME_INVALID, false);
-
-        if (dead == null)
-            return new MResponse(WARN_DEADLINE_INVALID, false);
-
-        if (dead.isBefore(start))
-            return new MResponse(WARN_DEADLINE_INVALID, false);
-
-        Task t = team.createTask(title, priority, start, dead, description);
-        return new MResponse(SUCCESS_TASK_CREATED, true, t);
-    }
-
-    private LocalDateTime isTimeValid(String time) {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm");
-
-        try {
-            LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
-            if (dateTime.isBefore(now))
-                return null;
-
-            return dateTime;
-        } catch (DateTimeParseException exception) {
-            return null;
-        }
+        return new MRequest()
+                .setPath(CREATE_TASK_EXT_PATH)
+                .addArg(TEAM, team)
+                .addArg(TITLE, title)
+                .addArg(PRIORITY, priority)
+                .addArg(START_TIME, startTime)
+                .addArg(DEADLINE, deadline)
+                .addArg(DESCRIPTION, description)
+                .put();
     }
 
     public MResponse getMembers(Team team) {
-        ArrayList<User> teamMembers = team.getMembers();
-
-        if (teamMembers.isEmpty())
-            return new MResponse(WARN_404_TEAM_MEMBER, false);
-
-        StringBuilder result = new StringBuilder();
-
-        int index = 1;
-
-        for (User user : teamMembers)
-            result.append(String.format("%d- %s", index++, user.getUsername())).append("\n");
-
-        return new MResponse(result.toString(), true, teamMembers);
+        return new MRequest()
+                .setPath(GET_MEMBERS_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 
     public MResponse addMemberToTeam(Team team, String username) {
-        User user = User.getUser(username);
-
-        if (user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if (team.hasMember(user))
-            return new MResponse(WARN_USER_EXISTS, false);
-
-        if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new MResponse(WARN_USER_TEAM_LEADER, false);
-
-        team.addMember(user);
-        user.sendNotification(new Notification(UserController.getLoggedUser(),
-                team, String.format("You have been added to \"%s\" team!", team.getName())));
-        return new MResponse(SUCCESS_USER_ADDED, true);
+        return new MRequest()
+                .setPath(ADD_MEMBER_PATH)
+                .addArg(TEAM, team)
+                .addArg(USERNAME, username)
+                .put();
     }
 
     public MResponse deleteMember(Team team, String username) {
-        User user = User.getUser(username);
-
-        if (user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if (!team.hasMember(user))
-            return new MResponse(WARN_404_USER, false);
-
-        if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new MResponse(WARN_USER_TEAM_LEADER, false);
-
-        team.deleteMember(user);
-        user.sendNotification(new Notification(UserController.getLoggedUser(),
-                team, String.format("You have been deleted from \"%s\" team!", team.getName())));
-        return new MResponse(SUCCESS_USER_DELETED, true);
+        return new MRequest()
+                .setPath(DELETE_MEMBER_PATH)
+                .addArg(TEAM, team)
+                .addArg(USERNAME, username)
+                .delete();
     }
 
     public MResponse suspendMember(Team team, String username) {
-        User user = User.getUser(username);
-        if (user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if (!team.hasMember(user))
-            return new MResponse(WARN_404_USER, false);
-
-        if (team.isSuspended(user))
-            return new MResponse(WARN_ALREADY_SUSPENDED, false);
-
-        if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new MResponse(WARN_USER_TEAM_LEADER, false);
-
-        team.suspendMember(user);
-        user.sendNotification(new Notification(UserController.getLoggedUser(),
-                team, String.format("You have been suspended from \"%s\" team!", team.getName())));
-        return new MResponse(SUCCESS_USER_SUSPENDED, true);
+        return new MRequest()
+                .setPath(SUSPEND_MEMBER_PATH)
+                .addArg(TEAM, team)
+                .addArg(USERNAME, username)
+                .patch();
     }
 
     public MResponse promoteUser(Team team, String username, String rate) {
-        User user = User.getUser(username);
-
-        if (user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if (!team.hasMember(user))
-            return new MResponse(WARN_404_USER, false);
-
-        if (team.isSuspended(user))
-            return new MResponse(WARN_USER_SUSPENDED, false);
-
-        if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new MResponse(WARN_USER_TEAM_LEADER, false);
-
-        user.setType("team leader");
-        team.setLeader(user);
-        UserController.getLoggedUser().setType("teamMember");
-        user.sendNotification(new Notification(UserController.getLoggedUser(),
-                team, String.format("You have been promoted to \"%s\" in \"%s\" team!", user.getType().name(), team.getName())));
-        return new MResponse(SUCCESS_PROMOTED, true);
+        return new MRequest()
+                .setPath(PROMOTE_USER_PATH)
+                .addArg(TEAM, team)
+                .addArg(USERNAME, username)
+                .addArg(RATE, rate)
+                .patch();
     }
 
     public MResponse assignToTask(Team team, String taskId, String username) {
-        User user = User.getUser(username);
-
-        if (user == null)
-            return new MResponse(WARN_404_USER, false);
-
-        if (!team.hasMember(user))
-            return new MResponse(WARN_404_USER, false);
-
-        if (team.isSuspended(user))
-            return new MResponse(WARN_USER_SUSPENDED, false);
-
-        if (team.getLeader().getUsername().equalsIgnoreCase(username))
-            return new MResponse(WARN_USER_TEAM_LEADER, false);
-
-        int tId;
-        try {
-            tId = Integer.parseInt(taskId);
-        } catch (Exception exception) {
-            return new MResponse(WARN_TASK_ID_INVALID, false);
-        }
-
-        Task task = team.getTaskById(tId);
-
-        if (task == null)
-            return new MResponse(WARN_TASK_ID_INVALID, false);
-
-        if (task.isInAssignedUsers(username) != null)
-            return new MResponse(WARN_ALREADY_ASSIGNED, false);
-
-        task.assignUser(user);
-        return new MResponse(SUCCESS_MEMBER_ASSIGNED, true);
+        return new MRequest()
+                .setPath(ASSIGN_T0_TASK_PATH)
+                .addArg(TEAM, team)
+                .addArg(TASK_ID, taskId)
+                .addArg(USERNAME, username)
+                .put();
     }
 
     public MResponse getAllUsers(Team team) {
-
-        ArrayList<User> users = new ArrayList<>();
-
-        for (User user : User.getAllUsers()) {
-            if (!team.hasMember(user))
-                if (!user.isTeamLeader())
-                    users.add(user);
-        }
-
-        return new MResponse(SUCCESS_USERS_RECEIVED, true, users);
+        return new MRequest()
+                .setPath(GET_ALL_USERS_PATH)
+                .addArg(TEAM, team)
+                .get();
     }
 }

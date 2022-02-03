@@ -1,16 +1,13 @@
 package server;
 
 import com.google.gson.Gson;
-
 import model.MRequest;
 import model.Team;
 import server.controller.*;
 import spark.ResponseTransformer;
-import sun.java2d.cmm.Profile;
 import utilities.ConsoleHelper;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static spark.Spark.*;
@@ -24,7 +21,7 @@ public class Server {
     // args
 
     private static final String USERNAME = "username";
-    private static final String PASSWORD = "username";
+    private static final String PASSWORD = "password";
     private static final String PASSWORD1 = "password1";
     private static final String PASSWORD2 = "password2";
     private static final String EMAIL = "email";
@@ -52,6 +49,7 @@ public class Server {
     private static final String PRIORITY = "priority";
     private static final String START_TIME = "start_time";
     private static final String CALENDAR = "calendar";
+    private static final String RATE = "rate";
 
     // auth
 
@@ -66,6 +64,7 @@ public class Server {
     private static final String GET_PENDING_TEAMS = "admin/pending-teams";
     private static final String ACCEPT_PENDING_TEAMS = "admin/accept-pending";
     private static final String REJECT_PENDING_TEAMS = "admin/reject-pending";
+    private static final String ADMIN_GET_ALL_USERS_PATH = "admin/get-all-users";
 
     // calendar
 
@@ -118,6 +117,31 @@ public class Server {
     private static final String REMOVE_USER_PATH = "tasks/remove-user";
     private static final String EDIT_TASK_PATH = "tasks/edit-task";
 
+    // team
+
+    private static final String GET_SCOREBOARD_PATH = "team/scoreboard";
+    private static final String GET_ROADMAP_FRM_PATH = "team/roadmap-frm";
+    private static final String GET_ROADMAP_PATH = "team/roadmap";
+    private static final String GET_MESSAGES_FRM_PATH = "team/messages-frm";
+    private static final String GET_MESSAGES_PATH = "team/messages";
+    private static final String GET_TEAM_PATH = "team/get-team";
+    private static final String SEND_MESSAGE_PATH = "team/send-message";
+    private static final String SHOW_TASKS_PATH = "team/show-tasks";
+    private static final String SHOW_TASK_PATH = "team/show-task";
+    private static final String GET_LEADER_TEAMS_PATH = "team/get-leader-teams";
+    private static final String GET_LEADER_TEAM_PATH = "team/get-leader-team";
+    private static final String CREATE_TEAM_PATH = "team/create-team";
+    private static final String GET_ALL_TASKS_PATH = "team/get-all-tasks";
+    private static final String CREATE_TASK_PATH = "team/create-task";
+    private static final String CREATE_TASK_EXT_PATH = "team/create-task-ext";
+    private static final String GET_MEMBERS_PATH = "team/get-members";
+    private static final String ADD_MEMBER_PATH = "team/add-member";
+    private static final String DELETE_MEMBER_PATH = "team/delete-member";
+    private static final String SUSPEND_MEMBER_PATH = "team/suspend-member";
+    private static final String PROMOTE_USER_PATH = "team/promote-user";
+    private static final String ASSIGN_T0_TASK_PATH = "team/assign-to-task";
+    private static final String GET_ALL_USERS_PATH = "team/get-all-users";
+
 
     private static final int PORT = 5678;
     private static final String BASE_URL = "http://localhost";
@@ -129,7 +153,9 @@ public class Server {
         ConsoleHelper.getInstance().println(String.format("Server started at %s:%d", BASE_URL, PORT));
 
         before((request, response) -> {
-            System.out.println(request);
+            System.out.println(request.requestMethod());
+            System.out.println(request.queryString());
+            System.out.println(request.body());
 //            if (!request.pathInfo().equalsIgnoreCase(LOGIN_PATH) &&
 //                    !request.pathInfo().equalsIgnoreCase(SIGNUP_PATH)) {
 //                halt(403);
@@ -197,6 +223,11 @@ public class Server {
             ArrayList<String> pendingTeams = (ArrayList<String>) req.getArg("pendingTeams");
             return AdminController.getInstance()
                     .rejectPendingTeams(pendingTeams.toArray(new String[0]));
+        }, new JsonTransformer());
+
+        get(ADMIN_GET_ALL_USERS_PATH, JSON, (request, response) -> {
+            return AdminController.getInstance()
+                    .getAllUsers();
         }, new JsonTransformer());
 
         // calendar
@@ -362,14 +393,14 @@ public class Server {
 
         // profile
 
-        patch(CHANGE_PASS_PATH, JSON, (request, response) -> {
+        post(CHANGE_PASS_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return ProfileMenuController.getInstance()
                     .changePassword((String) req.getArg(OLD_PASS), (String) req.getArg(NEW_PASS));
         }, new JsonTransformer());
 
-        post(CHANGE_USER_PATH, JSON, (request, response) -> {
+        patch(CHANGE_USER_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return ProfileMenuController.getInstance()
@@ -401,7 +432,7 @@ public class Server {
         patch(UPDATE_PROFILE_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
-            LocalDate birthDate = new Gson().fromJson((String) req.getArg(BIRTH_DATE), LocalDate.class);
+            LocalDate birthDate = new Gson().fromJson(req.getArg(BIRTH_DATE).toString(), LocalDate.class);
             return ProfileMenuController.getInstance()
                     .updateProfile((String) req.getArg(FIRST_NAME), (String) req.getArg(LAST_NAME),
                             birthDate);
@@ -463,6 +494,163 @@ public class Server {
                     .editTask(team, (String) req.getArg(ID), (String) req.getArg(TITLE),
                             (String) req.getArg(PRIORITY), (String) req.getArg(START_TIME),
                             (String) req.getArg(DEADLINE), (String) req.getArg(DESCRIPTION));
+        }, new JsonTransformer());
+
+        // team
+
+        get(GET_SCOREBOARD_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getScoreboard(team);
+        }, new JsonTransformer());
+
+        get(GET_ROADMAP_FRM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getRoadmapFormatted(team);
+        }, new JsonTransformer());
+
+        get(GET_ROADMAP_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getRoadmap(team);
+        }, new JsonTransformer());
+
+        get(GET_MESSAGES_FRM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getMessagesFormatted(team);
+        }, new JsonTransformer());
+
+        get(GET_MESSAGES_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getMessages(team);
+        }, new JsonTransformer());
+
+        get(GET_TEAM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TeamMenuController.getInstance().getTeam((String) req.getArg(TEAM_NAME));
+        }, new JsonTransformer());
+
+        put(SEND_MESSAGE_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().sendMessage(team, (String) req.getArg(BODY));
+        }, new JsonTransformer());
+
+        get(SHOW_TASKS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().showTasks(team);
+        }, new JsonTransformer());
+
+        get(SHOW_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().showTask(team, (String) req.getArg(TASK_ID));
+        }, new JsonTransformer());
+
+        get(GET_LEADER_TEAMS_PATH, JSON, (request, response) -> {
+            return TeamMenuController.getInstance().getLeaderTeams();
+        }, new JsonTransformer());
+
+        get(GET_LEADER_TEAM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TeamMenuController.getInstance().getLeaderTeam((String) req.getArg(TEAM_NAME));
+        }, new JsonTransformer());
+
+        put(CREATE_TEAM_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return TeamMenuController.getInstance().createTeam((String) req.getArg(TEAM_NAME));
+        }, new JsonTransformer());
+
+        get(GET_ALL_TASKS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getAllTasks(team);
+        }, new JsonTransformer());
+
+        put(CREATE_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance()
+                    .createTask(team, (String) req.getArg(TITLE), (String) req.getArg(START_TIME),
+                            (String) req.getArg(DEADLINE));
+        }, new JsonTransformer());
+
+        put(CREATE_TASK_EXT_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance()
+                    .createTask(team, (String) req.getArg(TITLE), (String) req.getArg(PRIORITY),
+                            (String) req.getArg(START_TIME), (String) req.getArg(DEADLINE),
+                            (String) req.getArg(DESCRIPTION));
+        }, new JsonTransformer());
+
+        get(GET_MEMBERS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getMembers(team);
+        }, new JsonTransformer());
+
+        put(ADD_MEMBER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().addMemberToTeam(team, (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        delete(DELETE_MEMBER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().deleteMember(team, (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        patch(SUSPEND_MEMBER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().suspendMember(team, (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        patch(PROMOTE_USER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().promoteUser(team, (String) req.getArg(USERNAME),
+                    (String) req.getArg(RATE));
+        }, new JsonTransformer());
+
+        patch(ASSIGN_T0_TASK_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().assignToTask(team, (String) req.getArg(TASK_ID),
+                    (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        get(GET_ALL_USERS_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
+            return TeamMenuController.getInstance().getAllUsers(team);
         }, new JsonTransformer());
     }
 
