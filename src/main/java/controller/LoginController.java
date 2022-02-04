@@ -1,13 +1,16 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import model.MRequest;
 import model.User;
 
 public class LoginController {
 
     private static final String USERNAME = "username";
-    private static final String PASSWORD = "username";
+    private static final String PASSWORD = "password";
     private static final String PASSWORD1 = "password1";
     private static final String PASSWORD2 = "password2";
     private static final String EMAIL = "email";
@@ -43,8 +46,7 @@ public class LoginController {
                 .addArg(PASSWORD, password)
                 .post();
         if (response.isSuccess()) {
-            System.out.println(response);
-            User user = new Gson().fromJson(response.getObject().toString(), User.class);
+            User user = new Gson().fromJson((String) response.getObject(), User.class);
             UserController.loggedUser = user;
         }
         return response;

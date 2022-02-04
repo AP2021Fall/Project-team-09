@@ -1,11 +1,16 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import controller.MResponse;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -121,8 +126,16 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
-            return gson.fromJson(res, MResponse.class);
+            JsonElement jsonElement = new JsonParser().parse(res);
+            if (jsonElement.getAsJsonObject().get("object") != null) {
+                String object = jsonElement.getAsJsonObject().get("object").toString();
+                System.out.println("this is the object");
+                System.out.println(object);
+                mResponse.setObject(object);
+            }
+            return mResponse;
         } catch (IOException ioException) {
             return null;
         }
@@ -145,8 +158,16 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
-            return gson.fromJson(res, MResponse.class);
+            JsonElement jsonElement = new JsonParser().parse(res);
+            if (jsonElement.getAsJsonObject().get("object") != null) {
+                String object = jsonElement.getAsJsonObject().get("object").toString();
+                System.out.println("this is the object");
+                System.out.println(object);
+                mResponse.setObject(object);
+            }
+            return mResponse;
         } catch (IOException ioException) {
             return null;
         }
@@ -169,8 +190,18 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
+            System.out.println("this is the response");
             System.out.println(res);
-            return gson.fromJson(res, MResponse.class);
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
+
+            JsonElement jsonElement = new JsonParser().parse(res);
+            if (jsonElement.getAsJsonObject().get("object") != null) {
+                String object = jsonElement.getAsJsonObject().get("object").toString();
+                System.out.println("this is the object");
+                System.out.println(object);
+                mResponse.setObject(object);
+            }
+            return mResponse;
         } catch (IOException ioException) {
             return null;
         }
@@ -193,8 +224,16 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
-            return gson.fromJson(res, MResponse.class);
+            JsonElement jsonElement = new JsonParser().parse(res);
+            if (jsonElement.getAsJsonObject().get("object") != null) {
+                String object = jsonElement.getAsJsonObject().get("object").toString();
+                System.out.println("this is the object");
+                System.out.println(object);
+                mResponse.setObject(object);
+            }
+            return mResponse;
         } catch (IOException ioException) {
             return null;
         }
@@ -229,8 +268,16 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
-            return gson.fromJson(res, MResponse.class);
+            JsonElement jsonElement = new JsonParser().parse(res);
+            if (jsonElement.getAsJsonObject().get("object") != null) {
+                String object = jsonElement.getAsJsonObject().get("object").toString();
+                System.out.println("this is the object");
+                System.out.println(object);
+                mResponse.setObject(object);
+            }
+            return mResponse;
         } catch (IOException ioException) {
             return null;
         }

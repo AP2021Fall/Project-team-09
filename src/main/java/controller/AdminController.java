@@ -20,6 +20,7 @@ public class AdminController {
     private static final String GET_PENDING_TEAMS = "/admin/pending-teams";
     private static final String ACCEPT_PENDING_TEAMS = "/admin/accept-pending";
     private static final String REJECT_PENDING_TEAMS = "/admin/reject-pending";
+    private static final String GET_ALL_USERS_PATH = "/admin/get-all-users";
 
     private static AdminController controller = null;
 
@@ -72,5 +73,11 @@ public class AdminController {
                 .setPath(REJECT_PENDING_TEAMS)
                 .addArg(PENDING_TEAMS, pendingTeams)
                 .patch();
+    }
+
+    public MResponse getAllUsers() {
+        return new MRequest()
+                .setPath(GET_ALL_USERS_PATH)
+                .get();
     }
 }
