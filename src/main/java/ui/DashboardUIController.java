@@ -1,5 +1,7 @@
 package ui;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import controller.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import utilities.SharedPreferences;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
@@ -722,12 +725,14 @@ public class DashboardUIController implements Initializable, GUI {
     // profile > info
 
     private void setProfile() {
-//        Response response = ProfileMenuController.getInstance().getMyProfile();
-//        if (!response.isSuccess())
-//            return;
+        MResponse response = ProfileMenuController.getInstance().getMyProfile();
+        if (!response.isSuccess())
+            return;
 
-//        User user = (User) response.getObject();
-        User user = UserController.getLoggedUser();
+        Type typeMyType = new TypeToken<User>() {
+        }.getType();
+
+        User user = new Gson().fromJson((String) response.getObject(), typeMyType);
 
         if (user == null)
             return;
@@ -762,7 +767,10 @@ public class DashboardUIController implements Initializable, GUI {
 //        showResponse(response);
 
         if (MResponse.isSuccess()) {
-            teams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
+
+            teams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
         }
 
         PTeamsItemHolder.getChildren().clear();
@@ -780,7 +788,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 new AlertHandler(Alert.AlertType.ERROR,
                                         "Team is waiting for admin confirmation!").ShowAlert();
                             }
-                        }else {
+                        } else {
                             new AlertHandler(Alert.AlertType.ERROR,
                                     "You have been suspended from this team!").ShowAlert();
                         }
@@ -811,7 +819,7 @@ public class DashboardUIController implements Initializable, GUI {
                                         new AlertHandler(Alert.AlertType.ERROR,
                                                 "Team is waiting for admin confirmation!").ShowAlert();
                                     }
-                                }else {
+                                } else {
                                     new AlertHandler(Alert.AlertType.ERROR,
                                             "You have been suspended from this team!").ShowAlert();
                                 }
@@ -858,11 +866,11 @@ public class DashboardUIController implements Initializable, GUI {
 
         if (MResponse.isSuccess()) {
             logout();
-            ProfileMenuController.getInstance().resetTries();
+//            ProfileMenuController.getInstance().resetTries();
         }
         if (UserController.getLoggedUser() == null) {
             logout();
-            ProfileMenuController.getInstance().resetTries();
+//            ProfileMenuController.getInstance().resetTries();
             return;
         }
         save();
@@ -878,8 +886,12 @@ public class DashboardUIController implements Initializable, GUI {
 
 //        showResponse(response);
         if (MResponse.isSuccess()) {
-            teams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
+
+            teams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
         }
+
 
         TTeamsItemHolder.getChildren().clear();
         if (teams != null) {
@@ -896,7 +908,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 new AlertHandler(Alert.AlertType.ERROR,
                                         "Team is waiting for admin confirmation!").ShowAlert();
                             }
-                        }else {
+                        } else {
                             new AlertHandler(Alert.AlertType.ERROR,
                                     "You have been suspended from this team!").ShowAlert();
                         }
@@ -927,7 +939,7 @@ public class DashboardUIController implements Initializable, GUI {
                                         new AlertHandler(Alert.AlertType.ERROR,
                                                 "Team is waiting for admin confirmation!").ShowAlert();
                                     }
-                                }else {
+                                } else {
                                     new AlertHandler(Alert.AlertType.ERROR,
                                             "You have been suspended from this team!").ShowAlert();
                                 }
@@ -1117,7 +1129,10 @@ public class DashboardUIController implements Initializable, GUI {
                 TeamMenuController.getInstance().getAllUsers(team);
         AMMembersItemHolder.getChildren().clear();
         if (MResponse.isSuccess()) {
-            ArrayList<User> users = (ArrayList<User>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<User>>() {
+            }.getType();
+
+            ArrayList<User> users = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (User user : users) {
                 AssignMemberItem assignMemberItem = new AssignMemberItem(user);
@@ -1178,7 +1193,10 @@ public class DashboardUIController implements Initializable, GUI {
 
         TRTasksHolder.getChildren().clear();
         if (MResponse.isSuccess()) {
-            ArrayList<Task> tasks = (ArrayList<Task>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Task>>() {
+            }.getType();
+
+            ArrayList<Task> tasks = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Task task : tasks) {
                 RoadmapItem roadmapItem = new RoadmapItem(task);
@@ -1269,7 +1287,9 @@ public class DashboardUIController implements Initializable, GUI {
         TCChatItemHolder.getChildren().clear();
 
         if (MResponse.isSuccess()) {
-            ArrayList<Message> messages = (ArrayList<Message>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Message>>() {
+            }.getType();
+            ArrayList<Message> messages = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Message message : messages) {
                 ChatItem chatItem = new ChatItem(message);
@@ -1319,7 +1339,10 @@ public class DashboardUIController implements Initializable, GUI {
         TBBoardItemHolder.getChildren().clear();
 
         if (MResponse.isSuccess()) {
-            ArrayList<Board> boards = (ArrayList<Board>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Board>>() {
+            }.getType();
+
+            ArrayList<Board> boards = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Board board : boards) {
                 BoardItem boardItem = new BoardItem(board);
@@ -1491,8 +1514,12 @@ public class DashboardUIController implements Initializable, GUI {
                 MResponse = BoardMenuController.getInstance().showCategoryTasks(team, category, board.getName());
 
             ArrayList<Task> tasks = new ArrayList<>();
-            if (MResponse.isSuccess())
-                tasks = (ArrayList<Task>) MResponse.getObject();
+            if (MResponse.isSuccess()) {
+                Type typeMyType = new TypeToken<ArrayList<Task>>() {
+                }.getType();
+
+                tasks = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
+            }
             System.out.println(tasks);
             BoardCategoryItem bciBox = new BoardCategoryItem(team, board, category, tasks);
             bciBox.setOnItemClickListener(new BoardCategoryItem.OnItemClickListener() {
@@ -1601,7 +1628,9 @@ public class DashboardUIController implements Initializable, GUI {
 
 
         if (MResponse.isSuccess()) {
-            HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) MResponse.getObject();
+            Type typeMyType = new TypeToken<HashMap<Team, ArrayList<Task>>>() {
+            }.getType();
+            HashMap<Team, ArrayList<Task>> teamTasks = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Team team : teamTasks.keySet()) {
                 if (sortedTeam != null)
@@ -1626,7 +1655,7 @@ public class DashboardUIController implements Initializable, GUI {
                                     new AlertHandler(Alert.AlertType.ERROR,
                                             "Team is waiting for admin confirmation!").ShowAlert();
                                 }
-                            }else {
+                            } else {
                                 new AlertHandler(Alert.AlertType.ERROR,
                                         "You have been suspended from this team!").ShowAlert();
                             }
@@ -1702,7 +1731,7 @@ public class DashboardUIController implements Initializable, GUI {
                                             new AlertHandler(Alert.AlertType.ERROR,
                                                     "Team is waiting for admin confirmation!").ShowAlert();
                                         }
-                                    }else {
+                                    } else {
                                         new AlertHandler(Alert.AlertType.ERROR,
                                                 "You have been suspended from this team!").ShowAlert();
                                     }
@@ -1724,7 +1753,9 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
         if (MResponse.isSuccess()) {
-            ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<Team>() {
+            }.getType();
+            ArrayList<Team> allTeams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Team team : allTeams) {
                 teams.add(team.getName());
@@ -1803,7 +1834,9 @@ public class DashboardUIController implements Initializable, GUI {
 
         TTMemberItemHolder.getChildren().clear();
         if (MResponse.isSuccess()) {
-            ArrayList<User> members = (ArrayList<User>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<User>>() {
+            }.getType();
+            ArrayList<User> members = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
             for (User user : members) {
                 TaskMemberItem taskMemberItem = new TaskMemberItem(user);
                 taskMemberItem.setOnItemClickListener(new TaskMemberItem.OnItemClickListener() {
@@ -1905,7 +1938,9 @@ public class DashboardUIController implements Initializable, GUI {
                 TeamMenuController.getInstance().createTask(team, name, priority, startDateTime, deadDateTime, description);
         showResponse(MResponse);
         if (MResponse.isSuccess()) {
-            Task task = (Task) MResponse.getObject();
+            Type typeMyType = new TypeToken<Task>() {
+            }.getType();
+            Task task = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
@@ -1948,7 +1983,9 @@ public class DashboardUIController implements Initializable, GUI {
                         name, priority, startDateTime, deadDateTime, description);
         showResponse(MResponse);
         if (MResponse.isSuccess()) {
-            task = (Task) MResponse.getObject();
+            Type typeMyType = new TypeToken<Task>() {
+            }.getType();
+            task = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
@@ -2035,7 +2072,9 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
         if (MResponse.isSuccess()) {
-            ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
+            ArrayList<Team> allTeams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Team team : allTeams) {
                 teams.add(team.getName());
@@ -2059,7 +2098,9 @@ public class DashboardUIController implements Initializable, GUI {
             MResponse MResponse =
                     ProfileMenuController.getInstance().showTeams();
             if (MResponse.isSuccess()) {
-                ArrayList<Team> allTeams = (ArrayList<Team>) MResponse.getObject();
+                Type typeMyType = new TypeToken<ArrayList<Team>>() {
+                }.getType();
+                ArrayList<Team> allTeams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
                 for (Team t : allTeams) {
                     t.sendNotification(new Notification(UserController.getLoggedUser(), t, body));
@@ -2116,7 +2157,9 @@ public class DashboardUIController implements Initializable, GUI {
                 ProfileMenuController.getInstance().showTeams();
 
         if (MResponse.isSuccess()) {
-            teams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
+            teams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
         }
 
         RTeamsItemHolder.getChildren().clear();
@@ -2183,7 +2226,9 @@ public class DashboardUIController implements Initializable, GUI {
 
         CTasksItemHolder.getChildren().clear();
         if (MResponse.isSuccess()) {
-            ArrayList<Task> tasks = (ArrayList<Task>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Task>>() {
+            }.getType();
+            ArrayList<Task> tasks = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
             for (Task task : tasks) {
                 CalendarTaskItem calendarTaskItem = new CalendarTaskItem(task);
@@ -2204,69 +2249,77 @@ public class DashboardUIController implements Initializable, GUI {
     // users
 
     private void setAUsers() {
-        ArrayList<User> users =
-                User.getAllUsers();
+        MResponse MResponse =
+                AdminController.getInstance().getAllUsers();
 
-        String sortedUsers = (String) SharedPreferences.get(SORTED_A_USERS);
-        String sortedSUsers = (String) SharedPreferences.get(SORTED_S_USERS);
+        if (MResponse.isSuccess()) {
+            Type typeMyType = new TypeToken<ArrayList<User>>() {
+            }.getType();
 
-        if (sortedUsers != null) {
-            users.sort(new Comparator<User>() {
-                @Override
-                public int compare(User o1, User o2) {
-                    boolean asc = sortedUsers.equalsIgnoreCase("a-z");
+            ArrayList<User> users = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
-                    if (asc)
-                        return o1.getUsername().compareTo(o2.getUsername());
-                    return o2.getUsername().compareTo(o1.getUsername());
-                }
-            });
+            String sortedUsers = (String) SharedPreferences.get(SORTED_A_USERS);
+            String sortedSUsers = (String) SharedPreferences.get(SORTED_S_USERS);
+
+            if (sortedUsers != null) {
+                users.sort(new Comparator<User>() {
+                    @Override
+                    public int compare(User o1, User o2) {
+                        boolean asc = sortedUsers.equalsIgnoreCase("a-z");
+
+                        if (asc)
+                            return o1.getUsername().compareTo(o2.getUsername());
+                        return o2.getUsername().compareTo(o1.getUsername());
+                    }
+                });
+            }
+
+            if (sortedSUsers != null) {
+                users.sort(new Comparator<User>() {
+                    @Override
+                    public int compare(User o1, User o2) {
+                        boolean asc = sortedSUsers.equalsIgnoreCase("asc");
+
+                        if (asc)
+                            return Integer.compare(User.getUserPoints(o1), User.getUserPoints(o2));
+
+                        return Integer.compare(User.getUserPoints(o2), User.getUserPoints(o1));
+                    }
+                });
+            }
+
+            AUItemHolder.getChildren().clear();
+            System.out.println(users);
+            for (User user : users) {
+                AUserItem aUserItem = new AUserItem(user);
+                aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
+                    @Override
+                    public void onClick(User user) {
+                        SharedPreferences.add(SELECTED_PROFILE, user);
+                        tabPaneHandler(null, USER_PROFILE, 0);
+                    }
+
+                    @Override
+                    public void ban(User user) {
+                        banUser(user);
+                    }
+
+                    @Override
+                    public void setMember(User user) {
+                        changeRoleToMember(user);
+                    }
+
+                    @Override
+                    public void setLeader(User user) {
+                        changeRoleToLeader(user);
+                    }
+                });
+                HBox userBox = aUserItem.draw();
+                AUItemHolder.getChildren().add(userBox);
+            }
+
+            onAdminUserSearchListener(users);
         }
-
-        if (sortedSUsers != null) {
-            users.sort(new Comparator<User>() {
-                @Override
-                public int compare(User o1, User o2) {
-                    boolean asc = sortedSUsers.equalsIgnoreCase("asc");
-
-                    if (asc)
-                        return Integer.compare(User.getUserPoints(o1), User.getUserPoints(o2));
-
-                    return Integer.compare(User.getUserPoints(o2), User.getUserPoints(o1));
-                }
-            });
-        }
-
-        AUItemHolder.getChildren().clear();
-        for (User user : users) {
-            AUserItem aUserItem = new AUserItem(user);
-            aUserItem.setOnItemClickListener(new AUserItem.OnItemClickListener() {
-                @Override
-                public void onClick(User user) {
-                    SharedPreferences.add(SELECTED_PROFILE, user);
-                    tabPaneHandler(null, USER_PROFILE, 0);
-                }
-
-                @Override
-                public void ban(User user) {
-                    banUser(user);
-                }
-
-                @Override
-                public void setMember(User user) {
-                    changeRoleToMember(user);
-                }
-
-                @Override
-                public void setLeader(User user) {
-                    changeRoleToLeader(user);
-                }
-            });
-            HBox userBox = aUserItem.draw();
-            AUItemHolder.getChildren().add(userBox);
-        }
-
-        onAdminUserSearchListener(users);
     }
 
     private void onAdminUserSearchListener(ArrayList<User> users) {
@@ -2368,7 +2421,10 @@ public class DashboardUIController implements Initializable, GUI {
 
         ATItemHolder.getChildren().clear();
         if (MResponse.isSuccess()) {
-            ArrayList<Team> teams = (ArrayList<Team>) MResponse.getObject();
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
+
+            ArrayList<Team> teams = new Gson().fromJson(MResponse.getObject().toString(), typeMyType);
 
             for (Team team : teams) {
                 ATeamItem aTeamItem = new ATeamItem(team);

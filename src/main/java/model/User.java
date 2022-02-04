@@ -45,6 +45,12 @@ public class User implements Serializable {
         this.password = password;
         this.type = Type.teamMember;
         this.notifications = new ArrayList<>();
+        this.oldPasswords = new ArrayList<>();
+        this.logs = new ArrayList<>();
+
+        this.lastName = null;
+        this.firstname = null;
+        this.birthday = null;
     }
 
     public void setPassword(String newPassword) {

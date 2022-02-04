@@ -50,6 +50,7 @@ public class Server {
     private static final String START_TIME = "start_time";
     private static final String CALENDAR = "calendar";
     private static final String RATE = "rate";
+    private static final String PENDING_TEAMS = "pending-teams";
 
     // auth
 
@@ -148,6 +149,7 @@ public class Server {
 
     public static void main(String[] args) {
         SaveAndLoadController.load();
+        SaveAndLoadController.save();
         port(PORT);
 
         ConsoleHelper.getInstance().println(String.format("Server started at %s:%d", BASE_URL, PORT));
@@ -212,7 +214,9 @@ public class Server {
         patch(ACCEPT_PENDING_TEAMS, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
-            ArrayList<String> pendingTeams = (ArrayList<String>) req.getArg("pendingTeams");
+            System.out.println(req);
+            System.out.println(req.getArg(PENDING_TEAMS));
+            ArrayList<String> pendingTeams = (ArrayList<String>) req.getArg(PENDING_TEAMS);
             return AdminController.getInstance()
                     .acceptPendingTeams(pendingTeams.toArray(new String[0]));
         }, new JsonTransformer());
@@ -651,6 +655,13 @@ public class Server {
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             Team team = new Gson().fromJson((String) req.getArg(TEAM), Team.class);
             return TeamMenuController.getInstance().getAllUsers(team);
+        }, new JsonTransformer());
+
+        // test
+
+        get("/test/get-users", JSON, (request, response) -> {
+            return AdminController.getInstance()
+                    .getAllUsers();
         }, new JsonTransformer());
     }
 
