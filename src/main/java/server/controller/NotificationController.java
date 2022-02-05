@@ -27,10 +27,10 @@ public class NotificationController {
     public MResponse sendNotificationToUser(String body, String username) {
         User user = User.getUser(username);
 
-        if(user == null)
+        if (user == null)
             return new MResponse(WARN_404_USER, false);
 
-        if(body.isEmpty())
+        if (body.isEmpty())
             return new MResponse(WARN_404_BODY, false);
 
         Notification notification = new Notification(UserController.getLoggedUser(), null, body);
@@ -41,10 +41,10 @@ public class NotificationController {
     public MResponse sendNotificationToTeam(String body, String teamName) {
         Team team = Team.getTeamByName(teamName);
 
-        if(team == null)
+        if (team == null)
             return new MResponse(WARN_404_TEAM, false);
 
-        if(body.isEmpty())
+        if (body.isEmpty())
             return new MResponse(WARN_404_BODY, false);
 
         Notification notification = new Notification(UserController.getLoggedUser(), team, body);
@@ -53,8 +53,11 @@ public class NotificationController {
     }
 
     public MResponse sendNotificationToAll(String body) {
+        System.out.println(UserController.getLoggedUser().getUsername());
         Notification notification = new Notification(UserController.getLoggedUser(), null, body);
+        System.out.println(User.getAllUsers());
         for (User user : User.getAllUsers()) {
+            System.out.println(user.getUsername());
             user.sendNotification(notification);
         }
         return new MResponse(SUCCESS_NOTIFICATION_SENT, true);
