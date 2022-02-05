@@ -15,12 +15,13 @@ public class Team implements Serializable {
 
     private ArrayList<Task> tasks;
     private ArrayList<Board> boards;
-    private HashMap<User, Integer> teamMembers;
-    private HashMap<User, MemberStatus> membersStatus;
+    private ArrayList<String> members;
+    private HashMap<String, Integer> membersPoints;
+    private HashMap<String, MemberStatus> memberStatus;
 
     private ArrayList<Message> chatroom;
 
-    public Team(int id, String name, User leader, LocalDateTime timeOfCreation, Status status, ArrayList<Task> tasks, ArrayList<Board> boards, HashMap<User, Integer> teamMembers, HashMap<User, MemberStatus> membersStatus, ArrayList<Message> chatroom) {
+    public Team(int id, String name, User leader, LocalDateTime timeOfCreation, Status status, ArrayList<Task> tasks, ArrayList<Board> boards, ArrayList<String> members, HashMap<String, Integer> membersPoints, HashMap<String, MemberStatus> membersStatus, ArrayList<Message> chatroom) {
         this.id = id;
         this.name = name;
         this.leader = leader;
@@ -28,8 +29,9 @@ public class Team implements Serializable {
         this.status = status;
         this.tasks = tasks;
         this.boards = boards;
-        this.teamMembers = teamMembers;
-        this.membersStatus = membersStatus;
+        this.members = members;
+        this.membersPoints = membersPoints;
+        this.memberStatus = membersStatus;
         this.chatroom = chatroom;
     }
 
@@ -40,8 +42,9 @@ public class Team implements Serializable {
         this.status = Status.PENDING;
         this.tasks = new ArrayList<>();
         this.boards = new ArrayList<>();
-        this.teamMembers = new LinkedHashMap<>();
-        this.membersStatus = new LinkedHashMap<>();
+        this.members = new ArrayList<>();
+        this.membersPoints = new HashMap<>();
+        this.memberStatus = new HashMap<>();
         this.chatroom = new ArrayList<>();
         this.timeOfCreation = LocalDateTime.now();
     }
@@ -169,11 +172,13 @@ public class Team implements Serializable {
     }
 
     public int getMemberScore(User user) {
-        return this.teamMembers.get(user);
+        return this.membersPoints.get(user.getEmail());
     }
 
     public boolean isSuspended(User user) {
-        return this.membersStatus.get(user) == MemberStatus.SUSPENDED;
+        if (user.isTeamLeader())
+            return false;
+        return this.memberStatus.get(user.getEmail()) == MemberStatus.SUSPENDED;
     }
 
     public void createTask(String title, LocalDateTime start, LocalDateTime deadline) {
@@ -249,8 +254,8 @@ public class Team implements Serializable {
                     .append("\n")
                     .append("assigned users:\n");
 
-            for (User user : task.getAssignedUsers()) {
-                result.append(user.getUsername()).append("\n");
+            for (String user : task.getAssignedUsers()) {
+                result.append(user).append("\n");
             }
 
             if (task.getAssignedUsers().isEmpty())
@@ -306,38 +311,43 @@ public class Team implements Serializable {
     }
 
     public boolean hasMember(User user) {
-        return this.teamMembers.containsKey(user);
+        return this.members.contains(user.getUsername());
     }
 
     public ArrayList<User> getMembers() {
-        return new ArrayList<>(this.teamMembers.keySet());
+        ArrayList<User> users = new ArrayList<>();
+        for (String user : this.members)
+            users.add(User.getUser(user));
+        return users;
     }
 
     public void sendNotification(Notification notification) {
-        for (User user : this.teamMembers.keySet())
-            user.sendNotification(notification);
+        for (String user : this.members)
+            User.getUser(user).sendNotification(notification);
     }
 
     public void addMember(User user) {
-        this.teamMembers.put(user, 0);
-        this.membersStatus.put(user, MemberStatus.ACTIVE);
+        this.members.add(user.getUsername());
+        this.membersPoints.put(user.getEmail(), 0);
+        this.memberStatus.put(user.getEmail(), MemberStatus.ACTIVE);
     }
 
     public void deleteMember(User user) {
-        this.teamMembers.remove(user);
-        this.membersStatus.remove(user);
+        this.members.remove(user.getUsername());
+        this.membersPoints.remove(user.getEmail());
+        this.memberStatus.remove(user.getEmail());
     }
 
     public void suspendMember(User user) {
-        this.membersStatus.put(user, MemberStatus.SUSPENDED);
+        this.memberStatus.put(user.getEmail(), MemberStatus.SUSPENDED);
     }
 
     public void activateMember(User user) {
-        this.membersStatus.put(user, MemberStatus.ACTIVE);
+        this.memberStatus.put(user.getEmail(), MemberStatus.ACTIVE);
     }
 
     public void sendMessage(User sender, String body) {
-        this.chatroom.add(new Message(sender, body));
+        this.chatroom.add(new Message(sender.getUsername(), body));
     }
 
     public String getMessagesFormatted() {
@@ -359,7 +369,7 @@ public class Team implements Serializable {
         });
 
         for (Message message : this.chatroom)
-            result.append(message.getSender().getUsername())
+            result.append(message.getSender())
                     .append(": ")
                     .append(String.format("\"%s\"", message.getBody()))
                     .append("\n");
@@ -398,36 +408,36 @@ public class Team implements Serializable {
     }
 
     public String getScoreboard() {
-        List<User> members = new ArrayList<>(this.teamMembers.keySet());
+        List<String> members = this.members;
 
         if (members.isEmpty())
             return "There is no member in this team!";
 
-        members.sort(new Comparator<User>() {
+        members.sort(new Comparator<String>() {
             @Override
-            public int compare(User o1, User o2) {
-                int score1 = teamMembers.get(o2);
-                int score2 = teamMembers.get(o1);
+            public int compare(String o1, String o2) {
+                int index1 = members.indexOf(o1);
+                int index2 = members.indexOf(o2);
+                int score1 = membersPoints.get(User.getUser(o2).getEmail());
+                int score2 = membersPoints.get(User.getUser(o1).getEmail());
 
                 if (score1 > score2)
                     return 1;
                 else if (score2 > score1)
                     return -1;
 
-                String name1 = o1.getUsername();
-                String name2 = o2.getUsername();
-                return name1.compareTo(name2);
+                return o1.compareTo(o2);
             }
         });
 
         int index = 1;
         StringBuilder result = new StringBuilder();
-        for (User user : members) {
+        for (String user : members) {
             result.append(index++)
                     .append(" ")
-                    .append(user.getUsername())
+                    .append(user)
                     .append(" ")
-                    .append(this.teamMembers.get(user))
+                    .append(this.membersPoints.get(User.getUser(user).getEmail()))
                     .append("\n");
         }
         result.append("\n");
@@ -435,14 +445,16 @@ public class Team implements Serializable {
     }
 
     public void givePoint(Task task) {
-        for (User user : task.getAssignedUsers()) {
-            this.teamMembers.put(user, this.teamMembers.get(user) + 10);
+        for (String user : task.getAssignedUsers()) {
+            int point = this.membersPoints.get(User.getUser(user).getEmail());
+            this.membersPoints.put(User.getUser(user).getEmail(), point + 10);
         }
     }
 
     public void takePoint(Task task) {
-        for (User user : task.getAssignedUsers()) {
-            this.teamMembers.put(user, this.teamMembers.get(user) - 5);
+        for (String user : task.getAssignedUsers()) {
+            int point = this.membersPoints.get(User.getUser(user).getEmail());
+            this.membersPoints.put(User.getUser(user).getEmail(), point - 5);
         }
     }
 
@@ -482,20 +494,24 @@ public class Team implements Serializable {
         ID_COUNTER = idCounter;
     }
 
-    public HashMap<User, Integer> getTeamMembers() {
-        return teamMembers;
+    public void setMembers(ArrayList<String> members) {
+        this.members = members;
     }
 
-    public void setTeamMembers(HashMap<User, Integer> teamMembers) {
-        this.teamMembers = teamMembers;
+    public HashMap<String, Integer> getMembersPoints() {
+        return membersPoints;
     }
 
-    public HashMap<User, MemberStatus> getMembersStatus() {
-        return membersStatus;
+    public void setMembersPoints(HashMap<String, Integer> membersPoints) {
+        this.membersPoints = membersPoints;
     }
 
-    public void setMembersStatus(HashMap<User, MemberStatus> membersStatus) {
-        this.membersStatus = membersStatus;
+    public HashMap<String, MemberStatus> getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(HashMap<String, MemberStatus> memberStatus) {
+        this.memberStatus = memberStatus;
     }
 
     public ArrayList<Message> getChatroom() {

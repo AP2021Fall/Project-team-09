@@ -51,35 +51,35 @@ public class TeamMenuController {
     public MResponse getScoreboard(Team team) {
         return new MRequest()
                 .setPath(GET_SCOREBOARD_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
     public MResponse getRoadmapFormatted(Team team) {
         return new MRequest()
                 .setPath(GET_ROADMAP_FRM_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
     public MResponse getRoadmap(Team team) {
         return new MRequest()
                 .setPath(GET_ROADMAP_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
     public MResponse getMessagesFormatted(Team team) {
         return new MRequest()
                 .setPath(GET_MESSAGES_FRM_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
     public MResponse getMessages(Team team) {
         return new MRequest()
                 .setPath(GET_MESSAGES_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
@@ -101,14 +101,14 @@ public class TeamMenuController {
     public MResponse showTasks(Team team) {
         return new MRequest()
                 .setPath(SHOW_TASKS_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
     public MResponse showTask(Team team, String taskId) {
         return new MRequest()
                 .setPath(SHOW_TASK_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .addArg(TASK_ID, taskId)
                 .get();
     }
@@ -136,7 +136,7 @@ public class TeamMenuController {
     public MResponse getAllTasks(Team team) {
         return new MRequest()
                 .setPath(GET_ALL_TASKS_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
@@ -167,7 +167,7 @@ public class TeamMenuController {
     public MResponse getMembers(Team team) {
         return new MRequest()
                 .setPath(GET_MEMBERS_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 
@@ -216,7 +216,7 @@ public class TeamMenuController {
     public MResponse getAllUsers(Team team) {
         return new MRequest()
                 .setPath(GET_ALL_USERS_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 }

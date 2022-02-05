@@ -50,7 +50,7 @@ public class Board implements Serializable {
                 if (task.getCategory().equalsIgnoreCase(categoryName) &&
                         task.getBoard().getId() == this.id)
                     result.append(String.format("Task %s by %s is %s",
-                                    task.getTitle(), task.getAssignedUsers().get(0).getUsername(),
+                                    task.getTitle(), task.getAssignedUsers().get(0),
                                     "something"))
                             .append("\n");
         return result.toString();

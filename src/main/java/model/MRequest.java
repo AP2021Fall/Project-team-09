@@ -126,13 +126,11 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
                 String object = jsonElement.getAsJsonObject().get("object").toString();
-                System.out.println("this is the object");
-                System.out.println(object);
                 mResponse.setObject(object);
             }
             return mResponse;
@@ -158,13 +156,11 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
                 String object = jsonElement.getAsJsonObject().get("object").toString();
-                System.out.println("this is the object");
-                System.out.println(object);
                 mResponse.setObject(object);
             }
             return mResponse;
@@ -190,15 +186,12 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println("this is the response");
             System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
 
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
                 String object = jsonElement.getAsJsonObject().get("object").toString();
-                System.out.println("this is the object");
-                System.out.println(object);
                 mResponse.setObject(object);
             }
             return mResponse;
@@ -224,13 +217,11 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
                 String object = jsonElement.getAsJsonObject().get("object").toString();
-                System.out.println("this is the object");
-                System.out.println(object);
                 mResponse.setObject(object);
             }
             return mResponse;
@@ -254,9 +245,6 @@ public class MRequest implements Serializable {
             for (String segment : path.split("/"))
                 url.addPathSegment(segment);
 
-            System.out.println(url);
-
-
             for (String arg : arguments.keySet())
                 url.addQueryParameter(arg, (String) arguments.get(arg));
 
@@ -268,13 +256,11 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            MResponse mResponse = gson.fromJson(res, MResponse.class);
             System.out.println(res);
+            MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
                 String object = jsonElement.getAsJsonObject().get("object").toString();
-                System.out.println("this is the object");
-                System.out.println(object);
                 mResponse.setObject(object);
             }
             return mResponse;

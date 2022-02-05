@@ -24,7 +24,7 @@ public class NotificationItem {
     public VBox draw() {
         VBox vBox = new VBox();
 
-        Label label = new Label(this.notification.getUser().getUsername());
+        Label label = new Label(this.notification.getUser());
         Label label1 = new Label(this.notification.getBody());
 
 

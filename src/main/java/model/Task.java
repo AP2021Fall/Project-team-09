@@ -19,13 +19,13 @@ public class Task implements Serializable {
     private LocalDateTime timeOfCreation;
     private LocalDateTime startTime;
     private LocalDateTime timeOfDeadline;
-    private ArrayList<User> assignedUsers;
+    private ArrayList<String> assignedUsers;
     private ArrayList<Comment> comments;
     private Board board;
     private String category;
     private Status status;
 
-    public Task(int id, String title, String description, Priority priority, LocalDateTime timeOfCreation, LocalDateTime startTime, LocalDateTime timeOfDeadline, ArrayList<User> assignedUsers, ArrayList<Comment> comments, Board board, String category, Status status) {
+    public Task(int id, String title, String description, Priority priority, LocalDateTime timeOfCreation, LocalDateTime startTime, LocalDateTime timeOfDeadline, ArrayList<String> assignedUsers, ArrayList<Comment> comments, Board board, String category, Status status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -313,11 +313,11 @@ public class Task implements Serializable {
         this.timeOfDeadline = timeOfDeadline;
     }
 
-    public ArrayList<User> getAssignedUsers() {
+    public ArrayList<String> getAssignedUsers() {
         return assignedUsers;
     }
 
-    public void setAssignedUsers(ArrayList<User> assignedUsers) {
+    public void setAssignedUsers(ArrayList<String> assignedUsers) {
         this.assignedUsers = assignedUsers;
     }
 
@@ -330,13 +330,14 @@ public class Task implements Serializable {
     }
 
     public String getAssignedUsersFormatted() {
-        this.assignedUsers.sort(new Comparator<User>() {
+        this.assignedUsers.sort(new Comparator<String>() {
             @Override
-            public int compare(User o1, User o2) {
-                return o1.getUsername().compareTo(o2.getUsername());
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
             }
         });
-        return this.assignedUsers.stream().map(User::getUsername)
+
+        return this.assignedUsers.stream().map(String::toString)
                 .collect(Collectors.joining(", "));
     }
 
@@ -348,19 +349,19 @@ public class Task implements Serializable {
     }
 
     public User isInAssignedUsers(String username) {
-        for (User user : assignedUsers)
-            if (user.getUsername().equals(username))
-                return user;
+        for (String user : assignedUsers)
+            if (user.equals(username))
+                return User.getUser(user);
         return null;
     }
 
     public void removeFromAssignedUsers(User user) {
-        if (this.assignedUsers.contains(user))
-            assignedUsers.remove(user);
+        if (this.assignedUsers.contains(user.getUsername()))
+            assignedUsers.remove(user.getUsername());
     }
 
     public void assignUser(User user) {
-        this.assignedUsers.add(user);
+        this.assignedUsers.add(user.getUsername());
     }
 
 
@@ -376,8 +377,8 @@ public class Task implements Serializable {
                 .append("Date and time of deadline: ").append(this.timeOfDeadline).append("\n")
                 .append("Assigned users: ").append("\n");
 
-        for (User user : assignedUsers)
-            string.append(user.getUsername()).append("\n");
+        for (String user : assignedUsers)
+            string.append(user).append("\n");
 
         string.append("Comments: ").append("\n");
 

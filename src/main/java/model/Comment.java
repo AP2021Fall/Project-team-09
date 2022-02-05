@@ -6,22 +6,22 @@ import java.time.format.DateTimeFormatter;
 
 public class Comment implements Serializable {
 
-    private User user;
+    private String user;
     private String message;
     private LocalDateTime dateTime;
 
-    public Comment(User user, String message) {
+    public Comment(String user, String message) {
         this.user = user;
         this.message = message;
         this.dateTime = LocalDateTime.now();
     }
 
     public User getUser() {
-        return user;
+        return User.getUser(this.user);
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.user = user.getUsername();
     }
 
     public String getMessage() {
@@ -47,6 +47,6 @@ public class Comment implements Serializable {
 
     @Override
     public String toString() {
-        return this.user.getUsername() + ": " + this.message + " - "+ this.dateTime;
+        return this.user + ": " + this.message + " - " + this.dateTime;
     }
 }

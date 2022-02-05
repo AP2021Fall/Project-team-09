@@ -150,7 +150,7 @@ public class BoardMenuController {
     public MResponse getSpecificCategoryTasks(Team team, String category, String boardName) {
         return new MRequest()
                 .setPath(GET_SPECIFIED_CATEGORY_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .addArg(CATEGORY, category)
                 .addArg(BOARD_NAME, boardName)
                 .get();
@@ -172,7 +172,7 @@ public class BoardMenuController {
     public MResponse showBoard(Team team, String boardName) {
         return new MRequest()
                 .setPath(SHOW_BOARD_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .addArg(BOARD_NAME, boardName)
                 .get();
     }
@@ -180,7 +180,7 @@ public class BoardMenuController {
     public MResponse getBoards(Team team) {
         return new MRequest()
                 .setPath(GET_BOARDS_PATH)
-                .addArg(TEAM, team)
+                .addArg(TEAM, team.getName())
                 .get();
     }
 }

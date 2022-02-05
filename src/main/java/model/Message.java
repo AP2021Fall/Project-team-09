@@ -8,18 +8,18 @@ public class Message implements Serializable {
     private static int ID_COUNTER = 1;
 
     private int id;
-    private User sender;
+    private String sender;
     private String body;
     private LocalDateTime dateTime;
 
-    public Message(int id, User sender, String body, LocalDateTime localDateTime) {
+    public Message(int id, String sender, String body, LocalDateTime localDateTime) {
         this.id = id;
         this.sender = sender;
         this.body = body;
         this.dateTime = localDateTime;
     }
 
-    public Message(User sender, String body) {
+    public Message(String sender, String body) {
         this.id = ID_COUNTER++;
         this.sender = sender;
         this.body = body;
@@ -35,11 +35,11 @@ public class Message implements Serializable {
     }
 
     public User getSender() {
-        return sender;
+        return User.getUser(this.sender);
     }
 
     public void setSender(User sender) {
-        this.sender = sender;
+        this.sender = sender.getUsername();
     }
 
     public String getBody() {
