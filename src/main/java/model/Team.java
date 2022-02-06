@@ -1,10 +1,17 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import controller.MResponse;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Team implements Serializable {
+
+    private static final String GET_ALL_TEAMS = "/team/get-all";
+
     private static ArrayList<Team> teams = new ArrayList<>();
     private static int ID_COUNTER = 1;
     private int id;
@@ -50,7 +57,7 @@ public class Team implements Serializable {
     }
 
     public static Team getTeamByName(String teamName) {
-        for (Team team : teams)
+        for (Team team : Team.getTeams())
             if (team.getName().equalsIgnoreCase(teamName))
                 return team;
         return null;
@@ -86,7 +93,14 @@ public class Team implements Serializable {
     }
 
     public static ArrayList<Team> getTeams() {
-        return teams;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_ALL_TEAMS)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<ArrayList<Team>>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
     public static void setTeams(ArrayList<Team> teams) {
@@ -94,7 +108,7 @@ public class Team implements Serializable {
     }
 
     public static Team getTeamOfTask(int id) {
-        for (Team team : teams)
+        for (Team team : Team.getTeams())
             if (team.hasTask(id))
                 return team;
         return null;
@@ -150,7 +164,7 @@ public class Team implements Serializable {
 
     public static ArrayList<Team> getPendingTeams() {
         ArrayList<Team> pending = new ArrayList<>();
-        for (Team team : teams)
+        for (Team team : Team.getTeams())
             if (team.isPending())
                 pending.add(team);
         return pending;

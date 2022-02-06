@@ -1,5 +1,9 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import controller.MResponse;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +12,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class User implements Serializable {
+
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
+    private static final String GET_AUTH_USER = "/auth/get-user";
+    private static final String GET_USER = "/user/get-user";
+    private static final String GET_ALL_USERS = "/user/get-all-users";
 
     private static User admin;
 
@@ -62,7 +73,14 @@ public class User implements Serializable {
     }
 
     public static ArrayList<User> getAllUsers() {
-        return allUsers;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_ALL_USERS)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<ArrayList<User>>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
     public static void setAllUsers(ArrayList<User> allUsers) {
@@ -154,23 +172,28 @@ public class User implements Serializable {
     }
 
     public static User getUser(String username, String password) {
-        if (admin.getUsername().equalsIgnoreCase(username) && admin.getPassword().equals(password))
-            return admin;
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username) && user.password.equals(password)) {
-                return user;
-            }
-        }
-        return null;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_AUTH_USER)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD, password)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<User>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
     public static User getUser(String username) {
-        for (User user : allUsers) {
-            if (user.username.equalsIgnoreCase(username)) {
-                return user;
-            }
-        }
-        return null;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_USER)
+                .addArg(USERNAME, username)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<User>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
 

@@ -1,4 +1,3 @@
-import controller.SaveAndLoadController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +15,6 @@ public class Main extends Application {
     private double xOffset, yOffset;
 
     public static void main(String[] args) {
-//        SaveAndLoadController.load();
         launch(args);
 
         new LoginMenu().show();

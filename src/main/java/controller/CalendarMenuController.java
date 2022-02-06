@@ -1,8 +1,6 @@
 package controller;
 
 import model.MRequest;
-import model.Task;
-import model.User;
 
 public class CalendarMenuController {
 

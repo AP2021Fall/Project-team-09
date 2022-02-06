@@ -1,6 +1,10 @@
 
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import controller.MResponse;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +14,9 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class Task implements Serializable {
+
+    private static final String GET_ALL_TASKS = "/task/get-all";
+
     private static ArrayList<Task> allTask = new ArrayList<>();
     private static int idCounter = 100;
     private int id;
@@ -72,7 +79,14 @@ public class Task implements Serializable {
     }
 
     public static ArrayList<Task> getAllTask() {
-        return allTask;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_ALL_TASKS)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<ArrayList<Task>>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
     public static void setAllTask(ArrayList<Task> allTask) {
@@ -149,7 +163,7 @@ public class Task implements Serializable {
         if (allTask.isEmpty())
             return "no deadlines";
 
-        for (Task task : allTask)
+        for (Task task : Task.getAllTask())
             if (task.isInAssignedUsers(user.getUsername()) != null) {
                 if (task.isDone() || task.hasPassedDeadline())
                     continue;
@@ -176,7 +190,7 @@ public class Task implements Serializable {
     public static ArrayList<Task> getDeadlines(User user) {
         ArrayList<Task> tasks = new ArrayList<>();
 
-        for (Task task : allTask)
+        for (Task task : Task.getAllTask())
             if (task.isInAssignedUsers(user.getUsername()) != null) {
                 if (task.isDone() || task.hasPassedDeadline())
                     continue;
@@ -342,7 +356,7 @@ public class Task implements Serializable {
     }
 
     public static Task getTask(int id) {
-        for (Task task : allTask)
+        for (Task task : Task.getAllTask())
             if (task.getId() == id)
                 return task;
         return null;
