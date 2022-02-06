@@ -24,6 +24,7 @@ public class TeamMenuController {
     private static final String ADD_MEMBER_PATH = "/team/add-member";
     private static final String DELETE_MEMBER_PATH = "/team/delete-member";
     private static final String SUSPEND_MEMBER_PATH = "/team/suspend-member";
+    private static final String ACTIVATE_MEMBER_PATH = "/team/activate-member";
     private static final String PROMOTE_USER_PATH = "/team/promote-user";
     private static final String ASSIGN_T0_TASK_PATH = "/team/assign-to-task";
     private static final String GET_ALL_USERS_PATH = "/team/get-all-users";
@@ -190,6 +191,14 @@ public class TeamMenuController {
     public MResponse suspendMember(Team team, String username) {
         return new MRequest()
                 .setPath(SUSPEND_MEMBER_PATH)
+                .addArg(TEAM, team)
+                .addArg(USERNAME, username)
+                .patch();
+    }
+
+    public MResponse activateMember(Team team, String username) {
+        return new MRequest()
+                .setPath(ACTIVATE_MEMBER_PATH)
                 .addArg(TEAM, team)
                 .addArg(USERNAME, username)
                 .patch();

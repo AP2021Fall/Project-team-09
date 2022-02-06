@@ -1085,14 +1085,18 @@ public class DashboardUIController implements Initializable, GUI {
     }
 
     private void suspendUser(Team team, User member) {
-        team.suspendMember(member);
-        save();
+        MResponse MResponse =
+                TeamMenuController.getInstance().suspendMember(team, member.getUsername());
+        showResponse(MResponse);
+//        save();
         setMembers();
     }
 
     private void activateUser(Team team, User member) {
-        team.activateMember(member);
-        save();
+        MResponse MResponse =
+                TeamMenuController.getInstance().activateMember(team, member.getUsername());
+        showResponse(MResponse);
+//        save();
         setMembers();
     }
 
@@ -1100,7 +1104,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().deleteMember(team, member.getUsername());
         showResponse(MResponse);
-        save();
+//        save();
         setMembers();
     }
 
@@ -1108,7 +1112,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().promoteUser(team, member.getUsername(), "teamLeader");
         showResponse(MResponse);
-        save();
+//        save();
         setMembers();
     }
 
@@ -1628,9 +1632,7 @@ public class DashboardUIController implements Initializable, GUI {
 
 
         if (MResponse.isSuccess()) {
-            Type typeMyType = new TypeToken<HashMap<Team, ArrayList<Task>>>() {
-            }.getType();
-            HashMap<Team, ArrayList<Task>> teamTasks = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
+            HashMap<Team, ArrayList<Task>> teamTasks = (HashMap<Team, ArrayList<Task>>) MResponse.getObject();
 
             for (Team team : teamTasks.keySet()) {
                 if (sortedTeam != null)
@@ -1753,7 +1755,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 ProfileMenuController.getInstance().showTeams();
         if (MResponse.isSuccess()) {
-            Type typeMyType = new TypeToken<Team>() {
+            Type typeMyType = new TypeToken<ArrayList<Team>>() {
             }.getType();
             ArrayList<Team> allTeams = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 

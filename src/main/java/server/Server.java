@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import model.MRequest;
-import model.Team;
+import server.model.*;
 import server.controller.*;
 import spark.ResponseTransformer;
 import utilities.ConsoleHelper;
@@ -143,9 +142,18 @@ public class Server {
     private static final String ADD_MEMBER_PATH = "team/add-member";
     private static final String DELETE_MEMBER_PATH = "team/delete-member";
     private static final String SUSPEND_MEMBER_PATH = "team/suspend-member";
+    private static final String ACTIVATE_MEMBER_PATH = "/team/activate-member";
     private static final String PROMOTE_USER_PATH = "team/promote-user";
     private static final String ASSIGN_T0_TASK_PATH = "team/assign-to-task";
     private static final String GET_ALL_USERS_PATH = "team/get-all-users";
+
+    // general
+
+    private static final String GET_AUTH_USER = "auth/get-user";
+    private static final String GET_USER = "user/get-user";
+    private static final String GET_ALL_USERS = "user/get-all-users";
+    private static final String GET_ALL_TEAM = "team/get-all";
+    private static final String GET_ALL_TASK = "task/get-all";
 
 
     private static final int PORT = 5678;
@@ -276,8 +284,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .createNewBoard(team, (String) req.getArg(BOARD_NAME));
+                    .createNewBoard(t, (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         delete(REMOVE_BOARD_PATH, JSON, (request, response) -> {
@@ -291,8 +300,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .removeBoard(team, (String) req.getArg(BOARD_NAME));
+                    .removeBoard(t, (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         patch(SELECT_BOARD_PATH, JSON, (request, response) -> {
@@ -306,8 +316,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .selectBoard(team, (String) req.getArg(BOARD_NAME));
+                    .selectBoard(t, (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         patch(DESELECT_BOARD_PATH, JSON, (request, response) -> {
@@ -326,8 +337,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .createNewCategory(team, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
+                    .createNewCategory(t, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         put(CREATE_CATEGORY_AT_PATH, JSON, (request, response) -> {
@@ -341,8 +353,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .createNewCategoryAt(team, (String) req.getArg(CATEGORY_NAME),
+                    .createNewCategoryAt(t, (String) req.getArg(CATEGORY_NAME),
                             Integer.parseInt((String) req.getArg(COLUMN)), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
@@ -357,8 +370,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .setBoardToDone(team, (String) req.getArg(BOARD_NAME));
+                    .setBoardToDone(t, (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         put(ADD_TASK_PATH, JSON, (request, response) -> {
@@ -372,8 +386,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .addTaskToBoard(team, (String) req.getArg(TASK_ID), (String) req.getArg(BOARD_NAME));
+                    .addTaskToBoard(t, (String) req.getArg(TASK_ID), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         put(ASSIGN_TASK_PATH, JSON, (request, response) -> {
@@ -387,8 +402,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .assignTaskToMember(team, (String) req.getArg(USERNAME),
+                    .assignTaskToMember(t, (String) req.getArg(USERNAME),
                             (String) req.getArg(TASK_ID), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
@@ -403,8 +419,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .forceMoveTaskToCategory(team, (String) req.getArg(CATEGORY_NAME),
+                    .forceMoveTaskToCategory(t, (String) req.getArg(CATEGORY_NAME),
                             (String) req.getArg(TASK_TITLE), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
@@ -419,8 +436,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .moveTaskToNextCategory(team, (String) req.getArg(TASK_TITLE), (String) req.getArg(BOARD_NAME));
+                    .moveTaskToNextCategory(t, (String) req.getArg(TASK_TITLE), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         put(SHOW_CATEGORY_TASKS_PATH, JSON, (request, response) -> {
@@ -434,8 +452,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .showCategoryTasks(team, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
+                    .showCategoryTasks(t, (String) req.getArg(CATEGORY_NAME), (String) req.getArg(BOARD_NAME));
         }, new JsonTransformer());
 
         get(GET_SPECIFIED_CATEGORY_PATH, JSON, (request, response) -> {
@@ -457,8 +476,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return BoardMenuController.getInstance()
-                    .openFailedTask(team, (String) req.getArg(TASK_TITLE), (String) req.getArg(DEADLINE),
+                    .openFailedTask(t, (String) req.getArg(TASK_TITLE), (String) req.getArg(DEADLINE),
                             (String) req.getArg(BOARD_NAME), (String) req.getArg(TEAM_MATE),
                             (String) req.getArg(CATEGORY));
         }, new JsonTransformer());
@@ -562,35 +582,35 @@ public class Server {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return TasksMenuController.getInstance()
-                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(DESCRIPTION));
+                    .editTaskDescription((String) req.getArg(ID), (String) req.getArg(DESCRIPTION));
         }, new JsonTransformer());
 
         patch(EDIT_TASK_PRIORITY_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return TasksMenuController.getInstance()
-                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(PRIORITY));
+                    .editTaskPriority((String) req.getArg(ID), (String) req.getArg(PRIORITY));
         }, new JsonTransformer());
 
         patch(EDIT_TASK_DEADLINE_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return TasksMenuController.getInstance()
-                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(DEADLINE));
+                    .editTaskDeadline((String) req.getArg(ID), (String) req.getArg(DEADLINE));
         }, new JsonTransformer());
 
         patch(ASSIGN_USER_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return TasksMenuController.getInstance()
-                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(USERNAME));
+                    .addToAssignedUsers((String) req.getArg(ID), (String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
         patch(REMOVE_USER_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
             return TasksMenuController.getInstance()
-                    .editTaskTitle((String) req.getArg(ID), (String) req.getArg(USERNAME));
+                    .removeAssignedUsers((String) req.getArg(ID), (String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
         patch(EDIT_TASK_PATH, JSON, (request, response) -> {
@@ -604,8 +624,9 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return TasksMenuController.getInstance()
-                    .editTask(team, (String) req.getArg(ID), (String) req.getArg(TITLE),
+                    .editTask(t, (String) req.getArg(ID), (String) req.getArg(TITLE),
                             (String) req.getArg(PRIORITY), (String) req.getArg(START_TIME),
                             (String) req.getArg(DEADLINE), (String) req.getArg(DESCRIPTION));
         }, new JsonTransformer());
@@ -653,7 +674,8 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().sendMessage(team, (String) req.getArg(BODY));
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().sendMessage(t, (String) req.getArg(BODY));
         }, new JsonTransformer());
 
         get(SHOW_TASKS_PATH, JSON, (request, response) -> {
@@ -690,18 +712,34 @@ public class Server {
         put(CREATE_TASK_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
-            Team team = (Team) req.getArg(TEAM);
+            JsonElement jsonElement = new JsonParser().parse(requestBody);
+            if (jsonElement.getAsJsonObject().get("arguments") != null) {
+                String object = jsonElement.getAsJsonObject()
+                        .get("arguments").getAsJsonObject()
+                        .get("team").toString();
+                req.setObject(object);
+            }
+            Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return TeamMenuController.getInstance()
-                    .createTask(team, (String) req.getArg(TITLE), (String) req.getArg(START_TIME),
+                    .createTask(t, (String) req.getArg(TITLE), (String) req.getArg(START_TIME),
                             (String) req.getArg(DEADLINE));
         }, new JsonTransformer());
 
         put(CREATE_TASK_EXT_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
-            Team team = (Team) req.getArg(TEAM);
+            JsonElement jsonElement = new JsonParser().parse(requestBody);
+            if (jsonElement.getAsJsonObject().get("arguments") != null) {
+                String object = jsonElement.getAsJsonObject()
+                        .get("arguments").getAsJsonObject()
+                        .get("team").toString();
+                req.setObject(object);
+            }
+            Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
             return TeamMenuController.getInstance()
-                    .createTask(team, (String) req.getArg(TITLE), (String) req.getArg(PRIORITY),
+                    .createTask(t, (String) req.getArg(TITLE), (String) req.getArg(PRIORITY),
                             (String) req.getArg(START_TIME), (String) req.getArg(DEADLINE),
                             (String) req.getArg(DESCRIPTION));
         }, new JsonTransformer());
@@ -722,7 +760,8 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().addMemberToTeam(team, (String) req.getArg(USERNAME));
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().addMemberToTeam(t, (String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
         delete(DELETE_MEMBER_PATH, JSON, (request, response) -> {
@@ -736,7 +775,8 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().deleteMember(team, (String) req.getArg(USERNAME));
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().deleteMember(t, (String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
         patch(SUSPEND_MEMBER_PATH, JSON, (request, response) -> {
@@ -750,8 +790,25 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().suspendMember(team, (String) req.getArg(USERNAME));
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().suspendMember(t, (String) req.getArg(USERNAME));
         }, new JsonTransformer());
+
+        patch(ACTIVATE_MEMBER_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            JsonElement jsonElement = new JsonParser().parse(requestBody);
+            if (jsonElement.getAsJsonObject().get("arguments") != null) {
+                String object = jsonElement.getAsJsonObject()
+                        .get("arguments").getAsJsonObject()
+                        .get("team").toString();
+                req.setObject(object);
+            }
+            Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().activateMember(t, (String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
 
         patch(PROMOTE_USER_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
@@ -764,7 +821,8 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().promoteUser(team, (String) req.getArg(USERNAME),
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().promoteUser(t, (String) req.getArg(USERNAME),
                     (String) req.getArg(RATE));
         }, new JsonTransformer());
 
@@ -779,7 +837,8 @@ public class Server {
                 req.setObject(object);
             }
             Team team = new Gson().fromJson((String) req.getObject(), Team.class);
-            return TeamMenuController.getInstance().assignToTask(team, (String) req.getArg(TASK_ID),
+            Team t = Team.getTeamByName(team.getName());
+            return TeamMenuController.getInstance().assignToTask(t, (String) req.getArg(TASK_ID),
                     (String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
@@ -787,6 +846,34 @@ public class Server {
             String team = request.queryParams(TEAM);
             return TeamMenuController.getInstance().getAllUsers(Team.getTeamByName(team));
         }, new JsonTransformer());
+
+        // general
+
+        get(GET_ALL_USERS, JSON, (request, response) -> {
+            return new MResponse("Success", true, User.getAllUsers());
+        }, new JsonTransformer());
+
+        get(GET_AUTH_USER, JSON, (request, response) -> {
+            String username = request.queryParams(USERNAME);
+            String password = request.queryParams(PASSWORD);
+            return new MResponse("Success", true, User.getUser(username, password));
+        }, new JsonTransformer());
+
+        get(GET_USER, JSON, (request, response) -> {
+            String username = request.queryParams(USERNAME);
+            return new MResponse("success", true, User.getUser(username));
+        }, new JsonTransformer());
+
+        get(GET_ALL_TEAM, JSON, (request, response) -> {
+            return new MResponse("Success", true, Team.getTeams());
+        }, new JsonTransformer());
+
+        get(GET_ALL_TASK, JSON, (request, response) -> {
+            return new MResponse("Success", true, Task.getAllTask());
+        }, new JsonTransformer());
+
+        afterAfter((request, response) -> SaveAndLoadController.save());
+
 
         // test
 

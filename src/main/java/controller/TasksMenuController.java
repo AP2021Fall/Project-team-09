@@ -1,7 +1,14 @@
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.MRequest;
 import model.Team;
+import model.Task;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TasksMenuController {
 
@@ -32,9 +39,22 @@ public class TasksMenuController {
     }
 
     public MResponse getAllTasks() {
-        return new MRequest()
+        HashMap<Team, ArrayList<Task>> teamTasks = new HashMap<>();
+        MResponse mResponse = new MRequest()
                 .setPath(ALL_TASKS_PATH)
                 .get();
+
+        Type typeMyType = new TypeToken<HashMap<String, ArrayList<Task>>>() {
+        }.getType();
+        HashMap<String, ArrayList<Task>> receivedTasks
+                = new Gson().fromJson((String) mResponse.getObject(), typeMyType);
+
+        for (String team : receivedTasks.keySet()) {
+            teamTasks.put(Team.getTeamByName(team), receivedTasks.get(team));
+        }
+
+        mResponse.setObject(teamTasks);
+        return mResponse;
     }
 
     public MResponse editTaskTitle(String id, String title) {
