@@ -1,8 +1,8 @@
 package server.controller;
 
-import model.Task;
-import model.Team;
-import model.User;
+import server.model.Task;
+import server.model.Team;
+import server.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -55,10 +55,10 @@ public class TasksMenuController {
             teams = user.getTeams();
         }
 
-        HashMap<Team, ArrayList<Task>> teamTasks = new HashMap<>();
+        HashMap<String, ArrayList<Task>> teamTasks = new HashMap<>();
 
         for (Team team : teams) {
-            teamTasks.put(team, team.getTasks());
+            teamTasks.put(team.getName(), team.getTasks());
         }
 
         return new MResponse(SUCCESS, true, teamTasks);

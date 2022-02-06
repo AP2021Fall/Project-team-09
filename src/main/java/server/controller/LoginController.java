@@ -1,6 +1,6 @@
 package server.controller;
 
-import model.User;
+import server.model.User;
 
 public class LoginController {
 

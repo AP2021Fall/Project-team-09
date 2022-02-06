@@ -1,9 +1,9 @@
 package server.controller;
 
-import model.Board;
-import model.Task;
-import model.Team;
-import model.User;
+import server.model.Board;
+import server.model.Task;
+import server.model.Team;
+import server.model.User;
 import utilities.SharedPreferences;
 
 import java.time.LocalDateTime;

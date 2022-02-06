@@ -1,9 +1,9 @@
 package server.controller;
 
-import model.Notification;
-import model.Task;
-import model.Team;
-import model.User;
+import server.model.Notification;
+import server.model.Task;
+import server.model.Team;
+import server.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +25,8 @@ public class TeamMenuController {
             "User deleted successfully!";
     private final String SUCCESS_USER_SUSPENDED =
             "User suspended successfully!";
+    private final String SUCCESS_USER_ACTIVATED =
+            "User activated successfully!";
     private final String SUCCESS_MEMBER_ASSIGNED =
             "Member assigned successfully!";
     private final String SUCCESS_PROMOTED =
@@ -59,6 +61,8 @@ public class TeamMenuController {
     private final String WARN_USER_EXISTS =
             "User is already a member!";
     private final String WARN_ALREADY_SUSPENDED =
+            "User is already suspended";
+    private final String WARN_ALREADY_ACTIVATED =
             "User is already suspended";
     private final String WARN_TASK_ID_INVALID =
             "No task exists with this id!";
@@ -303,8 +307,13 @@ public class TeamMenuController {
             return new MResponse(WARN_USER_TEAM_LEADER, false);
 
         team.addMember(user);
+        System.out.println("this is the team to be updated");
+        System.out.println(team.getName());
+        System.out.println(team.getMembers());
+        System.out.println(team.getMembersPoints());
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been added to \"%s\" team!", team.getName())));
+        SaveAndLoadController.save();
         return new MResponse(SUCCESS_USER_ADDED, true);
     }
 
@@ -344,6 +353,26 @@ public class TeamMenuController {
         user.sendNotification(new Notification(UserController.getLoggedUser(),
                 team, String.format("You have been suspended from \"%s\" team!", team.getName())));
         return new MResponse(SUCCESS_USER_SUSPENDED, true);
+    }
+
+    public MResponse activateMember(Team team, String username) {
+        User user = User.getUser(username);
+        if (user == null)
+            return new MResponse(WARN_404_USER, false);
+
+        if (!team.hasMember(user))
+            return new MResponse(WARN_404_USER, false);
+
+        if (!team.isSuspended(user))
+            return new MResponse(WARN_ALREADY_ACTIVATED, false);
+
+        if (team.getLeader().getUsername().equalsIgnoreCase(username))
+            return new MResponse(WARN_USER_TEAM_LEADER, false);
+
+        team.activateMember(user);
+        user.sendNotification(new Notification(UserController.getLoggedUser(),
+                team, String.format("You have been activated in \"%s\" team!", team.getName())));
+        return new MResponse(SUCCESS_USER_ACTIVATED, true);
     }
 
     public MResponse promoteUser(Team team, String username, String rate) {

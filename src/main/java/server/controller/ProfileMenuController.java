@@ -1,8 +1,8 @@
 package server.controller;
 
-import model.Notification;
-import model.Team;
-import model.User;
+import server.model.Notification;
+import server.model.Team;
+import server.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

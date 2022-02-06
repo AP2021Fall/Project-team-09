@@ -1,7 +1,7 @@
 package server.controller;
 
-import model.Team;
-import model.User;
+import server.model.Team;
+import server.model.User;
 
 import java.util.ArrayList;
 import java.util.Comparator;

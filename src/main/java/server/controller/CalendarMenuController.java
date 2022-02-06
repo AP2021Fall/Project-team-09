@@ -1,7 +1,7 @@
 package server.controller;
 
-import model.Task;
-import model.User;
+import server.model.Task;
+import server.model.User;
 
 public class CalendarMenuController {
 

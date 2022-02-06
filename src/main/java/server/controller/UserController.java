@@ -1,7 +1,7 @@
 package server.controller;
 
-import model.Notification;
-import model.User;
+import server.model.Notification;
+import server.model.User;
 
 public class UserController {
     static User loggedUser = null;
@@ -16,14 +16,14 @@ public class UserController {
 
     public static MResponse clearNotifications() {
         loggedUser.clearNotifications();
-        return new MResponse("Notifications cleared!",true);
+        return new MResponse("Notifications cleared!", true);
     }
 
     public static MResponse getNotifications() {
         String answer = "";
-        for(Notification notification : loggedUser.getNotifications()){
+        for (Notification notification : loggedUser.getNotifications()) {
             answer += notification + "\n";
         }
-        return new MResponse(answer,true, loggedUser.getNotifications());
+        return new MResponse(answer, true, loggedUser.getNotifications());
     }
 }
