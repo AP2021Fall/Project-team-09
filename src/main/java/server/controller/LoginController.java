@@ -67,7 +67,7 @@ public class LoginController {
         if (user == null)
             return new MResponse(WARN_UP_NOT_MATCH, false);
 
-        UserController.loggedUser = user;
+        UserController.setLoggedUser(user);
         user.logLogin();
         return new MResponse(SUCCESS_LOGIN, true, user);
     }
@@ -80,7 +80,7 @@ public class LoginController {
     public MResponse adminLogin(String username, String password) {
         boolean isAdmin = User.checkAdmin(username, password);
         if (isAdmin) {
-            UserController.loggedUser = User.getAdmin();
+            UserController.setLoggedUser(User.getAdmin());
             return new MResponse("Admin logon successfully", true);
         } else {
             return new MResponse("Username of password is incorrect", false);

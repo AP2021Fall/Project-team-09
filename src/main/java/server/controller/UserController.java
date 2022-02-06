@@ -10,6 +10,10 @@ public class UserController {
         return loggedUser;
     }
 
+    public static void setLoggedUser(User user) {
+        loggedUser = user;
+    }
+
     public static void logout() {
         loggedUser = null;
     }

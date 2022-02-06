@@ -171,10 +171,14 @@ public class Server {
             System.out.println(request.queryString());
             System.out.println(request.body());
             System.out.println(request);
-//            if (!request.pathInfo().equalsIgnoreCase(LOGIN_PATH) &&
-//                    !request.pathInfo().equalsIgnoreCase(SIGNUP_PATH)) {
-//                halt(403);
-//            }
+            System.out.println("path info");
+            System.out.println(request.pathInfo());
+            System.out.println(LOGIN_PATH);
+            System.out.println(SIGNUP_PATH);
+            if (!request.pathInfo().equalsIgnoreCase(String.format("/%s", LOGIN_PATH)) &&
+                    !request.pathInfo().equalsIgnoreCase(String.format("/%s", SIGNUP_PATH))) {
+                halt(403);
+            }
 
         });
 

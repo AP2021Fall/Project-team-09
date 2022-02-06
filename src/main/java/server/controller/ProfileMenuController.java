@@ -72,7 +72,7 @@ public class ProfileMenuController {
     }
 
     public MResponse changePassword(String oldPassword, String newPassword) {
-        User user = UserController.loggedUser;
+        User user = UserController.getLoggedUser();
         if (tries == 1) {
             LoginController.getInstance().logout();
             return new MResponse(WARN_TOO_MANY, false);
@@ -111,11 +111,11 @@ public class ProfileMenuController {
         if (!newUsername.matches(USERNAME_REGEXP)) {
             return new MResponse(WARN_SPECIAL_CHAR, false);
         }
-        if (newUsername.equalsIgnoreCase(UserController.loggedUser.getUsername())) {
+        if (newUsername.equalsIgnoreCase(UserController.getLoggedUser().getUsername())) {
             return new MResponse(WARN_SAME_USERNAME, false);
         }
 
-        UserController.loggedUser.setUsername(newUsername);
+        UserController.getLoggedUser().setUsername(newUsername);
         return new MResponse(SUCCESS_USERNAME_CHANGED, true);
     }
 
