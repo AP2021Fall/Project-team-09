@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class User implements Serializable {
 
+    private static final String UNKNOWN = "UNKNOWN";
+
     private static User admin;
 
     private String firstname;
@@ -106,10 +108,14 @@ public class User implements Serializable {
     }
 
     public String getLastName() {
+        if (this.isUnknown)
+            return UNKNOWN;
         return lastName;
     }
 
     public String getFirstname() {
+        if (this.isUnknown)
+            return UNKNOWN;
         return firstname;
     }
 

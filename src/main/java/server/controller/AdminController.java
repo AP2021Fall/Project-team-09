@@ -27,6 +27,10 @@ public class AdminController {
             "%s team is not available!";
     private final String WARN_NOT_PENDING =
             "Some teams are not in pending status!";
+    private final String WARN_ALREADY_KNOWN =
+            "User is already set to known!";
+    private final String WARN_ALREADY_UNKNOWN =
+            "User is already set to unknown!";
 
     private final String SUCCESS_PASS_CHANGED =
             "Password changed successfully!";
@@ -37,6 +41,10 @@ public class AdminController {
             "Email changed successfully!";
     private final String SUCCESS_PROFILE_UPDATED =
             "Profile updated successfully!";
+    private final String SUCCESS_UNKNOWN =
+            "User set to unknown successfully!";
+    private final String SUCCESS_KNOWN =
+            "User set to known successfully!";
 
     private final String WARN_WRONG_PASS =
             "Wrong old password!";
@@ -255,6 +263,32 @@ public class AdminController {
         user.setFirstname(firstName);
         user.setLastName(lastName);
         return new MResponse(SUCCESS_PROFILE_UPDATED, true);
+    }
+
+    public MResponse changeToKnown(String username) {
+        User user = User.getUser(username);
+
+        if (user == null)
+            return new MResponse(WARN_404_USER, false);
+
+        if (!user.isUnknown())
+            return new MResponse(WARN_ALREADY_KNOWN, false);
+
+        user.setUnknown(false);
+        return new MResponse(SUCCESS_UNKNOWN, true);
+    }
+
+    public MResponse changeToUnknown(String username) {
+        User user = User.getUser(username);
+
+        if (user == null)
+            return new MResponse(WARN_404_USER, false);
+
+        if (user.isUnknown())
+            return new MResponse(WARN_ALREADY_UNKNOWN, false);
+
+        user.setUnknown(true);
+        return new MResponse(SUCCESS_UNKNOWN, true);
     }
 
     private boolean isHard(String newPassword) {

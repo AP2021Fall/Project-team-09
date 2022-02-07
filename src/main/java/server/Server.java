@@ -78,6 +78,9 @@ public class Server {
     private static final String CHANGE_EMAIL = "admin/change-email";
     private static final String UPDATE_PROFILE = "admin/change-profile";
 
+    private static final String CHANGE_TO_KNOWN = "admin/change-known";
+    private static final String CHANGE_TO_UNKNOWN = "admin/change-unknown";
+
     // calendar
 
     private static final String GET_CALENDAR_PATH = "calendar";
@@ -315,6 +318,20 @@ public class Server {
             return AdminController.getInstance()
                     .updateProfile((String) req.getArg(USERNAME),
                             (String) req.getArg(FIRST_NAME), (String) req.getArg(LAST_NAME));
+        }, new JsonTransformer());
+
+        patch(CHANGE_TO_KNOWN, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .changeToKnown((String) req.getArg(USERNAME));
+        }, new JsonTransformer());
+
+        patch(CHANGE_TO_UNKNOWN, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .changeToUnknown((String) req.getArg(USERNAME));
         }, new JsonTransformer());
 
         // calendar
