@@ -774,7 +774,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 ProfileMenuController.getInstance().updateProfile(firstName, lastName, birthDate);
         showResponse(MResponse);
-        save();
     }
 
 
@@ -871,7 +870,6 @@ public class DashboardUIController implements Initializable, GUI {
             UserController.logout();
             logout();
         }
-        save();
     }
 
 
@@ -894,7 +892,6 @@ public class DashboardUIController implements Initializable, GUI {
 //            ProfileMenuController.getInstance().resetTries();
             return;
         }
-        save();
     }
 
     // teams
@@ -1026,7 +1023,6 @@ public class DashboardUIController implements Initializable, GUI {
                 @Override
                 public void onRemove(User member) {
                     removeMember(team, member);
-                    save();
                     setMembers();
                 }
 
@@ -1113,7 +1109,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().suspendMember(team, member.getUsername());
         showResponse(MResponse);
-//        save();
         setMembers();
     }
 
@@ -1121,7 +1116,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().activateMember(team, member.getUsername());
         showResponse(MResponse);
-//        save();
         setMembers();
     }
 
@@ -1129,7 +1123,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().deleteMember(team, member.getUsername());
         showResponse(MResponse);
-//        save();
         setMembers();
     }
 
@@ -1137,7 +1130,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().promoteUser(team, member.getUsername(), "teamLeader");
         showResponse(MResponse);
-//        save();
         setMembers();
     }
 
@@ -1205,7 +1197,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse
                 = TeamMenuController.getInstance().addMemberToTeam(team, member.getUsername());
         showResponse(MResponse);
-        save();
         setAMMembers();
     }
 
@@ -1350,7 +1341,6 @@ public class DashboardUIController implements Initializable, GUI {
             setChatroom();
         }
         clearFields(TCMessageInput);
-        save();
     }
 
 
@@ -1430,7 +1420,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 BoardMenuController.getInstance().removeBoard(team, board.getName());
         showResponse(MResponse);
-        save();
         setBoards();
     }
 
@@ -1452,7 +1441,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 BoardMenuController.getInstance().createNewBoard(team, boardName);
         showResponse(MResponse);
-        save();
     }
 
     // board > board page
@@ -1490,7 +1478,7 @@ public class DashboardUIController implements Initializable, GUI {
                             .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                     showResponse(res);
                 }
-                save();
+
                 setBoard();
             }
 
@@ -1507,7 +1495,7 @@ public class DashboardUIController implements Initializable, GUI {
                             .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                     showResponse(res);
                 }
-                save();
+
                 setBoard();
             }
 
@@ -1523,7 +1511,7 @@ public class DashboardUIController implements Initializable, GUI {
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
                     showResponse(MResponse);
                 }
-                save();
+
                 setBoard();
             }
         });
@@ -1571,7 +1559,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                         showResponse(res);
                     }
-                    save();
+
                     setBoard();
                 }
 
@@ -1588,7 +1576,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                         showResponse(res);
                     }
-                    save();
+
                     setBoard();
                 }
 
@@ -1604,7 +1592,7 @@ public class DashboardUIController implements Initializable, GUI {
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
                         showResponse(MResponse);
                     }
-                    save();
+
                     setBoard();
                 }
             });
@@ -1630,7 +1618,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 BoardMenuController.getInstance().createNewCategory(team, categoryName, board.getName());
         showResponse(MResponse);
-        save();
+
     }
 
     @FXML
@@ -1870,14 +1858,14 @@ public class DashboardUIController implements Initializable, GUI {
                     @Override
                     public void onAdd(User member) {
                         addMemberToTask(member);
-                        save();
+
                         setTaskMembers();
                     }
 
                     @Override
                     public void onRemove(User member) {
                         removeMemberFromTask(member);
-                        save();
+
                         setTaskMembers();
                     }
                 });
@@ -1899,14 +1887,14 @@ public class DashboardUIController implements Initializable, GUI {
                             @Override
                             public void onAdd(User member) {
                                 addMemberToTask(member);
-                                save();
+
                                 setTaskMembers();
                             }
 
                             @Override
                             public void onRemove(User member) {
                                 removeMemberFromTask(member);
-                                save();
+
                                 setTaskMembers();
                             }
                         });
@@ -1971,7 +1959,7 @@ public class DashboardUIController implements Initializable, GUI {
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
-        save();
+
     }
 
     @FXML
@@ -2016,7 +2004,7 @@ public class DashboardUIController implements Initializable, GUI {
             SharedPreferences.add(TASK, task);
             setTaskMembers();
         }
-        save();
+
     }
 
     @FXML
@@ -2138,10 +2126,10 @@ public class DashboardUIController implements Initializable, GUI {
             MResponse MResponse =
                     NotificationController.getInstance().sendNotificationToTeam(body, team);
             showResponse(MResponse);
-            save();
+
         }
         clearFields(NNBody);
-        save();
+
     }
 
     private void setUpNewUserNotification() {
@@ -2171,7 +2159,7 @@ public class DashboardUIController implements Initializable, GUI {
                 NotificationController.getInstance().sendNotificationToUser(body, user.getUsername());
         showResponse(MResponse);
         clearFields(NNUBody);
-        save();
+
     }
 
 
@@ -2241,7 +2229,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().createTeam(teamName);
         showResponse(MResponse);
-        save();
+
     }
 
     // Calendar
@@ -2340,6 +2328,16 @@ public class DashboardUIController implements Initializable, GUI {
                     public void setLeader(User user) {
                         changeRoleToLeader(user);
                     }
+
+                    @Override
+                    public void makeUnknown(User user) {
+                        changeUserToUnknown(user);
+                    }
+
+                    @Override
+                    public void makeKnown(User user) {
+                        changeUserToKnown(user);
+                    }
                 });
                 HBox userBox = aUserItem.draw();
                 AUItemHolder.getChildren().add(userBox);
@@ -2376,6 +2374,16 @@ public class DashboardUIController implements Initializable, GUI {
                             @Override
                             public void setLeader(User user) {
                                 changeRoleToLeader(user);
+                            }
+
+                            @Override
+                            public void makeUnknown(User user) {
+                                changeUserToUnknown(user);
+                            }
+
+                            @Override
+                            public void makeKnown(User user) {
+                                changeUserToKnown(user);
                             }
                         });
                         HBox userBox = aUserItem.draw();
@@ -2416,12 +2424,26 @@ public class DashboardUIController implements Initializable, GUI {
         });
     }
 
+    private void changeUserToKnown(User user) {
+        MResponse MResponse =
+                AdminController.getInstance().changeToKnown(user);
+        showResponse(MResponse);
+        setAUsers();
+    }
+
+    private void changeUserToUnknown(User user) {
+        MResponse MResponse =
+                AdminController.getInstance().changeToUnknown(user);
+        showResponse(MResponse);
+        setAUsers();
+
+    }
+
     private void banUser(User user) {
         MResponse MResponse =
                 AdminController.getInstance().banUser(user.getUsername());
         showResponse(MResponse);
         setAUsers();
-        save();
     }
 
     private void changeRoleToMember(User user) {
@@ -2429,7 +2451,6 @@ public class DashboardUIController implements Initializable, GUI {
                 AdminController.getInstance().changeRole(user.getUsername(), "teamMember");
         showResponse(MResponse);
         setAUsers();
-        save();
     }
 
     private void changeRoleToLeader(User user) {
@@ -2437,7 +2458,6 @@ public class DashboardUIController implements Initializable, GUI {
                 AdminController.getInstance().changeRole(user.getUsername(), "teamLeader");
         showResponse(MResponse);
         setAUsers();
-        save();
     }
 
     // teams
@@ -2503,7 +2523,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 AdminController.getInstance().acceptPendingTeams(new String[]{team.getName()});
         showResponse(MResponse);
-        save();
         setATeams();
     }
 
@@ -2511,7 +2530,6 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 AdminController.getInstance().rejectPendingTeams(new String[]{team.getName()});
         showResponse(MResponse);
-        save();
         setATeams();
     }
 
@@ -2579,7 +2597,6 @@ public class DashboardUIController implements Initializable, GUI {
                 NotificationController.getInstance().sendNotificationToAll(body);
         showResponse(MResponse);
         clearFields(NNABody);
-        save();
     }
 
     private void setUpUserProfile() {

@@ -1,6 +1,7 @@
 package controller;
 
 import model.MRequest;
+import model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,8 @@ public class AdminController {
     private static final String CHANGE_PASSWORD = "/admin/change-password";
     private static final String CHANGE_EMAIL = "/admin/change-email";
     private static final String UPDATE_PROFILE = "/admin/change-profile";
+    private static final String CHANGE_TO_KNOWN = "/admin/change-known";
+    private static final String CHANGE_TO_UNKNOWN = "/admin/change-unknown";
 
     private static AdminController controller = null;
 
@@ -119,6 +122,20 @@ public class AdminController {
                 .addArg(USERNAME, username)
                 .addArg(FIRST_NAME, firstName)
                 .addArg(LAST_NAME, lastName)
+                .patch();
+    }
+
+    public MResponse changeToKnown(User user) {
+        return new MRequest()
+                .setPath(CHANGE_TO_KNOWN)
+                .addArg(USERNAME, user.getUsername())
+                .patch();
+    }
+
+    public MResponse changeToUnknown(User user) {
+        return new MRequest()
+                .setPath(CHANGE_TO_UNKNOWN)
+                .addArg(USERNAME, user.getUsername())
                 .patch();
     }
 }

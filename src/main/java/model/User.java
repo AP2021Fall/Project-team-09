@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 
 public class User implements Serializable {
 
+    private final static String UNKNOWN = "UNKNOWN";
+
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
@@ -124,10 +126,14 @@ public class User implements Serializable {
     }
 
     public String getLastName() {
+        if (this.isUnknown)
+            return UNKNOWN;
         return lastName;
     }
 
     public String getFirstname() {
+        if (this.isUnknown)
+            return UNKNOWN;
         return firstname;
     }
 

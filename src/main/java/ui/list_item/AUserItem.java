@@ -34,12 +34,18 @@ public class AUserItem {
         Button button = new Button("Ban");
         Button button1 = new Button("Set Leader");
         Button button2 = new Button("Set Member");
+        Button button3 = new Button("Make Unknown");
+        Button button4 = new Button("Make Known");
         button.getStyleClass().add("custom-btn");
         button1.getStyleClass().add("custom-btn");
         button2.getStyleClass().add("custom-btn");
+        button3.getStyleClass().add("custom-btn");
+        button4.getStyleClass().add("custom-btn");
         button.setOnMouseClicked(event -> onItemClickListener.ban(this.user));
         button1.setOnMouseClicked((event -> onItemClickListener.setLeader(this.user)));
         button2.setOnMouseClicked((event -> onItemClickListener.setMember(this.user)));
+        button3.setOnMouseClicked(event -> onItemClickListener.makeUnknown(this.user));
+        button4.setOnMouseClicked(event -> onItemClickListener.makeKnown(this.user));
 
         hBox.getStyleClass().add("list-item");
         HBox.setHgrow(hBox, Priority.ALWAYS);
@@ -56,6 +62,12 @@ public class AUserItem {
         else
             hBox.getChildren().add(button1);
 
+        if (!this.user.isUnknown()){
+            hBox.getChildren().add(button3);
+        }else {
+            hBox.getChildren().add(button4);
+        }
+
         hBox.getChildren().add(button);
 
         return hBox;
@@ -70,5 +82,9 @@ public class AUserItem {
         void setMember(User user);
 
         void setLeader(User user);
+
+        void makeUnknown(User user);
+
+        void makeKnown(User user);
     }
 }
