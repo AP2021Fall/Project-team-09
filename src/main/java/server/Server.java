@@ -284,7 +284,7 @@ public class Server {
 
         get(GET_CALENDAR_PATH, JSON, (request, response) -> {
             String calendar = request.queryParams(CALENDAR);
-            return controller.CalendarMenuController.getInstance()
+            return CalendarMenuController.getInstance()
                     .getCalendar(calendar);
         }, new JsonTransformer());
 

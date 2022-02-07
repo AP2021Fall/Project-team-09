@@ -1,5 +1,6 @@
 package server.controller;
 
+import server.model.Notification;
 import server.model.Task;
 import server.model.Team;
 import server.model.User;
@@ -147,6 +148,10 @@ public class TasksMenuController {
             return new MResponse(String.format(WARN_404_USER, username), false);
 
         task.assignUser(user);
+        Team team = Team.getTeamOfTask(taskId);
+        if (team != null)
+            team.sendNotification(new Notification(team.getLeader(), team,
+                    String.format("\"%s\" has been assigned to \"%s\" task!", username, task.getTitle())));
         return new MResponse(String.format(SUCCESS_USER_ADD, username), true);
     }
 
@@ -165,6 +170,10 @@ public class TasksMenuController {
         if (user == null)
             return new MResponse(String.format(WARN_404_USER_LIST, username), false);
         task.removeFromAssignedUsers(user);
+        Team team = Team.getTeamOfTask(taskId);
+        if (team != null)
+            team.sendNotification(new Notification(team.getLeader(), team,
+                    String.format("\"%s\" has been removed from \"%s\" task!", username, task.getTitle())));
         return new MResponse(String.format(SUCCESS_USER_REMOVE, username), true);
     }
 

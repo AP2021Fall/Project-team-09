@@ -127,6 +127,8 @@ public class TeamMenuController {
 
         if (body.isEmpty())
             return new MResponse(WARN_EMPTY_MESSAGE, false);
+        if (user.isTeamLeader())
+            team.sendNotification(new Notification(user, team, "Team leader has sent a message in chatroom!"));
         team.sendMessage(user, body);
         return new MResponse(SUCCESS, true);
     }
@@ -429,6 +431,8 @@ public class TeamMenuController {
             return new MResponse(WARN_ALREADY_ASSIGNED, false);
 
         task.assignUser(user);
+        team.sendNotification(new Notification(team.getLeader(), team,
+                String.format("\"%s\" has been assigned to \"%s\" task", user.getUsername(), task.getTitle())));
         return new MResponse(SUCCESS_MEMBER_ASSIGNED, true);
     }
 

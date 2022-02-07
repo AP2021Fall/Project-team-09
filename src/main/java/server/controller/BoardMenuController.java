@@ -1,9 +1,6 @@
 package server.controller;
 
-import server.model.Board;
-import server.model.Task;
-import server.model.Team;
-import server.model.User;
+import server.model.*;
 import utilities.SharedPreferences;
 
 import java.time.LocalDateTime;
@@ -290,6 +287,11 @@ public class BoardMenuController {
                 return new MResponse(WARN_INVALID_CATEGORY, false);
 
         task.setCategory(categoryName);
+        if (task.isDone()) {
+            team.givePoint(task);
+        }
+        team.sendNotification(new Notification(team.getLeader(), team,
+                String.format("\"%s\" has made progress to \"%s\" task!", loggedUser.getUsername(), task.getTitle())));
         return new MResponse(String.format(SUCCESS_SET_CATEGORY, taskTitle, categoryName), true);
     }
 
@@ -320,6 +322,8 @@ public class BoardMenuController {
             if (task.isDone()) {
                 team.givePoint(task);
             }
+            team.sendNotification(new Notification(team.getLeader(), team,
+                    String.format("\"%s\" has made progress to \"%s\" task!", loggedUser.getUsername(), task.getTitle())));
             return new MResponse(String.format(SUCCESS_SET_CATEGORY, task.getTitle(),
                     task.getCategory()), true);
         } else {

@@ -41,19 +41,24 @@ public class TaskMemberItem {
         Task task = (Task) SharedPreferences.get("task");
 
         User user = null;
-        if (UserController.getLoggedUser().isTeamLeader()) {
-            if (task != null) {
-                user = task.isInAssignedUsers(this.member.getUsername());
-                if (!task.isDone()) {
-                    if (user == null) {
-                        button.setOnMouseClicked(event -> this.onItemClickListener.onAdd(this.member));
-                        hBox.getChildren().add(button);
-                    } else {
-                        button1.setOnMouseClicked(event -> this.onItemClickListener.onRemove(this.member));
-                        hBox.getChildren().add(button1);
-                    }
+//        if (UserController.getLoggedUser().isTeamLeader()) {
+        if (task != null) {
+            user = task.isInAssignedUsers(this.member.getUsername());
+            if (!task.isDone()) {
+                if (user == null) {
+                    button.setOnMouseClicked(event -> this.onItemClickListener.onAdd(this.member));
+                    hBox.getChildren().add(button);
+                } else {
+                    button1.setOnMouseClicked(event -> this.onItemClickListener.onRemove(this.member));
+                    hBox.getChildren().add(button1);
                 }
             }
+        }
+//        }
+
+        if (!UserController.getLoggedUser().isTeamLeader()) {
+            button.setDisable(false);
+            button1.setDisable(true);
         }
 
         button.getStyleClass().add("custom-btn");
