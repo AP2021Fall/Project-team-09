@@ -8,6 +8,13 @@ import java.util.Arrays;
 public class AdminController {
 
     private static final String USERNAME = "username";
+    private static final String OLD_USERNAME = "old_username";
+    private static final String NEW_USERNAME = "new_username";
+    private static final String PASSWORD = "password";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
+    private static final String OLD_EMAIL = "old_email";
+    private static final String NEW_EMAIL = "new_email";
     private static final String ROLE = "role";
     private static final String PENDING_TEAMS = "pending-teams";
 
@@ -18,6 +25,10 @@ public class AdminController {
     private static final String ACCEPT_PENDING_TEAMS = "/admin/accept-pending";
     private static final String REJECT_PENDING_TEAMS = "/admin/reject-pending";
     private static final String GET_ALL_USERS_PATH = "/admin/get-all-users";
+    private static final String CHANGE_USERNAME = "/admin/change-username";
+    private static final String CHANGE_PASSWORD = "/admin/change-password";
+    private static final String CHANGE_EMAIL = "/admin/change-email";
+    private static final String UPDATE_PROFILE = "/admin/change-profile";
 
     private static AdminController controller = null;
 
@@ -76,5 +87,38 @@ public class AdminController {
         return new MRequest()
                 .setPath(GET_ALL_USERS_PATH)
                 .get();
+    }
+
+    public MResponse changeUsername(String oldUsername, String newUsername) {
+        return new MRequest()
+                .setPath(CHANGE_USERNAME)
+                .addArg(OLD_USERNAME, oldUsername)
+                .addArg(NEW_USERNAME, newUsername)
+                .patch();
+    }
+
+    public MResponse changePassword(String username, String password) {
+        return new MRequest()
+                .setPath(CHANGE_PASSWORD)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD, password)
+                .post();
+    }
+
+    public MResponse changeEmail(String username, String newEmail) {
+        return new MRequest()
+                .setPath(CHANGE_EMAIL)
+                .addArg(USERNAME, username)
+                .addArg(NEW_EMAIL, newEmail)
+                .patch();
+    }
+
+    public MResponse updateProfile(String username, String firstName, String lastName) {
+        return new MRequest()
+                .setPath(UPDATE_PROFILE)
+                .addArg(USERNAME, username)
+                .addArg(FIRST_NAME, firstName)
+                .addArg(LAST_NAME, lastName)
+                .patch();
     }
 }

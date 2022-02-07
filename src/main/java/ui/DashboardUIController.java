@@ -438,6 +438,27 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private TextField UPRole;
 
+    @FXML
+    private PasswordField UPPassword;
+
+    @FXML
+    private Button UPUpdateUsername;
+
+    @FXML
+    private Button UPUpdateEmail;
+
+    @FXML
+    private Button UPUpdatePassword;
+
+    @FXML
+    private Button UPSaveChanges;
+
+    @FXML
+    private VBox UPPasswordHeader;
+
+    @FXML
+    private HBox UPPasswordBox;
+
 
     private double xOffset, yOffset;
 
@@ -2574,6 +2595,85 @@ public class DashboardUIController implements Initializable, GUI {
             UPBirthdate.setValue(user.getBirthday());
         UPEmail.setText(user.getEmail());
         UPRole.setText(user.getType().name());
+
+        if (!UserController.getLoggedUser().isAdmin()) {
+            UPUpdateUsername.setVisible(false);
+            UPUpdateUsername.setManaged(false);
+            UPUpdateEmail.setVisible(false);
+            UPUpdateEmail.setManaged(false);
+            UPUpdatePassword.setVisible(false);
+            UPUpdatePassword.setManaged(false);
+            UPSaveChanges.setVisible(false);
+            UPSaveChanges.setManaged(false);
+            UPPasswordHeader.setVisible(false);
+            UPPasswordHeader.setManaged(false);
+            UPPasswordBox.setVisible(false);
+            UPPasswordBox.setManaged(false);
+        } else {
+            UPUsername.setEditable(true);
+            UPFirstName.setEditable(true);
+            UPLastName.setEditable(true);
+            UPEmail.setEditable(true);
+            UPPassword.setEditable(true);
+        }
+    }
+
+    @FXML
+    private void onUPUpdateUsername() {
+        User user = (User) SharedPreferences.get(SELECTED_PROFILE);
+
+        if (user == null)
+            return;
+
+        String username = getValue(UPUsername);
+
+        MResponse MResponse =
+                AdminController.getInstance().changeUsername(user.getUsername(), username.trim());
+
+        showResponse(MResponse);
+    }
+
+    @FXML
+    private void onUPUpdateEmail() {
+        User user = (User) SharedPreferences.get(SELECTED_PROFILE);
+
+        if (user == null)
+            return;
+
+        String email = getValue(UPEmail);
+
+        MResponse MResponse =
+                AdminController.getInstance().changeEmail(user.getUsername(), email);
+        showResponse(MResponse);
+    }
+
+    @FXML
+    private void onUPUpdatePassword() {
+        User user = (User) SharedPreferences.get(SELECTED_PROFILE);
+
+        if (user == null)
+            return;
+
+        String password = getValue(UPPassword);
+
+        MResponse MResponse =
+                AdminController.getInstance().changePassword(user.getUsername(), password);
+        showResponse(MResponse);
+    }
+
+    @FXML
+    private void onUPSaveChanges() {
+        User user = (User) SharedPreferences.get(SELECTED_PROFILE);
+
+        if (user == null)
+            return;
+
+        String firstName = getValue(UPFirstName);
+        String lastName = getValue(UPLastName);
+
+        MResponse MResponse =
+                AdminController.getInstance().updateProfile(user.getUsername(), firstName, lastName);
+        showResponse(MResponse);
     }
 
     @FXML
