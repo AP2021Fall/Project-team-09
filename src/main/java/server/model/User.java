@@ -19,6 +19,8 @@ public class User implements Serializable {
     private String email;
     private Type type;
 
+    private boolean isUnknown;
+
     private static ArrayList<User> allUsers = new ArrayList<>();
     private ArrayList<LocalDateTime> logs = new ArrayList<>();
     private ArrayList<String> oldPasswords = new ArrayList<>();
@@ -37,6 +39,7 @@ public class User implements Serializable {
         this.logs = logs;
         this.oldPasswords = oldPasswords;
         this.notifications = notifications;
+        this.isUnknown = false;
     }
 
     public User(String username, String password, String email) {
@@ -51,6 +54,7 @@ public class User implements Serializable {
         this.lastName = null;
         this.firstname = null;
         this.birthday = null;
+        this.isUnknown = false;
     }
 
     public void setPassword(String newPassword) {
@@ -285,6 +289,14 @@ public class User implements Serializable {
             if (team.getName().equalsIgnoreCase(teamName))
                 return team;
         return null;
+    }
+
+    public boolean isUnknown() {
+        return isUnknown;
+    }
+
+    public void setUnknown(boolean unknown) {
+        isUnknown = unknown;
     }
 
     @Override

@@ -54,6 +54,9 @@ public class Server {
     private static final String CALENDAR = "calendar";
     private static final String RATE = "rate";
     private static final String PENDING_TEAMS = "pending-teams";
+    private static final String OLD_USERNAME = "old_username";
+    private static final String OLD_EMAIL = "old_email";
+    private static final String NEW_EMAIL = "new_email";
 
     // auth
 
@@ -69,6 +72,11 @@ public class Server {
     private static final String ACCEPT_PENDING_TEAMS = "admin/accept-pending";
     private static final String REJECT_PENDING_TEAMS = "admin/reject-pending";
     private static final String ADMIN_GET_ALL_USERS_PATH = "admin/get-all-users";
+
+    private static final String CHANGE_USERNAME = "admin/change-username";
+    private static final String CHANGE_PASSWORD = "admin/change-password";
+    private static final String CHANGE_EMAIL = "admin/change-email";
+    private static final String UPDATE_PROFILE = "admin/change-profile";
 
     // calendar
 
@@ -278,6 +286,35 @@ public class Server {
         get(ADMIN_GET_ALL_USERS_PATH, JSON, (request, response) -> {
             return AdminController.getInstance()
                     .getAllUsers();
+        }, new JsonTransformer());
+
+        patch(CHANGE_USERNAME, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .changeUsername((String) req.getArg(OLD_USERNAME), (String) req.getArg(NEW_USERNAME));
+        }, new JsonTransformer());
+
+        post(CHANGE_PASSWORD, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .changePassword((String) req.getArg(USERNAME), (String) req.getArg(PASSWORD));
+        }, new JsonTransformer());
+
+        patch(CHANGE_EMAIL, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .changeEmail((String) req.getArg(USERNAME), (String) req.getArg(NEW_EMAIL));
+        }, new JsonTransformer());
+
+        patch(UPDATE_PROFILE, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return AdminController.getInstance()
+                    .updateProfile((String) req.getArg(USERNAME),
+                            (String) req.getArg(FIRST_NAME), (String) req.getArg(LAST_NAME));
         }, new JsonTransformer());
 
         // calendar

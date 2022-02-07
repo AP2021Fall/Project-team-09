@@ -2279,22 +2279,17 @@
                                                          <children>
                                                             <VBox spacing="10.0" VBox.vgrow="ALWAYS">
                                                                <children>
-                                                                  <VBox VBox.vgrow="NEVER">
+                                                                  <VBox layoutX="20.0" layoutY="20.0">
                                                                      <children>
-                                                                        <Label text="Profile Picture" />
+                                                                        <Label text="Username" />
                                                                         <Separator prefWidth="200.0" />
                                                                      </children>
-                                                                     <VBox.margin>
-                                                                        <Insets />
-                                                                     </VBox.margin>
                                                                   </VBox>
-                                                                  <HBox prefHeight="100.0" prefWidth="200.0">
+                                                                  <HBox alignment="CENTER" layoutX="20.0" layoutY="58.0" spacing="20.0">
                                                                      <children>
-                                                                        <Pane style="-fx-border-width: 1px; -fx-border-color: #26a8ff;">
-                                                                           <children>
-                                                                              <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-5.0" pickOnBounds="true" preserveRatio="true" />
-                                                                           </children>
-                                                                        </Pane>
+                                                                        <TextField fx:id="UPUsername" editable="false" layoutX="10.0" layoutY="10.0" promptText="Username" />
+                                                                        <Pane HBox.hgrow="ALWAYS" />
+                                                                        <Button fx:id="UPUpdateUsername" mnemonicParsing="false" onAction="#onUPUpdateUsername" styleClass="custom-btn" text="Update Username" />
                                                                      </children>
                                                                   </HBox>
                                                                   <VBox layoutX="20.0" layoutY="20.0">
@@ -2305,7 +2300,6 @@
                                                                   </VBox>
                                                                   <HBox spacing="20.0">
                                                                      <children>
-                                                                        <TextField fx:id="UPUsername" editable="false" layoutX="10.0" layoutY="10.0" promptText="Username" />
                                                                         <TextField fx:id="UPFirstName" editable="false" promptText="First name" />
                                                                         <TextField fx:id="UPLastName" editable="false" layoutX="10.0" layoutY="10.0" promptText="Last name" />
                                                                         <DatePicker fx:id="UPBirthdate" editable="false" promptText="Birth date" />
@@ -2316,17 +2310,38 @@
                                                                         <TextField fx:id="UPRole" editable="false" layoutX="10.0" layoutY="10.0" promptText="Role" />
                                                                      </children>
                                                                   </HBox>
+                                                                  <HBox alignment="CENTER_RIGHT" spacing="20.0">
+                                                                     <children>
+                                                                        <Button fx:id="UPSaveChanges" mnemonicParsing="false" onAction="#onUPSaveChanges" styleClass="custom-btn" text="Save changes" />
+                                                                     </children>
+                                                                  </HBox>
                                                                   <VBox layoutX="20.0" layoutY="20.0">
                                                                      <children>
                                                                         <Label text="Email" />
                                                                         <Separator prefWidth="200.0" />
                                                                      </children>
                                                                   </VBox>
-                                                                  <HBox layoutX="20.0" layoutY="193.0" spacing="20.0">
+                                                                  <HBox alignment="CENTER" layoutX="20.0" layoutY="193.0" spacing="20.0">
                                                                      <children>
                                                                         <TextField fx:id="UPEmail" editable="false" minHeight="26.0" minWidth="242.0" prefHeight="35.0" prefWidth="396.0" promptText="Email" text="bandar3eda021@gmail.com" />
+                                                                        <Pane HBox.hgrow="ALWAYS" />
+                                                                        <Button fx:id="UPUpdateEmail" mnemonicParsing="false" onAction="#onUPUpdateEmail" styleClass="custom-btn" text="Update Email" />
                                                                      </children>
                                                                   </HBox>
+                                                                  <VBox fx:id="UPPasswordHeader" layoutX="20.0" layoutY="296.0">
+                                                                     <children>
+                                                                        <Label text="Password" />
+                                                                        <Separator prefWidth="200.0" />
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <HBox fx:id="UPPasswordBox" alignment="CENTER" layoutX="20.0" layoutY="334.0" spacing="20.0">
+                                                                     <children>
+                                                                        <PasswordField fx:id="UPPassword" promptText="Password" />
+                                                                        <Pane HBox.hgrow="ALWAYS" />
+                                                                        <Button fx:id="UPUpdatePassword" mnemonicParsing="false" onAction="#onUPUpdatePassword" styleClass="custom-btn" text="Update Password" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <Pane VBox.vgrow="ALWAYS" />
                                                                </children>
                                                                <padding>
                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
