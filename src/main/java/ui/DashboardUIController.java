@@ -205,6 +205,9 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private Button TAMButton;
 
+    @FXML
+    private Button TIMButton;
+
     // teams > invite member
 
     @FXML
@@ -262,6 +265,12 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private Button TCBButton;
+
+    @FXML
+    private Button BCCButton;
+
+    @FXML
+    private Button BCTButton;
 
     // boards > board > create board
 
@@ -517,8 +526,8 @@ public class DashboardUIController implements Initializable, GUI {
                     RequestsMenu.setVisible(false);
                     RequestsMenu.setManaged(false);
 
-//                    TAMButton.setVisible(false);
-//                    TAMButton.setManaged(false);
+                    TAMButton.setVisible(false);
+                    TAMButton.setManaged(false);
                     TCBButton.setVisible(false);
                     TCBButton.setManaged(false);
                     TCTMenuButton.setVisible(false);
@@ -530,6 +539,12 @@ public class DashboardUIController implements Initializable, GUI {
                     TTSaveChanges.setManaged(false);
                     TTClear.setVisible(false);
                     TTClear.setManaged(false);
+                    BCCButton.setVisible(false);
+                    BCCButton.setManaged(false);
+                    BCTButton.setVisible(false);
+                    BCTButton.setManaged(false);
+                    TIMButton.setVisible(false);
+                    TIMButton.setManaged(false);
                 }
             }
         }
@@ -615,12 +630,12 @@ public class DashboardUIController implements Initializable, GUI {
 
         clearFields(CBNameInput, CCNameInput);
 
-        if (tab == TEAM && tab != TAB) {
+        if (tab == TEAM) {
             teamsSetTeams();
             teamTabPane.getSelectionModel().select(0);
-        } else if (tab == REQUESTS && tab != TAB) {
+        } else if (tab == REQUESTS) {
             requestsSetTeams();
-        } else if (tab == ADD_MEMBER && tab != TAB) {
+        } else if (tab == ADD_MEMBER) {
             setAMMembers();
         } else if (tab == CREATE_TASK) {
             setUpTaskCreationPage();
@@ -1124,6 +1139,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().suspendMember(team, member.getUsername());
         showResponse(MResponse);
+        updateTeam();
         setMembers();
     }
 
@@ -1131,6 +1147,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().activateMember(team, member.getUsername());
         showResponse(MResponse);
+        updateTeam();
         setMembers();
     }
 
@@ -1138,6 +1155,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().deleteMember(team, member.getUsername());
         showResponse(MResponse);
+        updateTeam();
         setMembers();
     }
 
@@ -1145,6 +1163,7 @@ public class DashboardUIController implements Initializable, GUI {
         MResponse MResponse =
                 TeamMenuController.getInstance().promoteUser(team, member.getUsername(), "teamLeader");
         showResponse(MResponse);
+        updateTeam();
         setMembers();
     }
 
@@ -1179,6 +1198,24 @@ public class DashboardUIController implements Initializable, GUI {
         if (mResponse.isSuccess()) {
             String token = (String) mResponse.getObject();
             TIMToken.setText(token.substring(1, token.length() - 1));
+        }
+    }
+
+    // team > refresh
+
+    private void updateTeam() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        MResponse mResponse =
+                ProfileMenuController.getInstance().showTeam(team.getName());
+        if (mResponse.isSuccess()) {
+            Type typeMyType = new TypeToken<Team>() {
+            }.getType();
+            Team t = new Gson().fromJson((String) mResponse.getObject(), typeMyType);
+            SharedPreferences.add(SELECTED_TEAM, t);
         }
     }
 
@@ -1522,7 +1559,7 @@ public class DashboardUIController implements Initializable, GUI {
                             .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                     showResponse(res);
                 }
-
+                updateTeam();
                 setBoard();
             }
 
@@ -1539,7 +1576,7 @@ public class DashboardUIController implements Initializable, GUI {
                             .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                     showResponse(res);
                 }
-
+                updateTeam();
                 setBoard();
             }
 
@@ -1555,7 +1592,7 @@ public class DashboardUIController implements Initializable, GUI {
                                     .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
                     showResponse(MResponse);
                 }
-
+                updateTeam();
                 setBoard();
             }
         });
@@ -1603,7 +1640,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 .forceMoveTaskToCategory(team, "done", task.getTitle(), board.getName());
                         showResponse(res);
                     }
-
+                    updateTeam();
                     setBoard();
                 }
 
@@ -1620,7 +1657,7 @@ public class DashboardUIController implements Initializable, GUI {
                                 .moveTaskToNextCategory(team, task.getTitle(), board.getName());
                         showResponse(res);
                     }
-
+                    updateTeam();
                     setBoard();
                 }
 
@@ -1636,7 +1673,7 @@ public class DashboardUIController implements Initializable, GUI {
                                         .addTaskToBoard(team, String.valueOf(task.getId()), board.getName());
                         showResponse(MResponse);
                     }
-
+                    updateTeam();
                     setBoard();
                 }
             });
@@ -1957,6 +1994,8 @@ public class DashboardUIController implements Initializable, GUI {
                 = TasksMenuController.getInstance()
                 .addToAssignedUsers(String.valueOf(task.getId()), member.getUsername());
         showResponse(MResponse);
+        updateTeam();
+        updateTask();
     }
 
     private void removeMemberFromTask(User member) {
@@ -1966,6 +2005,29 @@ public class DashboardUIController implements Initializable, GUI {
                 = TasksMenuController.getInstance()
                 .removeAssignedUsers(String.valueOf(task.getId()), member.getUsername());
         showResponse(MResponse);
+        updateTeam();
+        updateTask();
+    }
+
+    private void updateTask() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        Task task = (Task) SharedPreferences.get(TASK);
+
+        if (task == null)
+            return;
+
+        MResponse mResponse =
+                TeamMenuController.getInstance().showTask(team, String.valueOf(task.getId()));
+        if (mResponse.isSuccess()) {
+            Type typeMyType = new TypeToken<Task>() {
+            }.getType();
+            Task t = new Gson().fromJson((String) mResponse.getObject(), typeMyType);
+            SharedPreferences.add(TASK, t);
+        }
     }
 
     @FXML

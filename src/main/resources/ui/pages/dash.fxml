@@ -631,7 +631,7 @@
                                                                                                                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                                                                                                            <children>
                                                                                                                               <Button fx:id="TIMButton" mnemonicParsing="false" onAction="#onInviteMember" styleClass="custom-btn" text="Invite member" />
-                                                                                                                              <Button fx:id="TAMButton1" layoutX="848.0" layoutY="10.0" mnemonicParsing="false" onAction="#onAddMember" styleClass="custom-btn" text="Add member to team" />
+                                                                                                                              <Button fx:id="TAMButton" layoutX="848.0" layoutY="10.0" mnemonicParsing="false" onAction="#onAddMember" styleClass="custom-btn" text="Add member to team" />
                                                                                                                            </children>
                                                                                                                         </HBox>
                                                                                                                      </children>
@@ -2111,8 +2111,8 @@
                                                                   </ScrollPane>
                                                                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                                                      <children>
-                                                                        <Button mnemonicParsing="false" onAction="#onTCTask" styleClass="custom-btn" text="Create task" />
-                                                                        <Button layoutX="704.0" layoutY="10.0" mnemonicParsing="false" onAction="#onBCCategory" styleClass="custom-btn" text="Create category" />
+                                                                        <Button fx:id="BCTButton" mnemonicParsing="false" onAction="#onTCTask" styleClass="custom-btn" text="Create task" />
+                                                                        <Button fx:id="BCCButton" layoutX="704.0" layoutY="10.0" mnemonicParsing="false" onAction="#onBCCategory" styleClass="custom-btn" text="Create category" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>

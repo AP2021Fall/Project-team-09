@@ -121,7 +121,6 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
@@ -164,7 +163,6 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
@@ -207,7 +205,6 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
 
             JsonElement jsonElement = new JsonParser().parse(res);
@@ -251,7 +248,6 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {
@@ -303,8 +299,6 @@ public class MRequest implements Serializable {
             Call call = client.newCall(request);
             Response response = call.execute();
             String res = response.body().string();
-            System.out.println(this.path);
-            System.out.println(res);
             MResponse mResponse = gson.fromJson(res, MResponse.class);
             JsonElement jsonElement = new JsonParser().parse(res);
             if (jsonElement.getAsJsonObject().get("object") != null) {

@@ -183,31 +183,20 @@ public class Server {
         ConsoleHelper.getInstance().println(String.format("Server started at %s:%d", BASE_URL, PORT));
 
         before((request, response) -> {
-            System.out.println(request.pathInfo());
-            System.out.println(request.requestMethod());
-            System.out.println(request.queryString());
-            System.out.println(request.body());
-            System.out.println(request);
             if (!request.pathInfo().equalsIgnoreCase(String.format("/%s", LOGIN_PATH)) &&
                     !request.pathInfo().equalsIgnoreCase(String.format("/%s", SIGNUP_PATH))) {
-                System.out.println("not authentication");
                 if (request.headers("token") == null) {
                     halt(403);
                 } else {
-                    System.out.println("has token");
                     String token = request.headers("token");
                     User user = UserController.getUser(token);
-                    System.out.println(user);
-                    System.out.println(token);
                     if (user != null) {
                         UserController.setLoggedUser(user);
                     } else {
-                        System.out.println("stopped here");
                         halt(403);
                     }
                 }
             }
-            System.out.println("-----------");
         });
 
         // authentication
@@ -599,8 +588,6 @@ public class Server {
         put(NOTIFICATION_ALL_PATH, JSON, (request, response) -> {
             String requestBody = request.body();
             MRequest req = new Gson().fromJson(requestBody, MRequest.class);
-            System.out.println("body");
-            System.out.println((String) req.getArg(BODY));
             return NotificationController.getInstance().sendNotificationToAll((String) req.getArg(BODY));
         }, new JsonTransformer());
 
@@ -634,8 +621,6 @@ public class Server {
         }, new JsonTransformer());
 
         get(MY_PROFILE_PATH, JSON, (request, response) -> {
-            System.out.println("finally");
-            System.out.println(UserController.getLoggedUser());
             return ProfileMenuController.getInstance().getMyProfile();
         }, new JsonTransformer());
 
@@ -980,15 +965,6 @@ public class Server {
         }, new JsonTransformer());
 
         afterAfter((request, response) -> SaveAndLoadController.save());
-
-
-        // test
-
-        get("/test/get-users", JSON, (request, response) -> {
-            return AdminController.getInstance()
-                    .getAllUsers();
-        }, new JsonTransformer());
-
     }
 
     public static class JsonTransformer implements ResponseTransformer {

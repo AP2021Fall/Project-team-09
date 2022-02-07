@@ -120,7 +120,6 @@ public class ProfileMenu implements TerminalView {
             ConsoleHelper.getInstance().println(MResponse.getMessage());
         } catch (IllegalCommandException e) {
             ConsoleHelper.getInstance().println(e.getMessage());
-            ;
         }
     }
 
