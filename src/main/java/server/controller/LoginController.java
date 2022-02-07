@@ -67,9 +67,10 @@ public class LoginController {
         if (user == null)
             return new MResponse(WARN_UP_NOT_MATCH, false);
 
-        UserController.setLoggedUser(user);
         user.logLogin();
-        return new MResponse(SUCCESS_LOGIN, true, user);
+        String hash = UserController.generateToken(user);
+        System.out.println(hash);
+        return new MResponse(SUCCESS_LOGIN, true, hash);
     }
 
     public MResponse logout() {

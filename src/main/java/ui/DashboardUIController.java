@@ -983,7 +983,11 @@ public class DashboardUIController implements Initializable, GUI {
         if (team == null)
             return;
 
-        ArrayList<User> members = team.getMembers();
+        MResponse MResponse = TeamMenuController.getInstance().getMembers(team);
+
+        Type typeMyType = new TypeToken<ArrayList<User>>() {
+        }.getType();
+        ArrayList<User> members = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
         if (members == null)
             return;

@@ -98,6 +98,7 @@ public class Server {
     private static final String NOTIFICATION_USER_PATH = "notification/user";
     private static final String NOTIFICATION_TEAM_PATH = "notification/team";
     private static final String NOTIFICATION_ALL_PATH = "notification/all";
+    private static final String GET_ALL_NOTIFICATIONS = "notification/get-all";
 
     // profile
 
@@ -105,7 +106,7 @@ public class Server {
     private static final String CHANGE_USER_PATH = "profile/change-user";
     private static final String SHOW_TEAMS_PATH = "profile/show-teams";
     private static final String SHOW_TEAM_PATH = "profile/show-team";
-    private static final String MY_PROFILE_PATH = "profile";
+    private static final String MY_PROFILE_PATH = "profile/my-profile";
     private static final String MY_LOGS_PATH = "profile/logs";
     private static final String GET_NOTIFICATIONS_PATH = "profile/get-notifications";
     private static final String UPDATE_PROFILE_PATH = "profile/update-profile";
@@ -167,19 +168,31 @@ public class Server {
         ConsoleHelper.getInstance().println(String.format("Server started at %s:%d", BASE_URL, PORT));
 
         before((request, response) -> {
+            System.out.println(request.pathInfo());
             System.out.println(request.requestMethod());
             System.out.println(request.queryString());
             System.out.println(request.body());
             System.out.println(request);
-            System.out.println("path info");
-            System.out.println(request.pathInfo());
-            System.out.println(LOGIN_PATH);
-            System.out.println(SIGNUP_PATH);
             if (!request.pathInfo().equalsIgnoreCase(String.format("/%s", LOGIN_PATH)) &&
                     !request.pathInfo().equalsIgnoreCase(String.format("/%s", SIGNUP_PATH))) {
-                halt(403);
+                System.out.println("not authentication");
+                if (request.headers("token") == null) {
+                    halt(403);
+                } else {
+                    System.out.println("has token");
+                    String token = request.headers("token");
+                    User user = UserController.getUser(token);
+                    System.out.println(user);
+                    System.out.println(token);
+                    if (user != null) {
+                        UserController.setLoggedUser(user);
+                    } else {
+                        System.out.println("stopped here");
+                        halt(403);
+                    }
+                }
             }
-
+            System.out.println("-----------");
         });
 
         // authentication
@@ -523,6 +536,10 @@ public class Server {
             return NotificationController.getInstance().sendNotificationToAll((String) req.getArg(BODY));
         }, new JsonTransformer());
 
+        get(GET_ALL_NOTIFICATIONS, JSON, (request, response) -> {
+            return new MResponse("Success", true, UserController.getLoggedUser().getNotifications());
+        }, new JsonTransformer());
+
         // profile
 
         post(CHANGE_PASS_PATH, JSON, (request, response) -> {
@@ -549,6 +566,8 @@ public class Server {
         }, new JsonTransformer());
 
         get(MY_PROFILE_PATH, JSON, (request, response) -> {
+            System.out.println("finally");
+            System.out.println(UserController.getLoggedUser());
             return ProfileMenuController.getInstance().getMyProfile();
         }, new JsonTransformer());
 

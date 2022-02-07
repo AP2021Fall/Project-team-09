@@ -56,7 +56,7 @@ public class NotificationsMenu implements TerminalView {
             }
         }
         if (input.isCommandFollowArg(NOTIFICATIONS, READ)) {
-            readNotifications();
+            getNotifications();
         } else if (input.isCommandFollowArg(NOTIFICATIONS, CLEAR)) {
             clearNotifications();
         }
@@ -91,7 +91,7 @@ public class NotificationsMenu implements TerminalView {
         }
     }
 
-    private void readNotifications() {
+    private void getNotifications() {
         try {
             MResponse MResponse = UserController.getNotifications();
             ConsoleHelper.getInstance().println(MResponse.getMessage());
