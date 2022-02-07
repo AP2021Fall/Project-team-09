@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
+import java.util.Random;
 
 public class TeamMenuController {
 
@@ -78,11 +80,19 @@ public class TeamMenuController {
             "You're not a team leader";
     private final String WARN_EMPTY_MESSAGE =
             "You cannot send empty message!";
+    private final String WARN_EMAIL_INVALID =
+            "Email address is invalid";
+    private final String WARN_EMAIL_EXISTS =
+            "User with this email already exists!";
 
     private final String TEAM_NAME_REGEXP =
             "^(?=.{5,12}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$";
+    private final String EMAIL_REGEXP =
+            "[a-zA-Z0-9]+@(yahoo.com|gmail.com)";
+
 
     private static TeamMenuController teamMenuController = null;
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public static TeamMenuController getInstance() {
         if (teamMenuController == null)
@@ -436,6 +446,19 @@ public class TeamMenuController {
         return new MResponse(SUCCESS_MEMBER_ASSIGNED, true);
     }
 
+    public MResponse inviteMember(Team team, String email) {
+
+        if (!email.matches(EMAIL_REGEXP))
+            return new MResponse(WARN_EMAIL_INVALID, false);
+
+        if (User.emailExists(email))
+            return new MResponse(WARN_EMAIL_EXISTS, false);
+
+        String token = generateToken(email);
+        team.inviteMember(token, email);
+        return new MResponse("Token generated successfully!", true, token);
+    }
+
     public MResponse getAllUsers(Team team) {
 
         ArrayList<User> users = new ArrayList<>();
@@ -447,5 +470,17 @@ public class TeamMenuController {
         }
 
         return new MResponse(SUCCESS_USERS_RECEIVED, true, users);
+    }
+
+    public static String generateToken(String value) {
+        String time = String.valueOf(System.currentTimeMillis());
+
+        int nonce = new Random().nextInt(9999);
+
+        return hash(String.format("%s%s%d", value, time, nonce));
+    }
+
+    private static String hash(String input) {
+        return base64Encoder.encodeToString(input.getBytes());
     }
 }

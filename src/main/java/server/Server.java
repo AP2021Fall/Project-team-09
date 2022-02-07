@@ -27,6 +27,7 @@ public class Server {
     private static final String PASSWORD = "password";
     private static final String PASSWORD1 = "password1";
     private static final String PASSWORD2 = "password2";
+    private static final String TOKEN = "token";
     private static final String EMAIL = "email";
     private static final String ROLE = "role";
     private static final String TEAM = "team";
@@ -62,6 +63,7 @@ public class Server {
 
     private static final String LOGIN_PATH = "auth/signIn";
     private static final String SIGNUP_PATH = "auth/signUp";
+    private static final String JOIN_PATH = "auth/join";
 
     // admin
 
@@ -159,6 +161,8 @@ public class Server {
     private static final String ASSIGN_T0_TASK_PATH = "team/assign-to-task";
     private static final String GET_ALL_USERS_PATH = "team/get-all-users";
 
+    private static final String CREATE_INVITE_TOKEN = "team/create-invite-token";
+
     // general
 
     private static final String GET_AUTH_USER = "auth/get-user";
@@ -223,6 +227,16 @@ public class Server {
                             (String) req.getArg(PASSWORD1),
                             (String) req.getArg(PASSWORD2),
                             (String) req.getArg(EMAIL));
+        }, new JsonTransformer());
+
+        post(JOIN_PATH, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            return LoginController.getInstance()
+                    .join((String) req.getArg(USERNAME),
+                            (String) req.getArg(PASSWORD1),
+                            (String) req.getArg(PASSWORD2),
+                            (String) req.getArg(TOKEN));
         }, new JsonTransformer());
 
         // admin
@@ -922,6 +936,22 @@ public class Server {
         get(GET_ALL_USERS_PATH, JSON, (request, response) -> {
             String team = request.queryParams(TEAM);
             return TeamMenuController.getInstance().getAllUsers(Team.getTeamByName(team));
+        }, new JsonTransformer());
+
+        put(CREATE_INVITE_TOKEN, JSON, (request, response) -> {
+            String requestBody = request.body();
+            MRequest req = new Gson().fromJson(requestBody, MRequest.class);
+            JsonElement jsonElement = new JsonParser().parse(requestBody);
+            if (jsonElement.getAsJsonObject().get("arguments") != null) {
+                String object = jsonElement.getAsJsonObject()
+                        .get("arguments").getAsJsonObject()
+                        .get("team").toString();
+                req.setObject(object);
+            }
+            Team team = new Gson().fromJson((String) req.getObject(), Team.class);
+            Team t = Team.getTeamByName(team.getName());
+            String email = (String) req.getArg(EMAIL);
+            return TeamMenuController.getInstance().inviteMember(t, email);
         }, new JsonTransformer());
 
         // general

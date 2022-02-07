@@ -1,5 +1,6 @@
 package server.controller;
 
+import server.model.Team;
 import server.model.User;
 
 public class LoginController {
@@ -26,6 +27,8 @@ public class LoginController {
     private final String WARN_WEAK_PASS =
             "Please Choose A strong Password (Containing at least 8 characters including 1 digit " +
                     "and 1 Capital Letter)";
+    private final String WARN_TOKEN_INVALID =
+            "Provided token is not valid!";
 
     private final String EMAIL_REGEXP =
             "[a-zA-Z0-9]+@(yahoo.com|gmail.com)";
@@ -71,6 +74,41 @@ public class LoginController {
         String hash = UserController.generateToken(user);
         System.out.println(hash);
         return new MResponse(SUCCESS_LOGIN, true, hash);
+    }
+
+    public MResponse join(String username, String password1, String password2, String token) {
+
+        Team team = Team.getTeamByInvitedToken(token);
+
+        if (team == null)
+            return new MResponse(WARN_TOKEN_INVALID, false);
+
+        String email = null;
+
+        for (String e : team.getInvitedMembers().keySet())
+            if (team.getInvitedMembers().get(e).equalsIgnoreCase(token))
+                email = e;
+
+        if (email == null) {
+            return new MResponse(WARN_TOKEN_INVALID, false);
+        }
+
+        if (User.usernameExists(username))
+            return new MResponse(String.format(WARN_USER_EXISTS, username), false);
+
+        if (!password1.equals(password2))
+            return new MResponse(WARN_PASS_NOT_MATCH, false);
+
+        if (!isHard(password1))
+            return new MResponse(WARN_WEAK_PASS, false);
+
+        if (User.emailExists(email))
+            return new MResponse(WARN_EMAIL_EXISTS, false);
+
+        User user = User.createUser(username, password1, email);
+        team.addMember(user);
+        team.removeInvitedMember(email);
+        return new MResponse(SUCCESS_USER_CREATED, true, user);
     }
 
     public MResponse logout() {

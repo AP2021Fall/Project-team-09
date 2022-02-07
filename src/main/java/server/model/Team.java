@@ -24,12 +24,13 @@ public class Team implements Serializable {
     private ArrayList<Task> tasks;
     private ArrayList<Board> boards;
     private ArrayList<String> members;
+    private HashMap<String, String> invitedMembers;
     private HashMap<String, Integer> membersPoints;
     private HashMap<String, MemberStatus> memberStatus;
 
     private ArrayList<Message> chatroom;
 
-    public Team(int id, String name, User leader, LocalDateTime timeOfCreation, Status status, ArrayList<Task> tasks, ArrayList<Board> boards, ArrayList<String> members, HashMap<String, Integer> membersPoints, HashMap<String, MemberStatus> membersStatus, ArrayList<Message> chatroom) {
+    public Team(int id, String name, User leader, LocalDateTime timeOfCreation, Status status, ArrayList<Task> tasks, ArrayList<Board> boards, ArrayList<String> members, HashMap<String, String> invitedMembers, HashMap<String, Integer> membersPoints, HashMap<String, MemberStatus> membersStatus, ArrayList<Message> chatroom) {
         this.id = id;
         this.name = name;
         this.leader = leader;
@@ -38,6 +39,7 @@ public class Team implements Serializable {
         this.tasks = tasks;
         this.boards = boards;
         this.members = members;
+        this.invitedMembers = invitedMembers;
         this.membersPoints = membersPoints;
         this.memberStatus = membersStatus;
         this.chatroom = chatroom;
@@ -51,6 +53,7 @@ public class Team implements Serializable {
         this.tasks = new ArrayList<>();
         this.boards = new ArrayList<>();
         this.members = new ArrayList<>();
+        this.invitedMembers = new HashMap<>();
         this.membersPoints = new HashMap<>();
         this.memberStatus = new HashMap<>();
         this.chatroom = new ArrayList<>();
@@ -61,6 +64,15 @@ public class Team implements Serializable {
         for (Team team : Team.getTeams())
             if (team.getName().equalsIgnoreCase(teamName))
                 return team;
+        return null;
+    }
+
+    public static Team getTeamByInvitedToken(String token) {
+        for (Team team : Team.getTeams()) {
+            for (String email : team.getInvitedMembers().keySet())
+                if (team.getInvitedMembers().get(email).equalsIgnoreCase(token))
+                    return team;
+        }
         return null;
     }
 
@@ -134,6 +146,22 @@ public class Team implements Serializable {
 
     public void addBoard(Board board) {
         this.boards.add(board);
+    }
+
+    public void inviteMember(String token, String email) {
+        this.invitedMembers.put(email, token);
+    }
+
+    public void removeInvitedMember(String email) {
+        this.invitedMembers.remove(email);
+    }
+
+    public HashMap<String, String> getInvitedMembers() {
+        return invitedMembers;
+    }
+
+    public void setInvitedMembers(HashMap<String, String> invitedMembers) {
+        this.invitedMembers = invitedMembers;
     }
 
     public void removeBoard(Board board) {
