@@ -31,6 +31,10 @@ import java.util.*;
 
 public class DashboardUIController implements Initializable, GUI {
 
+    private static final String CREATE_INVITE_TOKEN = "/team/create-invite-token";
+    private static final String EMAIL = "email";
+    private static final String TEAM_INVITE = "team";
+
     private final String SELECTED_TEAM =
             "team";
     private final String BOARD = "board";
@@ -76,6 +80,7 @@ public class DashboardUIController implements Initializable, GUI {
     private final int NEW_NOTIFICATION = 15;
     private final int USER_NOTIFICATION = 16;
     private final int USER_PROFILE = 18;
+    private final int INVITE_MEMBER = 19;
 
     private int TAB = 0;
     private int SUB_TAB = 0;
@@ -199,6 +204,14 @@ public class DashboardUIController implements Initializable, GUI {
 
     @FXML
     private Button TAMButton;
+
+    // teams > invite member
+
+    @FXML
+    private TextField TIMEmail;
+
+    @FXML
+    private TextField TIMToken;
 
     // teams > add member
 
@@ -504,8 +517,8 @@ public class DashboardUIController implements Initializable, GUI {
                     RequestsMenu.setVisible(false);
                     RequestsMenu.setManaged(false);
 
-                    TAMButton.setVisible(false);
-                    TAMButton.setManaged(false);
+//                    TAMButton.setVisible(false);
+//                    TAMButton.setManaged(false);
                     TCBButton.setVisible(false);
                     TCBButton.setManaged(false);
                     TCTMenuButton.setVisible(false);
@@ -1007,10 +1020,12 @@ public class DashboardUIController implements Initializable, GUI {
         }.getType();
         ArrayList<User> members = new Gson().fromJson((String) MResponse.getObject(), typeMyType);
 
-        if (members == null)
-            return;
-
         TMemberItemHolder.getChildren().clear();
+
+        if (members == null) {
+            return;
+        }
+
         for (User user : members) {
             TeamMemberItem teamMemberItem = new TeamMemberItem(team, user);
             teamMemberItem.setOnItemClickListener(new TeamMemberItem.OnItemClickListener() {
@@ -1136,6 +1151,35 @@ public class DashboardUIController implements Initializable, GUI {
     @FXML
     private void onAddMember() {
         tabPaneHandler(null, ADD_MEMBER, 0);
+    }
+
+    @FXML
+    private void onInviteMember() {
+        tabPaneHandler(null, INVITE_MEMBER, 0);
+    }
+
+    // team > invite member
+
+    @FXML
+    private void onTICreateToken() {
+        Team team = (Team) SharedPreferences.get(SELECTED_TEAM);
+
+        if (team == null)
+            return;
+
+        String email = getValue(TIMEmail);
+
+        MResponse mResponse =
+                new MRequest()
+                        .setPath(CREATE_INVITE_TOKEN)
+                        .addArg(TEAM_INVITE, team)
+                        .addArg(EMAIL, email)
+                        .put();
+        showResponse(mResponse);
+        if (mResponse.isSuccess()) {
+            String token = (String) mResponse.getObject();
+            TIMToken.setText(token.substring(1, token.length() - 1));
+        }
     }
 
     // team > add member

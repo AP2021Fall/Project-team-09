@@ -23,6 +23,7 @@ public class AuthenticationUIController implements Initializable, GUI {
 
     private final int SIGN_IN = 0;
     private final int SIGN_UP = 1;
+    private final int INVITE_MENU = 2;
 
     private int TAB = 0;
 
@@ -48,6 +49,20 @@ public class AuthenticationUIController implements Initializable, GUI {
     @FXML
     private TextField SUEmail;
 
+    // invite
+
+    @FXML
+    private TextField IUUsername;
+
+    @FXML
+    private PasswordField IUPassword;
+
+    @FXML
+    private PasswordField IUCPassword;
+
+    @FXML
+    private TextField IUToken;
+
     @FXML
     private TabPane mainTabPane;
 
@@ -65,14 +80,21 @@ public class AuthenticationUIController implements Initializable, GUI {
     private void onSignInMenu() {
         tabPaneHandler(SIGN_IN);
         clearFields(SIUsername, SIPassword, SUUsername, SUPassword,
-                SUCPassword, SUEmail);
+                SUCPassword, SUEmail, IUUsername, IUCPassword, IUCPassword, IUToken);
     }
 
     @FXML
     private void onSignUpMenu() {
         tabPaneHandler(SIGN_UP);
         clearFields(SIUsername, SIPassword, SUUsername, SUPassword,
-                SUCPassword, SUEmail);
+                SUCPassword, SUEmail, IUUsername, IUCPassword, IUCPassword, IUToken);
+    }
+
+    @FXML
+    private void onInviteMenu() {
+        tabPaneHandler(INVITE_MENU);
+        clearFields(SIUsername, SIPassword, SUUsername, SUPassword,
+                SUCPassword, SUEmail, IUUsername, IUCPassword, IUCPassword, IUToken);
     }
 
     private void tabPaneHandler(int tab) {
@@ -148,6 +170,23 @@ public class AuthenticationUIController implements Initializable, GUI {
         if (MResponse.isSuccess())
             tabPaneHandler(SIGN_IN);
         else showResponse(MResponse);
-        save();
+    }
+
+    // join
+
+    @FXML
+    private void onInviteSignUp() {
+        String username = getValue(IUUsername);
+        String password = getValue(IUPassword);
+        String confirmPass = getValue(IUCPassword);
+        String token = getValue(IUToken);
+
+        MResponse MResponse =
+                LoginController.getInstance()
+                        .join(username, password, confirmPass, token);
+
+        if (MResponse.isSuccess())
+            tabPaneHandler(SIGN_IN);
+        else showResponse(MResponse);
     }
 }

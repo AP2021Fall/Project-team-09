@@ -11,9 +11,11 @@ public class LoginController {
     private static final String PASSWORD1 = "password1";
     private static final String PASSWORD2 = "password2";
     private static final String EMAIL = "email";
+    private static final String TOKEN = "token";
 
     private final String LOGIN_PATH = "/auth/signIn";
     private final String SIGNUP_PATH = "/auth/signUp";
+    private final String JOIN_PATH = "/auth/join";
 
     private static final String MY_PROFILE_PATH = "/profile/my-profile";
 
@@ -66,6 +68,16 @@ public class LoginController {
                 .setPath(LOGIN_PATH)
                 .addArg(USERNAME, username)
                 .addArg(PASSWORD, password)
+                .post();
+    }
+
+    public MResponse join(String username, String password, String confirmPass, String token) {
+        return new MRequest()
+                .setPath(JOIN_PATH)
+                .addArg(USERNAME, username)
+                .addArg(PASSWORD1, password)
+                .addArg(PASSWORD2, confirmPass)
+                .addArg(TOKEN, token)
                 .post();
     }
 }
