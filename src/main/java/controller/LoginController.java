@@ -15,6 +15,8 @@ public class LoginController {
     private final String LOGIN_PATH = "/auth/signIn";
     private final String SIGNUP_PATH = "/auth/signUp";
 
+    private static final String MY_PROFILE_PATH = "/profile/my-profile";
+
     private final String SUCCESS_LOGOUT =
             "user logged out successfully!";
 
@@ -43,8 +45,13 @@ public class LoginController {
                 .addArg(PASSWORD, password)
                 .post();
         if (response.isSuccess()) {
-            User user = new Gson().fromJson((String) response.getObject(), User.class);
-            UserController.loggedUser = user;
+            String token = new Gson().fromJson((String) response.getObject(), String.class);
+            UserController.setToken(token);
+            MResponse mResponse = new MRequest()
+                    .setPath(MY_PROFILE_PATH)
+                    .get();
+            User user = new Gson().fromJson((String) mResponse.getObject(), User.class);
+            UserController.setLoggedUser(user);
         }
         return response;
     }

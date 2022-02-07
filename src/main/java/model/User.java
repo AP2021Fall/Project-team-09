@@ -19,6 +19,7 @@ public class User implements Serializable {
     private static final String GET_AUTH_USER = "/auth/get-user";
     private static final String GET_USER = "/user/get-user";
     private static final String GET_ALL_USERS = "/user/get-all-users";
+    private static final String GET_ALL_NOTIFICATIONS = "notification/get-all";
 
     private static User admin;
 
@@ -156,7 +157,14 @@ public class User implements Serializable {
     }
 
     public ArrayList<Notification> getNotifications() {
-        return notifications;
+        MResponse MResponse = new MRequest()
+                .setPath(GET_ALL_NOTIFICATIONS)
+                .get();
+
+        java.lang.reflect.Type typeMyType = new TypeToken<ArrayList<Notification>>() {
+        }.getType();
+
+        return new Gson().fromJson((String) MResponse.getObject(), typeMyType);
     }
 
     public ArrayList<LocalDateTime> getLogs() {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import controller.MResponse;
+import controller.UserController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ public class MRequest implements Serializable {
     private final String BASE = "localhost";
 
     private String path;
-    private String token;
     private HashMap<String, Object> arguments;
     private Object object;
 
@@ -31,28 +31,12 @@ public class MRequest implements Serializable {
         this.object = object;
     }
 
-    public MRequest(String path, String token, HashMap<String, Object> arguments, Object object) {
-        this.path = path;
-        this.token = token;
-        this.arguments = arguments;
-        this.object = object;
-    }
-
     public String getPath() {
         return path;
     }
 
     public MRequest setPath(String path) {
         this.path = path;
-        return this;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public MRequest setToken(String token) {
-        this.token = token;
         return this;
     }
 
@@ -115,10 +99,24 @@ public class MRequest implements Serializable {
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"), gson.toJson(this));
 
-            Request request = new Request.Builder()
-                    .url(BASE_URL + path)
-                    .post(body)
-                    .build();
+            String token = UserController.getToken();
+
+            boolean setToken = token != null;
+            Request request = null;
+
+            if (!setToken) {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .post(body)
+                        .build();
+            } else {
+                System.out.println(token);
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .addHeader("token", token)
+                        .post(body)
+                        .build();
+            }
 
             Call call = client.newCall(request);
             Response response = call.execute();
@@ -145,10 +143,23 @@ public class MRequest implements Serializable {
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"), gson.toJson(this));
 
-            Request request = new Request.Builder()
-                    .url(BASE_URL + path)
-                    .put(body)
-                    .build();
+            String token = UserController.getToken();
+
+            boolean setToken = token != null;
+            Request request = null;
+
+            if (!setToken) {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .put(body)
+                        .build();
+            } else {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .addHeader("token", token)
+                        .put(body)
+                        .build();
+            }
 
             Call call = client.newCall(request);
             Response response = call.execute();
@@ -175,10 +186,23 @@ public class MRequest implements Serializable {
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"), gson.toJson(this));
 
-            Request request = new Request.Builder()
-                    .url(BASE_URL + path)
-                    .patch(body)
-                    .build();
+            String token = UserController.getToken();
+
+            boolean setToken = token != null;
+            Request request = null;
+
+            if (!setToken) {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .patch(body)
+                        .build();
+            } else {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .addHeader("token", token)
+                        .patch(body)
+                        .build();
+            }
 
             Call call = client.newCall(request);
             Response response = call.execute();
@@ -206,10 +230,23 @@ public class MRequest implements Serializable {
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"), gson.toJson(this));
 
-            Request request = new Request.Builder()
-                    .url(BASE_URL + path)
-                    .delete(body)
-                    .build();
+            String token = UserController.getToken();
+
+            boolean setToken = token != null;
+            Request request = null;
+
+            if (!setToken) {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .delete(body)
+                        .build();
+            } else {
+                request = new Request.Builder()
+                        .url(BASE_URL + path)
+                        .addHeader("token", token)
+                        .delete(body)
+                        .build();
+            }
 
             Call call = client.newCall(request);
             Response response = call.execute();
@@ -245,10 +282,23 @@ public class MRequest implements Serializable {
             for (String arg : arguments.keySet())
                 url.addQueryParameter(arg, (String) arguments.get(arg));
 
-            Request request = new Request.Builder()
-                    .url(url.build())
-                    .get()
-                    .build();
+            String token = UserController.getToken();
+
+            boolean setToken = token != null;
+            Request request = null;
+
+            if (!setToken) {
+                request = new Request.Builder()
+                        .url(url.build())
+                        .get()
+                        .build();
+            } else {
+                request = new Request.Builder()
+                        .url(url.build())
+                        .addHeader("token", token)
+                        .get()
+                        .build();
+            }
 
             Call call = client.newCall(request);
             Response response = call.execute();

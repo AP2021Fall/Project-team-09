@@ -10,7 +10,7 @@ public class ProfileMenuController {
     private static final String CHANGE_USER_PATH = "/profile/change-user";
     private static final String SHOW_TEAMS_PATH = "/profile/show-teams";
     private static final String SHOW_TEAM_PATH = "/profile/show-team";
-    private static final String MY_PROFILE_PATH = "/profile";
+    private static final String MY_PROFILE_PATH = "/profile/my-profile";
     private static final String MY_LOGS_PATH = "/profile/logs";
     private static final String GET_NOTIFICATIONS_PATH = "/profile/get-notifications";
     private static final String UPDATE_PROFILE_PATH = "/profile/update-profile";

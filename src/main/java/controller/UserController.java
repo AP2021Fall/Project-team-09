@@ -5,6 +5,7 @@ import model.User;
 
 public class UserController {
     static User loggedUser = null;
+    static String token = null;
 
     public static User getLoggedUser() {
         return loggedUser;
@@ -12,6 +13,14 @@ public class UserController {
 
     public static void setLoggedUser(User user) {
         loggedUser = user;
+    }
+
+    public static void setToken(String t) {
+        token = t;
+    }
+
+    public static String getToken() {
+        return token;
     }
 
     public static void logout() {
